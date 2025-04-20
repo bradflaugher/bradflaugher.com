@@ -8,112 +8,70 @@
   <!-- ==========  ORIGINAL MIND‑MAP STYLES (with mobile wrap fix)  ========== -->
   <style>
     :root {
-      --bg-color: #0d1117;
-      --text-color: #e6edf3;
-      --accent-color: #58a6ff;
-      --secondary-color: #7ee787;
-      --warning-color: #f97583;
-      --comment-color: #8b949e;
-      --link-color: #58a6ff;
-      --section-bg: #161b22;
-      --code-bg: #1f2428;
+      --bg-color:#0d1117;      --text-color:#e6edf3;
+      --accent-color:#58a6ff;  --secondary-color:#7ee787;
+      --warning-color:#f97583; --comment-color:#8b949e;
+      --link-color:#58a6ff;    --section-bg:#161b22;
+      --code-bg:#1f2428;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background: var(--bg-color);
-      color: var(--text-color);
-      font-family: 'Fira Code', monospace;
-      line-height: 1.6;
-      padding: 20px;
-      margin: 0 auto;
-      max-width: 800px;
-      font-size: 16px;
+    *               { box-sizing:border-box; margin:0; padding:0; }
+    body            { background:var(--bg-color); color:var(--text-color);
+                      font-family:'Fira Code',monospace; line-height:1.6;
+                      padding:20px; margin:0 auto; max-width:800px; font-size:16px; }
+    @media(max-width:600px){
+      body          { font-size:14px; padding:15px; }
     }
 
-    @media (max-width: 600px) {
-      body { font-size: 14px; padding: 15px; }
-    }
+    header          { margin-bottom:30px; }
+    h1,h2,h3,h4     { color:var(--secondary-color); }
+    h1              { font-size:1.8rem; margin-bottom:10px; }
+    h2              { font-size:1.5rem; margin:25px 0 15px; padding-bottom:5px;
+                      border-bottom:1px solid #30363d; }
+    h3              { font-size:1.25rem; margin:20px 0 10px; }
+    p               { margin-bottom:15px; }
 
-    header { margin-bottom: 30px; }
+    a               { color:var(--link-color); text-decoration:none; transition:opacity .2s; }
+    a:hover         { text-decoration:underline; opacity:.8; }
 
-    h1, h2, h3, h4 { color: var(--secondary-color); }
+    .prompt         { color:var(--accent-color); font-weight:700; margin-right:8px; }
+    .section        { background:var(--section-bg); border-radius:6px; padding:20px;
+                      margin-bottom:25px; box-shadow:0 2px 5px rgba(0,0,0,.1); }
+    .code-block     { background:var(--code-bg); padding:15px; border-radius:4px;
+                      overflow-x:auto; margin:15px 0; }
+    .highlight      { color:var(--accent-color); font-weight:700; }
+    .warning        { color:var(--warning-color); }
+    .comment        { color:var(--comment-color); font-style:italic; }
 
-    h1 { font-size: 1.8rem; margin-bottom: 10px; }
-    h2 {
-      font-size: 1.5rem;
-      margin: 25px 0 15px;
-      padding-bottom: 5px;
-      border-bottom: 1px solid #30363d;
-    }
-    h3 { font-size: 1.25rem; margin: 20px 0 10px; }
+    .blink          { animation:blink 1s steps(2,start) infinite; }
+    @keyframes blink{ to { visibility:hidden; } }
 
-    p { margin-bottom: 15px; }
+    .footnote       { cursor:pointer; color:var(--accent-color);
+                      border-bottom:1px dashed var(--accent-color); }
+    .footnote-active{ background:rgba(88,166,255,.1); }
+    .footnote-content{
+                      display:none; background:var(--code-bg); padding:15px;
+                      border-left:3px solid var(--accent-color); border-radius:4px; margin:10px 0; }
 
-    a {
-      color: var(--link-color);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    a:hover { text-decoration: underline; opacity: 0.8; }
+    .expandable-header{
+                      cursor:pointer; display:flex; align-items:center; }
+    .expandable-header::before{
+                      content:"+ "; color:var(--secondary-color); margin-right:5px; transition:.3s; }
+    .expandable-header.expanded::before{ content:"- "; }
+    .expandable-content{
+                      display:none; padding-left:20px; margin-top:10px;
+                      border-left:1px solid var(--comment-color); }
 
-    .prompt        { color: var(--accent-color); font-weight: 700; margin-right: 8px; }
-    .section       { background: var(--section-bg); border-radius: 6px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,.1); }
-    .code-block    { background: var(--code-bg); padding: 15px; border-radius: 4px; overflow-x: auto; margin: 15px 0; }
-    .highlight     { color: var(--accent-color); font-weight: 700; }
-    .warning       { color: var(--warning-color); }
-    .comment       { color: var(--comment-color); font-style: italic; }
-
-    .blink { animation: blink-animation 1s steps(2,start) infinite; }
-    @keyframes blink-animation { to { visibility: hidden; } }
-
-    .footnote        { cursor: pointer; color: var(--accent-color); border-bottom: 1px dashed var(--accent-color); }
-    .footnote-active { background: rgba(88,166,255,.1); }
-    .footnote-content {
-      display: none;
-      background: var(--code-bg);
-      padding: 15px;
-      border-left: 3px solid var(--accent-color);
-      border-radius: 4px;
-      margin: 10px 0;
-    }
-
-    .expandable-header {
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-    }
-    .expandable-header::before {
-      content: "+ ";
-      color: var(--secondary-color);
-      margin-right: 5px;
-      transition: transform 0.3s;
-    }
-    .expandable-header.expanded::before { content: "- "; }
-    .expandable-content {
-      display: none;
-      padding-left: 20px;
-      margin-top: 10px;
-      border-left: 1px solid var(--comment-color);
-    }
-
-    .info-section {
-      background: rgba(88,166,255,.05);
-      border: 1px solid rgba(88,166,255,.1);
-      border-radius: 6px;
-      padding: 20px;
-      margin: 30px 0;
-      font-size: 0.9rem;
-    }
-    .info-header { color: var(--accent-color); font-weight: 500; margin-bottom: 10px; font-size: 1rem; }
-    .terminal-prompt::before { content: "$ "; color: var(--secondary-color); }
+    .info-section   { background:rgba(88,166,255,.05); border:1px solid rgba(88,166,255,.1);
+                      border-radius:6px; padding:20px; margin:30px 0; font-size:.9rem; }
+    .info-header    { color:var(--accent-color); font-weight:500; margin-bottom:10px; font-size:1rem; }
+    .terminal-prompt::before{ content:"$ "; color:var(--secondary-color); }
 
     /* ==========  MOBILE WRAP FIX  ========== */
-    @media (max-width: 600px) {
-      body, .section, .code-block { overflow-wrap: anywhere; }
+    @media(max-width:600px){
+      body, .section, .code-block { overflow-wrap:anywhere; }
     }
-    .code-block { word-break: break-all; }
+    .code-block     { word-break:break-all; }
   </style>
 </head>
 
@@ -122,7 +80,7 @@
   <header>
     <h1>$ Brad Flaugher<span class="blink">_</span></h1>
     <p>
-      AI Advisor — I replace bloated stacks and staff with AI workflows
+      AI Advisor — I streamline software stacks and headcount with pragmatic AI systems
       <span class="footnote" onclick="handleFootnoteClick('fnBloat')">[1]</span>
     </p>
   </header>
@@ -131,49 +89,49 @@
   <div class="section">
     <h2><span class="prompt">~/offer</span> Mini‑Retainer</h2>
     <ul>
-      <li>Free 2‑hour “AI Diagnostic” (in‑person or video)</li>
+      <li><strong>AI Diagnostic (2 h, free)</strong> — rapid maturity & ROI assessment.</li>
       <li>
-        Unlimited <a href="https://signal.org" target="_blank">Signal</a> texts 08:00‑18:00 ET &lt;4 h response
+        Unlimited secure <a href="https://signal.org" target="_blank">Signal</a> texts 08:00‑18:00 ET &lt;4 h SLA
         <span class="footnote" onclick="handleFootnoteClick('fnSignal')">[2]</span>
       </li>
       <li>
-        Up to <strong>2 video calls / month</strong> (60 min)
+        Up to <strong>2 executive work‑sessions/month</strong> (60 min)
         <span class="footnote" onclick="handleFootnoteClick('fnCalls')">[3]</span>
       </li>
       <li>
-        Quarterly strategy memo + optional lunch / tennis / golf
+        Quarterly strategy memo + optional on‑court/on‑course networking
         <span class="footnote" onclick="handleFootnoteClick('fnGolf')">[4]</span>
       </li>
     </ul>
 
     <div class="code-block">
-      <strong>Price →</strong> 50 % market rate + incentive pay (12‑mo term)
+      <strong>Investment</strong>  50 % of market rate + performance upside (12‑mo term)
       <span class="footnote" onclick="handleFootnoteClick('fnIncent')">[5]</span>
       &nbsp;·&nbsp;
-      <em>Referrals take priority</em>
+      <em>Priority given to referred mandates</em>
       <span class="footnote" onclick="handleFootnoteClick('fnRef')">[6]</span>
     </div>
   </div>
 
   <!-- ==========  RESOURCES  ========== -->
   <div class="section">
-    <h2><span class="prompt">~/resources</span> Free Guides</h2>
+    <h2><span class="prompt">~/resources</span> Practical Guides</h2>
     <ul>
       <li>
-        <a href="https://bradflaugher.com/ai_pickers_guide" target="_blank">AI Picker’s Guide</a> —
-        match the right model to each workflow.
+        <a href="https://bradflaugher.com/ai_pickers_guide" target="_blank">AI Picker’s Guide</a> —
+        select the optimal model and vendor for each workflow.
       </li>
       <li>
-        <a href="https://bradflaugher.com/digital_transformation_guide" target="_blank">Digital Transformation Guide</a> —
-        step‑by‑step modernization playbook.
+        <a href="https://bradflaugher.com/digital_transformation_guide" target="_blank">Digital Transformation Guide</a> —
+        12‑week path from emails & spreadsheets to automation.
       </li>
       <li>
-        <a href="https://bradflaugher.com/mindmap" target="_blank">Interactive Mind Map →</a>
+        <a href="https://bradflaugher.com/mindmap" target="_blank">Interactive Mind Map →</a>
       </li>
     </ul>
     <p>
-      Additional briefs: Gadgets Guide, Investment Thesis Guide, Stock Picker’s Guide
-      <span class="footnote" onclick="handleFootnoteClick('fnRes')">[R]</span>
+      Device stacks, public‑market theses, equity screens:
+      <span class="footnote" onclick="handleFootnoteClick('fnRes')">view the supplemental brief series</span>
     </p>
   </div>
 
@@ -181,37 +139,46 @@
   <div class="section">
     <h2><span class="prompt">~/events</span> On Deck</h2>
     <h3>Philadelphia Open Innovation Tournament — Oct 25‑26 2025</h3>
-    <p>I’ll be keynoting and distributing printed playbooks. Ping me on Signal for a comp ticket.</p>
+    <p>
+      Keynote + live playbook workshop. Text me on Signal for a comp ticket.
+    </p>
   </div>
 
   <!-- ==========  ABOUT  ========== -->
   <div class="section">
     <h2><span class="prompt">~/about</span> Brad Flaugher</h2>
     <p>
-      Brad Flaugher is a Philadelphia‑based technologist, author, and multi‑exit entrepreneur.
-      Profiled by MIT Sloan Executive Education for bridging deep‑tech and management thinking
-      <span class="footnote" onclick="handleFootnoteClick('fnMIT')">[7]</span>,
-      he distils fifteen years of applied‑AI practice into operational blueprints for leaders.
-      Previous exits include Offline Publishing, Bread Factory Studios, and Audigent.
-      Formal training in economics and finance informs his board‑level advisory work
+      Philadelphia‑based technologist and multi‑exit founder. MIT Sloan Executive Education profiled my work translating
+      advanced AI into operating models for growth‑stage firms
+      <span class="footnote" onclick="handleFootnoteClick('fnMIT')">[7]</span>.
+      Prior ventures: Offline Publishing, Bread Factory Studios, Audigent.
+      Economic training supports board‑level capital‑allocation advice
       <span class="footnote" onclick="handleFootnoteClick('fnLSE')">[8]</span>.
     </p>
+    <p><em>Ready to see what lean AI operations look like inside your organisation?</em></p>
   </div>
 
   <!-- ==========  CTA  ========== -->
   <div class="section">
-    <h2><span class="prompt">~/contact</span> Next Step</h2>
+    <h2><span class="prompt">~/contact</span> Join the Inner Circle</h2>
+
+    <p>
+      Skip the webforms. One secure message unlocks a complimentary <strong>AI Diagnostic</strong>
+      and ongoing access to my private client feed.
+    </p>
+
     <div class="code-block" style="text-align:center; font-size:1.1rem;">
       <a
         href="https://signal.me/#eu/nNIgURzLjfztPIa7FoBO-5VicvmfitBN9JQjUuBQLBWEqjESWEBCQpuF8wriPmS7"
         target="_blank"
         style="font-weight:700; color:var(--secondary-color);"
       >
-        ➜ Text “Diagnostic” on Signal
+        ➜ Text “Diagnostic” on Signal — Your VIP Pass
       </a>
     </div>
-    <p style="text-align:center;">
-      Prefer email? <a href="mailto:brad@flaugher.com">brad@flaugher.com</a>
+
+    <p style="text-align:center; font-size:0.9rem;">
+      Prefer email?  <a href="mailto:brad@bradflaugher.com">brad@bradflaugher.com</a>
     </p>
   </div>
 
@@ -220,76 +187,58 @@
     <h2><span class="prompt">~/footnotes</span> Sources & Context</h2>
 
     <!-- 1 -->
-    <p id="fnBloat-title">
-      <span class="footnote" onclick="handleFootnoteClick('fnBloat')">[1] Stack & Staff Bloat</span>
-    </p>
+    <p id="fnBloat-title"><span class="footnote" onclick="handleFootnoteClick('fnBloat')">[1] Stack & Staff Bloat</span></p>
     <div id="fnBloat" class="footnote-content">
       Redundant SaaS licences and fragmented workflows cost mid‑market firms an estimated $1.3 M / yr.<br />
-      McKinsey projects up to 30 % reduction in clerical headcount through AI automation.
+      McKinsey projects up to 30 % clerical headcount reduction through AI automation.
     </div>
 
     <!-- 2 -->
-    <p id="fnSignal-title">
-      <span class="footnote" onclick="handleFootnoteClick('fnSignal')">[2] Why Signal</span>
-    </p>
+    <p id="fnSignal-title"><span class="footnote" onclick="handleFootnoteClick('fnSignal')">[2] Why Signal</span></p>
     <div id="fnSignal" class="footnote-content">
-      Signal uses open‑source, audited end‑to‑end encryption and collects minimal metadata—Privacy Guides’ top recommendation.
+      Signal’s open‑source, audited protocol and minimal metadata footprint make it Privacy Guides’ top recommendation.
     </div>
 
     <!-- 3 -->
-    <p id="fnCalls-title">
-      <span class="footnote" onclick="handleFootnoteClick('fnCalls')">[3] Capping Meetings</span>
-    </p>
+    <p id="fnCalls-title"><span class="footnote" onclick="handleFootnoteClick('fnCalls')">[3] Meeting Caps</span></p>
     <div id="fnCalls" class="footnote-content">
-      A 2024 HBR field study found teams that reduced meetings by 40 % improved productivity 71 %.
+      A 2024 HBR field study linked a 40 % reduction in meetings to a 71 % productivity gain.
     </div>
 
     <!-- 4 -->
-    <p id="fnGolf-title">
-      <span class="footnote" onclick="handleFootnoteClick('fnGolf')">[4] Lunch / Golf Utility</span>
-    </p>
+    <p id="fnGolf-title"><span class="footnote" onclick="handleFootnoteClick('fnGolf')">[4] Relationship Depth</span></p>
     <div id="fnGolf" class="footnote-content">
-      Nielsen research shows deals initiated on golf courses close 18 % faster due to extended informal discussion.
+      Nielsen data: deals started over golf courses/lunches shorten the close cycle by 18 %.
     </div>
 
     <!-- 5 -->
-    <p id="fnIncent-title">
-      <span class="footnote" onclick="handleFootnoteClick('fnIncent')">[5] Incentive Pay</span>
-    </p>
+    <p id="fnIncent-title"><span class="footnote" onclick="handleFootnoteClick('fnIncent')">[5] Performance Upside</span></p>
     <div id="fnIncent" class="footnote-content">
-      Performance‑linked compensation increases output by an average of 22 % across professional services.
+      Variable‑comp frameworks lift output ~22 % on average across professional services.
     </div>
 
     <!-- 6 -->
-    <p id="fnRef-title">
-      <span class="footnote" onclick="handleFootnoteClick('fnRef')">[6] Referral Priority</span>
-    </p>
+    <p id="fnRef-title"><span class="footnote" onclick="handleFootnoteClick('fnRef')">[6] Referral Economics</span></p>
     <div id="fnRef" class="footnote-content">
-      Referred clients show 37 % higher lifetime value and 25 % lower onboarding time.
+      Referred clients show 37 % higher LTV and 25 % shorter onboarding.
     </div>
 
     <!-- 7 -->
-    <p id="fnMIT-title">
-      <span class="footnote" onclick="handleFootnoteClick('fnMIT')">[7] MIT Profile</span>
-    </p>
+    <p id="fnMIT-title"><span class="footnote" onclick="handleFootnoteClick('fnMIT')">[7] MIT Sloan Profile</span></p>
     <div id="fnMIT" class="footnote-content">
-      “From Code to C‑Suite: Brad Flaugher on AI Operating Models,” MIT Sloan Executive Education spotlight, 2024.
+      “From Code to C‑Suite: Brad Flaugher on AI Operating Models,” MIT Sloan Executive Education spotlight, 2024.
     </div>
 
     <!-- 8 -->
-    <p id="fnLSE-title">
-      <span class="footnote" onclick="handleFootnoteClick('fnLSE')">[8] Academic Foundation</span>
-    </p>
+    <p id="fnLSE-title"><span class="footnote" onclick="handleFootnoteClick('fnLSE')">[8] Academic Foundation</span></p>
     <div id="fnLSE" class="footnote-content">
-      MSc Economic History, London School of Economics; dissertation on technology diffusion (archives ref EH‑2020‑17).
+      MSc Economic History, London School of Economics — research on technology diffusion (archive ref EH‑2020‑17).
     </div>
 
     <!-- R -->
-    <p id="fnRes-title">
-      <span class="footnote" onclick="handleFootnoteClick('fnRes')">[R] Additional Briefs</span>
-    </p>
+    <p id="fnRes-title"><span class="footnote" onclick="handleFootnoteClick('fnRes')">Supplemental briefs</span></p>
     <div id="fnRes" class="footnote-content">
-      • <a href="https://bradflaugher.com/gadgets_guide" target="_blank">Gadgets Guide</a> — vetted hardware stack for AI‑first teams.<br />
+      • <a href="https://bradflaugher.com/gadgets_guide" target="_blank">Gadgets Guide</a> — vetted hardware for AI‑first teams.<br />
       • <a href="https://bradflaugher.com/investment_thesis_guide" target="_blank">Investment Thesis Guide</a> — evaluating AI‑native ventures.<br />
       • <a href="https://bradflaugher.com/stock_pickers_guide" target="_blank">Stock Picker’s Guide</a> — navigating equity markets amid automation.
     </div>
@@ -297,50 +246,36 @@
 
   <!-- ==========  ORIGINAL MIND‑MAP SCRIPT (UNCHANGED)  ========== -->
   <script>
-    function handleFootnoteClick(id) {
-      const foot = document.getElementById(id);
-      const title = document.getElementById(id + '-title');
-      if (!foot) return;
-
-      const show = foot.style.display !== 'block';
-      foot.style.display = show ? 'block' : 'none';
-
-      document.querySelectorAll(`[onclick*="${id}"]`).forEach(el =>
-        el.classList.toggle('footnote-active')
-      );
-
-      const inFootnotes =
-        document.querySelector('h2 .prompt')?.textContent === '~/footnotes' &&
-        document.querySelector('h2 .prompt')?.closest('.section')?.contains(event.target);
-
-      if (show && !inFootnotes && title) {
-        setTimeout(() => title.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    function handleFootnoteClick(id){
+      const foot=document.getElementById(id);
+      const title=document.getElementById(id+'-title');
+      if(!foot) return;
+      const show=foot.style.display!=='block';
+      foot.style.display=show?'block':'none';
+      document.querySelectorAll(`[onclick*="${id}"]`).forEach(el=>el.classList.toggle('footnote-active'));
+      const inFootnotes=document.querySelector('h2 .prompt')?.textContent==='~/footnotes'
+        && document.querySelector('h2 .prompt')?.closest('.section')?.contains(event.target);
+      if(show && !inFootnotes && title){
+        setTimeout(()=>title.scrollIntoView({behavior:'smooth',block:'start'}),100);
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // Expandable sections
-      document.querySelectorAll('.expandable-header').forEach(h => {
-        h.addEventListener('click', () => {
+    document.addEventListener('DOMContentLoaded',()=>{
+      document.querySelectorAll('.expandable-header').forEach(h=>{
+        h.addEventListener('click',()=>{
           h.classList.toggle('expanded');
-          const c = h.nextElementSibling;
-          c.style.display = c.style.display === 'block' ? 'none' : 'block';
+          const c=h.nextElementSibling;
+          c.style.display=c.style.display==='block'?'none':'block';
         });
       });
 
-      // Animated typing for header
-      const header = document.querySelector('header h1');
-      const text = header.textContent;
-      header.textContent = '';
-      let i = 0;
-
-      (function type() {
-        if (i < text.length) {
-          header.textContent += text.charAt(i++);
-          setTimeout(type, 50);
-        } else {
-          header.innerHTML += '<span class="blink">_</span>';
-        }
+      const header=document.querySelector('header h1');
+      const text=header.textContent;
+      header.textContent='';
+      let i=0;
+      (function type(){
+        if(i<text.length){ header.textContent+=text.charAt(i++); setTimeout(type,50); }
+        else{ header.innerHTML+='<span class="blink">_</span>'; }
       })();
     });
   </script>
