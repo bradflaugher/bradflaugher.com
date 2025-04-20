@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ==========  SEO META  ========== -->
   <meta charset="UTF-8" />
+  <title>Brad Flaugher | AI Advisor & Lean‑Ops Architect</title>
+  <meta name="description"
+        content="I’m Brad Flaugher—technologist, author, and repeat founder. I help leadership teams slash software bloat and unlock lean operating leverage with pragmatic AI systems." />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brad Flaugher | AI Advisor</title>
 
   <!-- ==========  ORIGINAL MIND‑MAP STYLES (with mobile wrap fix)  ========== -->
   <style>
     :root{
       --bg-color:#0d1117;      --text-color:#e6edf3;
       --accent-color:#58a6ff;  --secondary-color:#7ee787;
-      --warning-color:#f97583; --comment-color:#8b949e;
-      --link-color:#58a6ff;    --section-bg:#161b22;
-      --code-bg:#1f2428;
+      --comment-color:#8b949e; --link-color:#58a6ff;
+      --section-bg:#161b22;    --code-bg:#1f2428;
     }
-
     *{ box-sizing:border-box; margin:0; padding:0; }
 
     body{
@@ -29,17 +30,18 @@
     h1{ font-size:1.8rem; margin-bottom:10px; }
     h2{ font-size:1.5rem; margin:25px 0 15px; padding-bottom:5px; border-bottom:1px solid #30363d; }
     h3{ font-size:1.25rem; margin:20px 0 10px; }
-    p { margin-bottom:15px; }
+    p  { margin-bottom:15px; }
 
     a{ color:var(--link-color); text-decoration:none; transition:opacity .2s; }
     a:hover{ text-decoration:underline; opacity:.8; }
 
-    .prompt   { color:var(--accent-color); font-weight:700; margin-right:8px; }
-    .section  { background:var(--section-bg); border-radius:6px; padding:20px;
-                margin-bottom:25px; box-shadow:0 2px 5px rgba(0,0,0,.1); }
+    .prompt{ color:var(--accent-color); font-weight:700; margin-right:8px; }
+    .section{ background:var(--section-bg); border-radius:6px; padding:20px;
+              margin-bottom:25px; box-shadow:0 2px 5px rgba(0,0,0,.1); }
     .code-block{ background:var(--code-bg); padding:15px; border-radius:4px;
                  overflow-x:auto; margin:15px 0; }
-    .code-block a{ white-space:nowrap; }  /* keep long CTA on one line */
+    .code-block a{ white-space:nowrap; }  /* keep long CTA on one line            */
+
     .footnote{ cursor:pointer; color:var(--accent-color);
                border-bottom:1px dashed var(--accent-color); }
     .footnote-active{ background:rgba(88,166,255,.1); }
@@ -73,7 +75,11 @@
   <div class="section">
     <h2><span class="prompt">~/offer</span> Mini‑Retainer</h2>
     <ul>
-      <li><strong>AI Diagnostic (2 h, free)</strong> — rapid maturity & ROI gap analysis.</li>
+      <li>
+        <strong>AI Diagnostic&nbsp;(2 h, $2 000 refundable deposit)</strong> —
+        rapid maturity & ROI gap analysis
+        <span class="footnote" onclick="handleFootnoteClick('fnDeposit')">[6]</span>
+      </li>
       <li>
         Unlimited secure <a href="https://signal.org" target="_blank">Signal</a> texts 08:00‑18:00 ET &lt;4 h SLA
         <span class="footnote" onclick="handleFootnoteClick('fnSignal')">[2]</span>
@@ -89,11 +95,11 @@
     </ul>
 
     <div class="code-block">
-      <strong>Fee structure</strong>  50 % of market rate + performance kicker (12‑mo term)
+      <strong>Fee structure</strong>  25 % of market rate&nbsp;($2 000 base) + performance kicker (12‑mo term)
       <span class="footnote" onclick="handleFootnoteClick('fnIncent')">[5]</span>
       &nbsp;·&nbsp;
       <em>Warm introductions prioritised — lets us start solving sooner</em>
-      <span class="footnote" onclick="handleFootnoteClick('fnRef')">[6]</span>
+      <span class="footnote" onclick="handleFootnoteClick('fnRef')">[7]</span>
     </div>
   </div>
 
@@ -103,7 +109,7 @@
     <ul>
       <li>
         <a href="https://bradflaugher.com/ai_pickers_guide" target="_blank">AI Picker’s Guide</a> —
-        select the optimal model and vendor for each workflow.
+        choose the optimal model and vendor for each workflow.
       </li>
       <li>
         <a href="https://bradflaugher.com/digital_transformation_guide" target="_blank">Digital Transformation Guide</a> —
@@ -136,11 +142,11 @@
     <p>
       I’m a Philadelphia‑based technologist, author, and repeat founder focused on turning AI breakthroughs into operating
       leverage. My book <a href="https://a.co/d/eZ06kp5" target="_blank"><em>AI Harmony</em></a> distills fifteen years of
-      experimentation into hands‑on playbooks. I co‑created Kalamazoo College’s
+      experimentation into hands‑on playbooks. I co‑founded Kalamazoo College’s
       <a href="https://www.kzoo.edu/news/complex-systems-studies-professor/" target="_blank">
       Interdisciplinary Fund for Complex Systems Studies</a> to back student research at the frontier of AI.  
-      Every autumn I run the Philadelphia Open Innovation Tournament—two days of rapid, real‑world problem‑solving.  
-      The rest of the year I work one‑on‑one with leadership teams to cut waste and scale impact through AI.
+      Each autumn I host the Philadelphia Open Innovation Tournament—two days of rapid, real‑world problem‑solving.  
+      The rest of the year I work directly with leadership teams to cut waste and scale impact through AI.
     </p>
   </div>
 
@@ -148,7 +154,7 @@
   <div class="section">
     <h2><span class="prompt">~/contact</span> Start Your Diagnostic</h2>
 
-    <p>Send one secure message and we’ll schedule your complimentary diagnostic call.</p>
+    <p>Send one secure message and we’ll schedule your refundable diagnostic session.</p>
 
     <div class="code-block" style="text-align:center; font-size:1.05rem;">
       <a
@@ -204,8 +210,16 @@
       When compensation moves with impact, everyone’s incentives point the same direction—toward your results.
     </div>
 
+    <p id="fnDeposit-title">
+      <span class="footnote" onclick="handleFootnoteClick('fnDeposit')">[6] Refundable Deposit</span>
+    </p>
+    <div id="fnDeposit" class="footnote-content">
+      The deposit signals commitment and keeps the calendar clear for serious teams. If the session doesn’t deliver value, it’s refunded—simple.
+      (Similar diagnostics run for <a href="http://gsdat.work" target="_blank">far more elsewhere</a>.)
+    </div>
+
     <p id="fnRef-title">
-      <span class="footnote" onclick="handleFootnoteClick('fnRef')">[6] Warm Introductions</span>
+      <span class="footnote" onclick="handleFootnoteClick('fnRef')">[7] Warm Introductions</span>
     </p>
     <div id="fnRef" class="footnote-content">
       A shared connection means less ramp‑up time and faster deployment for your team.
