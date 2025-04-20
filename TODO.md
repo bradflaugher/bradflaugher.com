@@ -1,5 +1,5 @@
 # TODO
 
-* update and guides one by one
-* fix seo 
+* update guides quarterly
+* improve seo 
 * standardize html and css
