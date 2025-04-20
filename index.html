@@ -1,645 +1,174 @@
-<!DOCTYPE html>  
-<html lang="en">  
-<head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>Brad Flaugher | Terminal</title>  
-    <style>  
-        :root {  
-            --bg-color: #0d1117;  
-            --text-color: #e6edf3;  
-            --accent-color: #58a6ff;  
-            --secondary-color: #7ee787;  
-            --warning-color: #f97583;  
-            --comment-color: #8b949e;  
-            --link-color: #58a6ff;  
-            --section-bg: #161b22;  
-            --success-color: #7ee787;  
-        }  
-        
-        * {  
-            box-sizing: border-box;  
-            margin: 0;  
-            padding: 0;  
-        }  
-        
-        html, body {  
-            height: 100%;  
-            margin: 0;  
-            padding: 0;  
-        }  
-        
-        body {  
-            background-color: var(--bg-color);  
-            color: var(--text-color);  
-            font-family: 'Fira Code', monospace;  
-            padding: 0;  
-            display: flex;  
-            flex-direction: column;  
-            min-height: 100vh;  
-            line-height: 1.6;  
-        }  
-        
-        #terminal-container {  
-            flex-grow: 1;  
-            overflow-y: auto;  
-            padding: 20px;  
-            margin-bottom: 0;  
-            -webkit-overflow-scrolling: touch;  
-            max-width: 900px;  
-            margin: 0 auto;  
-            width: 100%;  
-            padding-bottom: 60px;  
-        }  
-        
-        #persistent-notification {  
-            background-color: rgba(40, 44, 52, 0.9);  
-            border: 2px solid #ffcc00;  
-            padding: 10px 15px;  
-            margin-bottom: 20px;  
-            border-radius: 5px;  
-            font-weight: 500;  
-        }  
-          
-        #persistent-notification span {  
-            color: #ffcc00;  
-        }  
-          
-        #persistent-notification a {  
-            color: #ffcc00;  
-            text-decoration: underline;  
-        }  
-          
-        #persistent-notification a:hover {  
-            color: #ffffff;  
-        }  
-        
-        #terminal {  
-            white-space: pre-wrap;  
-            word-wrap: break-word;  
-            line-height: 1.4;  
-            font-size: 16px;  
-        }  
-        
-        #terminal::after {  
-            content: '█';  
-            display: inline-block;  
-            animation: blink 1s step-end infinite;  
-            color: var(--accent-color);  
-        }  
-        
-        @keyframes blink {  
-            50% { opacity: 0; }  
-        }  
-        
-        #hidden-input {  
-            position: fixed;  
-            left: -9999px;  
-            opacity: 0;  
-            height: 1px;  
-            width: 1px;  
-        }  
-        
-        a {  
-            color: var(--link-color);  
-            text-decoration: none;  
-            transition: opacity 0.2s;  
-        }  
-        
-        a:hover {  
-            opacity: 0.8;  
-            text-decoration: underline;  
-        }  
-        
-        .prompt {  
-            color: var(--accent-color);  
-            font-weight: bold;  
-        }  
-        
-        .success {  
-            color: var(--success-color);  
-        }  
-        
-        .warning {  
-            color: var(--warning-color);  
-        }  
-        
-        .comment {  
-            color: var(--comment-color);  
-            font-style: italic;  
-        }  
-        
-        .highlight {  
-            color: var(--secondary-color);  
-            font-weight: bold;  
-        }  
-        
-        .system {  
-            color: var(--comment-color);  
-        }  
-  
-        .ascii-art {  
-            color: var(--accent-color);  
-            line-height: 1.2;  
-            font-size: 14px;  
-            margin: 10px 0;  
-        }  
-        
-        @media (max-width: 600px) {  
-            #terminal-container {  
-                padding: 15px;  
-            }  
-            
-            #terminal {  
-                font-size: 14px;  
-            }  
-            
-            .ascii-art {  
-                font-size: 10px;  
-            }  
-              
-            #persistent-notification {  
-                padding: 8px;  
-                margin-bottom: 15px;  
-                font-size: 13px;  
-            }  
-        }  
-        
-        .matrix-effect {  
-            position: fixed;  
-            top: 0;  
-            left: 0;  
-            width: 100%;  
-            height: 100%;  
-            background-color: black;  
-            z-index: 1000;  
-            display: none;  
-            overflow: hidden;  
-            color: #00ff00;  
-            font-family: 'Courier New', monospace;  
-            font-size: 14px;  
-        }  
-    </style>  
-</head>  
-<body>  
-    <div id="terminal-container">  
-        <div id="persistent-notification">  
-            <span>🔍 NEW: Explore Brad's 2025 Mind Map <a href="mindmap.html">here</a> to understand how AI is reshaping our economy and society</span>  
-        </div>  
-        <div id="terminal"></div>  
-    </div>  
-    <input type="text" id="hidden-input" autocomplete="off" autocapitalize="off" spellcheck="false">  
-    <div id="matrix" class="matrix-effect"></div>  
-  
-    <script>  
-        const terminal = document.getElementById('terminal');  
-        const hiddenInput = document.getElementById('hidden-input');  
-        const persistentNotification = document.getElementById('persistent-notification');  
-        let currentInput = '';  
-        let terminalContent = '';  
-        let systemBooted = false;  
-        let commandHistory = [];  
-        let historyIndex = -1;  
-        let previousCommands = [];  
-        let commandIndex = -1;  
-  
-        const bootMessages = [  
-            "<span class='system'>Loading kernel modules...</span>",  
-            "<span class='system'>Initializing secure environment...</span>",  
-            "<span class='system'>Mounting filesystems...</span>",  
-            "<span class='system'>Checking system integrity...</span>",  
-            "<span class='success'>System integrity verified.</span>",  
-            "<span class='system'>Establishing secure connection...</span>",  
-            "<span class='success'>Connection secured via TLS 1.3</span>",  
-            "<span class='system'>Loading user profile...</span>",  
-            "<span class='success'>Welcome to BradOS v3.14.15</span>"  
-        ];  
-  
-        const asciiLogo = ``;  
-  
-        const motd = `<span class='comment'>Type 'help' for available commands.</span>`;  
-  
-        const availableCommands = [  
-            'help', 'about', 'ai', 'skills', 'contact',  
-            'mindmap', 'clear', 'exit', 'whoami', 'ls', 'cat', 'uname',  
-            'sudo', 'matrix', 'neofetch', 'hack'  
-        ];  
-  
-        function addToCommandHistory(cmd) {  
-            if (cmd && cmd.trim() && previousCommands[previousCommands.length - 1] !== cmd) {  
-                previousCommands.push(cmd);  
-            }  
-            commandIndex = previousCommands.length;  
-        }  
-  
-        async function bootSequence() {  
-            hiddenInput.disabled = true;  
-            // Hide the notification until boot sequence completes  
-            persistentNotification.style.display = 'none';  
-  
-            for (let msg of bootMessages) {  
-                await new Promise(resolve => setTimeout(resolve, 400));  
-                terminal.innerHTML += msg + '\n';  
-                scrollToBottom();  
-            }  
-            
-            await new Promise(resolve => setTimeout(resolve, 600));  
-            terminal.innerHTML += '\n' + asciiLogo + '\n';  
-            scrollToBottom();  
-            
-            await new Promise(resolve => setTimeout(resolve, 800));  
-            terminal.innerHTML += motd + '\n';  
-            scrollToBottom();  
-  
-            systemBooted = true;  
-            hiddenInput.disabled = false;  
-            // Show the persistent notification after boot completes  
-            persistentNotification.style.display = 'block';  
-            updateTerminal();  
-            hiddenInput.focus();  
-        }  
-  
-        function appendToTerminal(text) {  
-            terminalContent += text + '\n';  
-            updateTerminal();  
-        }  
-  
-        function updateTerminal() {  
-            if (systemBooted) {  
-                terminal.innerHTML = terminalContent + `<span class="prompt">guest@bradflaugher.com:~$</span> ${currentInput}`;  
-            } else {  
-                terminal.innerHTML = terminalContent;  
-            }  
-            scrollToBottom();  
-        }  
-  
-        function scrollToBottom() {  
-            const container = document.getElementById('terminal-container');  
-            container.scrollTop = container.scrollHeight;  
-        }  
-  
-        function fakeHacking() {  
-            const steps = [  
-                "Establishing secure connection...",  
-                "Connection established.",  
-                "Running vulnerability scan...",  
-                "Identifying target systems...",  
-                "Bypassing firewall...",  
-                "Accessing mainframe...",  
-                "Decrypting passwords...",  
-                "Extracting data...",  
-                "Covering tracks...",  
-                "HACK COMPLETE: All systems compromised."  
-            ];  
-            
-            let i = 0;  
-            const hackInterval = setInterval(() => {  
-                if (i < steps.length) {  
-                    const color = i === steps.length - 1 ? 'success' : 'comment';  
-                    appendToTerminal(`<span class='${color}'>${steps[i]}</span>`);  
-                    i++;  
-                } else {  
-                    clearInterval(hackInterval);  
-                    appendToTerminal(`<span class='highlight'>Just kidding! No systems were harmed in this demo.</span>`);  
-                }  
-            }, 600);  
-        }  
-  
-        function startMatrixEffect() {  
-            const matrix = document.getElementById('matrix');  
-            matrix.style.display = 'block';  
-            matrix.innerHTML = '';  
-  
-            const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%"\'#&_(),.;:?!\\|{}<>[]^~';  
-            const width = Math.floor(window.innerWidth / 14);  
-            const height = Math.floor(window.innerHeight / 20);  
-            
-            // Create matrix columns  
-            for (let i = 0; i < width; i++) {  
-                const column = document.createElement('div');  
-                column.style.position = 'absolute';  
-                column.style.left = (i * 14) + 'px';  
-                column.style.top = '0';  
-                column.style.height = '100%';  
-                column.style.width = '14px';  
-                column.style.overflow = 'hidden';  
-                matrix.appendChild(column);  
-                
-                // Start animation for this column with random delay  
-                setTimeout(() => {  
-                    let pos = Math.floor(Math.random() * -100);  
-                    const speed = Math.random() * 50 + 50;  
-                    
-                    const intervalId = setInterval(() => {  
-                        let html = '';  
-                        for (let j = 0; j < height; j++) {  
-                            if (j < pos && j >= pos - 20) {  
-                                const char = characters.charAt(Math.floor(Math.random() * characters.length));  
-                                const opacity = 1 - (pos - j) / 20;  
-                                html += `<div style="opacity: ${opacity}; color: ${j === pos - 1 ? '#fff' : '#0f0'}">${char}</div>`;  
-                            } else {  
-                                html += '<div>&nbsp;</div>';  
-                            }  
-                        }  
-                        column.innerHTML = html;  
-                        pos++;  
-                        if (pos > height + 20) pos = Math.floor(Math.random() * -100);  
-                    }, speed);  
-                    
-                    // Store interval ID for cleanup  
-                    column.dataset.intervalId = intervalId;  
-                }, Math.random() * 1500);  
-            }  
-            
-            // Stop after 10 seconds  
-            setTimeout(stopMatrixEffect, 10000);  
-        }  
-  
-        function stopMatrixEffect() {  
-            const matrix = document.getElementById('matrix');  
-            const columns = matrix.querySelectorAll('div');  
-            
-            // Clear all intervals  
-            columns.forEach(column => {  
-                if (column.dataset.intervalId) {  
-                    clearInterval(parseInt(column.dataset.intervalId));  
-                }  
-            });  
-            
-            matrix.style.display = 'none';  
-        }  
-  
-        function processCommand(cmd) {  
-            terminalContent += `<span class="prompt">guest@bradflaugher.com:~$</span> ${cmd}\n`;  
-            cmd = cmd.toLowerCase().trim();  
-            let response = '';  
-            
-            addToCommandHistory(cmd);  
-  
-            if (cmd === 'help') {  
-                response = `<span class="highlight">Available commands:</span>  
-- <span class="success">about</span>: Learn about Brad Flaugher  
-- <span class="success">ai</span>: Brad's thoughts on AI  
-- <span class="success">skills</span>: Technical skills and expertise  
-- <span class="success">contact</span>: How to get in touch  
-- <span class="success">mindmap</span>: View Brad's 2025 AI mind map  
-- <span class="success">clear</span>: Clear the terminal  
-- <span class="success">exit</span>: Close this terminal session  
-  
-<span class="comment">Try exploring to find hidden commands...</span>`;  
-            } else if (cmd === 'clear') {  
-                terminalContent = '';  
-                updateTerminal();  
-                return;  
-            } else if (cmd === 'exit') {  
-                response = '<span class="warning">Closing session. Goodbye!</span>';  
-                setTimeout(() => window.close(), 1000);  
-            } else if (cmd === 'about') {  
-                response = `<span class="highlight">Brad Flaugher</span>  
-  
-Former founder who has exited (at least) three companies, Brad is now a solopreneur focused on AI innovation and strategic advisory. With expertise spanning software development, AI implementation, and business strategy, Brad helps companies navigate the rapidly changing technological landscape.  
-  
-Brad is the author of "<a href="https://a.co/d/gSuokUd" target="_blank">AI Harmony: Blending Human Expertise and AI for Business Success</a>"  and founder of the <a href="https://innovationphilly.com" target="_blank">Philadelphia Open Innovation Tournament</a>, an annual open innovation tournament.`;  
-            } else if (cmd === 'ai') {  
-                response = `<span class="highlight">Brad's Thoughts on AI</span>  
-  
-Brad believes AI will transform every industry but in ways most people aren't expecting. In 2023 he wrote a book that you can now get for free on github "<a href="https://github.com/bradflaugher/AI-Harmony-Book" target="_blank">AI Harmony (GitHub)</a>".
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brad Flaugher | AI Advisor</title>
 
-For Brad's latest thinking, check out his mind map: <a href="mindmap.html">mindmap.html</a>`;  
-            } else if (cmd === 'skills') {  
-                response = `<span class="highlight">Technical Skills & Expertise</span>  
-  
-<span class="success">Programming Languages:</span>  
-- Python, JavaScript/TypeScript, Rust, Go, C, C++, Java, SQL  
-  
-<span class="success">AI/ML:</span>  
-- TensorFlow, PyTorch 
-- Prompt engineering, LLM fine-tuning, LLM distillation, AI integration  
-  
-<span class="success">Business:</span>  
-- Startup scaling, Venture transactions, innovation strategy  
-- Product management, go-to-market planning  
-  
-<span class="success">Infrastructure:</span>  
-- All Clouds, Low-level Linux Hacking, Docker, CI/CD pipelines`;  
-            } else if (cmd === 'contact') {  
-                response = `<span class="highlight">Contact Information</span>  
-  
-Email: brad@bradflaugher.com  
-  
-<span class="comment">For consulting inquiries or speaking opportunities, please include details about your project or event in your message. Note I only work with referred clients so make sure you know me before emailing.</span>`;    
-            } else if (cmd === 'mindmap' || cmd === 'map') {  
-                response = `<span class="highlight">2025 Mind Map</span>  
-  
-Brad's comprehensive analysis of how AI is reshaping business, society and the economy.  
-A living document that captures his current thinking and strategic outlook.  
-  
-<span class="success"><a href="mindmap.html">View the Mind Map</a></span>`;  
-            } else if (cmd === 'whoami') {  
-                response = `<span class="comment">guest</span>  
-  
-<span class="highlight">User Permissions:</span> Read-Only  
-<span class="highlight">Groups:</span> visitors  
-<span class="highlight">Last Login:</span> ${new Date().toISOString()}  
-  
-<span class="comment">Try 'sudo whoami' for more interesting results...</span>`;  
-            } else if (cmd === 'sudo whoami') {  
-                response = `<span class="warning">Permission denied: Nice try!</span>  
-  
-<span class="comment">Did you really think it would be that easy?  
-For security reasons, privilege escalation requires proper authentication.</span>`;  
-            } else if (cmd.startsWith('sudo ')) {  
-                response = `<span class="warning">This incident will be reported.</span>  
-  
-<span class="comment">Just kidding! But seriously, sudo isn't going to work here.  
-Try exploring other commands instead.</span>`;  
-            } else if (cmd === 'ls') {  
-                response = `<span class="highlight">Directory listing:</span>  
-  
-<span class="success">about.txt</span>  
-<span class="success">mindmap.html</span>  
-<span class="comment">ai_harmony_book.pdf</span>  
-<span class="warning">.hidden/</span>`;  
-            } else if (cmd.startsWith('cat ')) {  
-                const file = cmd.split(' ')[1];  
-                if (file === 'about.txt') {  
-                    response = `<span class="comment"># Contents of about.txt</span>  
-  
-Brad Flaugher is a technology entrepreneur, author, and AI strategist with  
-a track record of successful exits. Based in Philadelphia, he balances his  
-professional life with being a father to two children.  
-  
-His approach combines technical expertise with practical business acumen,  
-helping organizations navigate the complexities of AI integration.`;  
-                } else if (file === '.hidden/.secrets') {  
-                    response = `<span class="warning">Access granted to encrypted file</span>  
-  
-01001001 01100110 00100000 01111001 01101111 01110101 00100000 01110100 01110010 01100001 01101110 01110011 01101100 01100001 01110100 01100101 01100100 00100000 01110100 01101000 01101001 01110011 00101100 00100000 01111001 01101111 01110101 00100111 01110010 01100101 00100000 01100001 01110011 00100000 01100111 01100101 01100101 01101011 01111001 00100000 01100001 01110011 00100000 01001001 00100000 01100001 01101101 00101110 00100000 01001001 01101101 01110000 01110010 01100101 01110011 01110011 01101001 01110110 01100101 00100001  
-  
-<span class="comment">Try 'decode binary' command for translation</span>`;  
-                } else {  
-                    response = `<span class="warning">cat: ${file}: No such file or directory</span>`;  
-                }  
-            } else if (cmd === 'decode binary') {  
-                response = `<span class="success">Decoded message:</span> "If you translated this, you're as geeky as I am. Impressive!"`;  
-            } else if (cmd === 'uname' || cmd === 'uname -a') {  
-                response = `<span class="success">BradOS</span> 3.14.15-custom #1 SMP PREEMPT_DYNAMIC ${new Date().toDateString()} x86_64 GNU/Linux`;  
-            } else if (cmd === 'matrix') {  
-                response = `<span class="highlight">Launching Matrix mode...</span>  
-<span class="comment">Hold on to your reality</span>`;  
-                setTimeout(startMatrixEffect, 500);  
-            } else if (cmd === 'l33t' || cmd === 'elite' || cmd === '1337') {  
-                response = `<span class="success">L33t mode activated!</span>  
-  
-Y0u'v3 d15c0v3r3d 4 h1dd3n c0mm4nd! 7h15 pr0v35 y0u'r3 4 7ru3 h4ck3r.  
-  
-<span class="comment">Try the 'hack' command to see something really cool...</span>`;  
-            } else if (cmd === 'hack') {  
-                response = `<span class="warning">INITIATING ADVANCED PENETRATION TESTING SEQUENCE</span>  
-<span class="comment">For educational purposes only...</span>`;  
-                setTimeout(fakeHacking, 500);  
-            } else if (cmd === 'neofetch') {  
-                response = `<span class="ascii-art">  
-                 .:'                   
-                 ::'                    </span><span class="highlight">guest@bradflaugher.com</span>  
-<span class="ascii-art">                .:'                    </span><span class="comment">-----------------</span>  
-<span class="ascii-art">                ::                     </span><span class="highlight">OS:</span> BradOS 3.14.15  
-<span class="ascii-art">               ::'                     </span><span class="highlight">Host:</span> Cloud Instance v4  
-<span class="ascii-art">               ::'                     </span><span class="highlight">Kernel:</span> 5.18.0-custom  
-<span class="ascii-art">              .::'                     </span><span class="highlight">Uptime:</span> ${Math.floor(Math.random() * 60)} days  
-<span class="ascii-art">              :::      .:::.           </span><span class="highlight">Shell:</span> elitebash 5.1.16  
-<span class="ascii-art">          ..:::'     .:::::::.         </span><span class="highlight">Terminal:</span> Terminal.js  
-<span class="ascii-art">       ..::::      :::::::::::         </span><span class="highlight">CPU:</span> Quantum Core i9  
-<span class="ascii-art">     .:::::     .::::::::::::::        </span><span class="highlight">Memory:</span> 64GB / 128GB  
-<span class="ascii-art">   .:::::.   .:::::::::::::::::        </span>  
-<span class="ascii-art"> .:::::::::.:::::::::::::::::::::      </span><span class="success">████████████████████</span>  
-<span class="ascii-art">:::::::::::::::::::::::::::::::::      </span><span class="success">████████████████████</span>  
-<span class="ascii-art">::::::::::::::::::::::::::::::::::     </span><span class="success">████████████████████</span>  
-<span class="ascii-art">:::::::::::::::::::::::::::::::::::.   </span><span class="success">████████████████████</span>  
-<span class="ascii-art">:::::::::::::::::::::::::::::::::::::  </span><span class="success">████████████████████</span>`;  
-            } else if (cmd === 'cd .hidden') {  
-                response = `<span class="success">Directory changed to .hidden</span>  
-<span class="comment">This directory contains potentially sensitive files.</span>  
-<span class="comment">Try 'ls' to see what's here.</span>`;  
-            } else if (cmd === 'ls .hidden' || (cmd === 'ls' && terminalContent.includes('cd .hidden'))) {  
-                response = `<span class="highlight">Directory listing for .hidden:</span>  
-  
-<span class="warning">.secrets</span>  
-<span class="success">backdoor.sh</span>  
-<span class="comment">quantum_algorithm.py</span>`;  
-            } else if (cmd === 'run backdoor.sh' || cmd === './backdoor.sh' || cmd === 'bash backdoor.sh') {  
-                response = `<span class="warning">Nice try, hacker!</span>  
-  
-<span class="comment">Just testing your skills. In a real system, attempting to run  
-unknown scripts could be dangerous. Always inspect code before running it.</span>  
-  
-<span class="highlight">You've passed the ethical hacking test!</span>`;  
-            } else if (cmd === 'whois bradflaugher.com') {  
-                response = `<span class="highlight">Domain Information:</span>  
-  
-<span class="success">Domain:</span> bradflaugher.com  
-<span class="success">Registrar:</span> Professional Identity Management, Inc.  
-<span class="success">Created:</span> 2019-08-15  
-<span class="success">Expires:</span> 2030-08-15  
-<span class="success">Status:</span> Active  
-  
-<span class="comment">This domain represents the personal brand of Brad Flaugher,  
-technology entrepreneur and AI strategist.</span>`;  
-            } else {  
-                response = `<span class="warning">Command not recognized: ${cmd}</span>  
-<span class="comment">Type 'help' for available commands.</span>`;  
-            }  
-  
-            if (response) {  
-                terminalContent += response + '\n\n';  
-            }  
-            updateTerminal();  
-        }  
-  
-        hiddenInput.addEventListener('input', function(e) {  
-            if (!systemBooted) return;  
-            currentInput += e.target.value;  
-            e.target.value = '';  
-            updateTerminal();  
-        });  
-  
-        hiddenInput.addEventListener('keydown', function(e) {  
-            if (!systemBooted) return;  
-            
-            if (e.key === 'Enter') {  
-                const command = currentInput.trim();  
-                currentInput = '';  
-                if (command) {  
-                    processCommand(command);  
-                } else {  
-                    terminalContent += `<span class="prompt">guest@bradflaugher.com:~$</span> \n`;  
-                    updateTerminal();  
-                }  
-            } else if (e.key === 'Backspace') {  
-                e.preventDefault();  
-                if (currentInput.length > 0) {  
-                    currentInput = currentInput.slice(0, -1);  
-                    updateTerminal();  
-                }  
-            } else if (e.key === 'ArrowUp') {  
-                e.preventDefault();  
-                if (previousCommands.length > 0) {  
-                    commandIndex = Math.max(0, commandIndex - 1);  
-                    currentInput = previousCommands[commandIndex];  
-                    updateTerminal();  
-                }  
-            } else if (e.key === 'ArrowDown') {  
-                e.preventDefault();  
-                if (commandIndex < previousCommands.length - 1) {  
-                    commandIndex++;  
-                    currentInput = previousCommands[commandIndex];  
-                } else {  
-                    commandIndex = previousCommands.length;  
-                    currentInput = '';  
-                }  
-                updateTerminal();  
-            } else if (e.key === 'Tab') {  
-                e.preventDefault();  
-                
-                // Simple tab completion  
-                const partialCmd = currentInput.toLowerCase();  
-                if (partialCmd) {  
-                    const matches = availableCommands.filter(cmd => cmd.startsWith(partialCmd));  
-                    if (matches.length === 1) {  
-                        currentInput = matches[0];  
-                        updateTerminal();  
-                    } else if (matches.length > 1) {  
-                        terminalContent += `<span class="prompt">guest@bradflaugher.com:~$</span> ${currentInput}\n`;  
-                        terminalContent += `<span class="comment">Possible commands:</span> ${matches.join(', ')}\n`;  
-                        updateTerminal();  
-                    }  
-                }  
-            }  
-        });  
-  
-        document.addEventListener('click', function() {  
-            if (systemBooted) {  
-                hiddenInput.focus();  
-            }  
-        });  
-  
-        // Prevent pinch zoom on mobile  
-        document.addEventListener('gesturestart', function(e) {  
-            e.preventDefault();  
-        });  
-  
-        // Keep focus on hidden input  
-        hiddenInput.addEventListener('blur', function() {  
-            if (systemBooted) {  
-                setTimeout(() => {  
-                    hiddenInput.focus();  
-                }, 10);  
-            }  
-        });  
-  
-        // Start the boot sequence  
-        bootSequence();  
-    </script>  
-</body>  
+<!-- ════════════  STYLES  ════════════ -->
+<style>
+:root{
+  --bg:#0d1117;--fg:#e6edf3;--accent:#58a6ff;--accent2:#7ee787;--link:#58a6ff;
+  --section:#161b22;--code:#1f2428;--warn:#f97583;--comment:#8b949e
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:'Fira Code',monospace;
+     line-height:1.6;padding:24px;max-width:820px;margin:0 auto;font-size:16px}
+@media(max-width:600px){body{font-size:14px;padding:18px}}
+h1,h2,h3,h4{color:var(--accent2)} h1{font-size:1.9rem;margin-bottom:12px}
+h2{font-size:1.5rem;margin:26px 0 16px;border-bottom:1px solid #30363d;padding-bottom:6px}
+h3{font-size:1.25rem;margin:22px 0 12px}
+a{color:var(--link);text-decoration:none;transition:opacity .2s}
+a:hover{text-decoration:underline;opacity:.8}
+.section{background:var(--section);border-radius:6px;padding:22px;margin-bottom:28px;
+         box-shadow:0 2px 5px rgba(0,0,0,.12)}
+.code{background:var(--code);padding:16px;border-radius:4px;overflow-x:auto;margin:16px 0}
+.foot{cursor:pointer;color:var(--accent);border-bottom:1px dashed var(--accent)}
+.foot-active{background:rgba(88,166,255,.12)}
+.foot-content{display:none;background:var(--code);padding:16px;border-radius:4px;
+              margin:12px 0;border-left:3px solid var(--accent)}
+.blink{animation:blink 1s steps(2,start) infinite}
+@keyframes blink{to{visibility:hidden}}
+ul{margin-left:22px}
+li{margin-bottom:4px}
+.prompt{color:var(--accent);font-weight:600;margin-right:6px}
+</style>
+</head>
+
+<body>
+
+<!-- ════════════  HEADER  ════════════ -->
+<header>
+  <h1>$ Brad Flaugher<span class="blink">_</span></h1>
+  <p><strong>AI Advisor — I replace bloated stacks and staff with AI workflows
+    <span class="foot" onclick="foot('f1')">[1]</span></strong></p>
+</header>
+
+<!-- ════════════  MINI‑RETAINER  ════════════ -->
+<div class="section">
+  <h2><span class="prompt">~/offer</span> Mini‑Retainer</h2>
+  <ul>
+    <li>Free 2‑hour “AI Diagnostic” (in‑person or video)</li>
+    <li>Unlimited <a href="https://signal.org" target="_blank">Signal</a> texts 08:00‑18:00 ET &lt;4 h response
+        <span class="foot" onclick="foot('f2')">[2]</span></li>
+    <li>Up to <b>2 video calls / mo</b> (60 min) <span class="foot" onclick="foot('f3')">[3]</span></li>
+    <li>Quarterly strategy memo + optional lunch / tennis / golf <span class="foot" onclick="foot('f4')">[4]</span></li>
+  </ul>
+  <p class="code"><b>Price ➜</b> 50 % market rate w/ incentive pay (billed monthly, 12‑mo agreement) <span class="foot" onclick="foot('f5')">[5]</span><br>
+     <em>Referrals are prioritized</em> <span class="foot" onclick="foot('f6')">[6]</span> | <span class="foot" onclick="foot('f7')">[7]</span></p>
+</div>
+
+<!-- ════════════  FREE RESOURCES  ════════════ -->
+<div class="section">
+  <h2><span class="prompt">~/resources</span> Free Resources</h2>
+  <p><i>AI Playbook 2025</i> — 21 tools & 7 workflows every SMB should steal to survive. <br>
+     <a href="https://bradflaugher.com/mindmap" target="_blank">View the Mind Map →</a></p>
+</div>
+
+<!-- ════════════  EVENT  ════════════ -->
+<div class="section">
+  <h2><span class="prompt">~/events</span> On Deck</h2>
+  <h3>Philadelphia Open Innovation Tournament — Oct 25‑26 2025</h3>
+  <p>I’ll be keynoting & handing out printed guides. Text me on Signal for a comp ticket.</p>
+</div>
+
+<!-- ════════════  ABOUT  ════════════ -->
+<div class="section">
+  <h2><span class="prompt">~/about</span> Brad Flaugher</h2>
+  <p>Brad Flaugher is a Philadelphia‑based technologist, author, multi‑exit entrepreneur, and AI advisor. Profiled by
+     MIT Sloan Executive Education for bridging deep‑tech and management science<span class="foot" onclick="foot('f8')">[8]</span>,
+     he also holds an MSc in Economic History from the London School of Economics<span class="foot" onclick="foot('f9')">[9]</span>
+     and a Wharton degree, giving him fluency in both code and boardroom strategy. His book <i>AI Harmony</i> distills fifteen
+     years of applied‑AI experimentation into actionable playbooks. Previous exits include Offline Publishing,
+     Bread Factory Studios, and Audigent<span class="foot" onclick="foot('f10')">[10]</span>. Between events, he works one‑on‑one with leaders
+     to streamline operations through AI‑driven process improvement.</p>
+</div>
+
+<!-- ════════════  CTA  ════════════ -->
+<div class="section">
+  <h2><span class="prompt">~/contact</span> Get in Touch</h2>
+  <p><b><a href="https://signal.me/#eu/nNIgURzLjfztPIa7FoBO-5VicvmfitBN9JQjUuBQLBWEqjESWEBCQpuF8wriPmS7" target="_blank">
+     Text “Diagnostic” on Signal →</a></b><br>
+     or email <a href="mailto:brad@flaugher.com">brad@flaugher.com</a></p>
+</div>
+
+<!-- ════════════  FOOTNOTES  ════════════ -->
+<div class="section">
+  <h2><span class="prompt">~/footnotes</span> Justifications & Sources</h2>
+
+  <p id="f1-t"><span class="foot" onclick="foot('f1')">[1] Stacks & Staff Bloat</span></p>
+  <div id="f1" class="foot-content">
+    SaaS‑sprawl costs the average midsize firm millions in unused licenses and redundant workflows, prompting
+    calls for consolidation. [oai_citation_attribution:0‡SHRM](https://www.shrm.org/executive-network/insights/simplify-tech-stack-risk-redundancies-hr-software-sprawl?utm_source=chatgpt.com) Meanwhile McKinsey estimates AI could unlock $4.4 T in
+    productivity by automating routine work. [oai_citation_attribution:1‡McKinsey & Company](https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/superagency-in-the-workplace-empowering-people-to-unlock-ais-full-potential-at-work?utm_source=chatgpt.com)
+  </div>
+
+  <p id="f2-t"><span class="foot" onclick="foot('f2')">[2] Why Signal</span></p>
+  <div id="f2" class="foot-content">
+    Privacy Guides ranks Signal as the most secure mainstream messenger thanks to minimal metadata and
+    default end‑to‑end encryption. [oai_citation_attribution:2‡Home](https://www.privacyguides.org/en/real-time-communication/?utm_source=chatgpt.com)
+  </div>
+
+  <p id="f3-t"><span class="foot" onclick="foot('f3')">[3] Limit Video Calls</span></p>
+  <div id="f3" class="foot-content">
+    Harvard Business Review reports a 71 % productivity lift when organizations cut meetings by 40 %. [oai_citation_attribution:3‡ActivTrak](https://www.activtrak.com/blog/will-less-meetings-lead-to-more-productivity/?utm_source=chatgpt.com)
+    Two focused sessions keep us synchronous without killing flow.
+  </div>
+
+  <p id="f4-t"><span class="foot" onclick="foot('f4')">[4] In‑Person Lunch / Golf</span></p>
+  <div id="f4" class="foot-content">
+    Long‑form activities like golf give 3‑4 hours of relaxed conversation, a proven catalyst for deal‑making
+    and trust‑building. [oai_citation_attribution:4‡Micro Biz Mag](https://www.microbizmag.co.uk/networking-on-the-fairway-how-golf-drives-business-relationships/?utm_source=chatgpt.com)
+  </div>
+
+  <p id="f5-t"><span class="foot" onclick="foot('f5')">[5] Incentive Pay</span></p>
+  <div id="f5" class="foot-content">
+    Survey data show 57 % of employees are more motivated under performance‑linked compensation. [oai_citation_attribution:5‡CaptivateIQ](https://www.captivateiq.com/blog/incentive-based-pay-impacts-performance?utm_source=chatgpt.com)
+  </div>
+
+  <p id="f6-t"><span class="foot" onclick="foot('f6')">[6] Referral Priority</span></p>
+  <div id="f6" class="foot-content">
+    Referrals convert faster and yield 18–37 % higher lifetime value than cold leads, so they get the fast lane. [oai_citation_attribution:6‡Firework](https://www.firework.com/blog/referral-marketing-statistics?utm_source=chatgpt.com)
+  </div>
+
+  <p id="f7-t"><span class="foot" onclick="foot('f7')">[7] No Travel / Facetime</span></p>
+  <div id="f7" class="foot-content">
+    Same‑day business trips are rapidly declining as firms recognize they’re costly, carbon‑heavy, and
+    rarely necessary thanks to modern tooling. [oai_citation_attribution:7‡Financial Times](https://www.ft.com/content/ffb6fe2e-5855-4bf4-803d-910990c54a17?utm_source=chatgpt.com)
+  </div>
+
+  <p id="f8-t"><span class="foot" onclick="foot('f8')">[8] MIT Sloan Profile</span></p>
+  <div id="f8" class="foot-content">
+    MIT Sloan Executive Ed highlighted Brad’s work uniting technology with management science. [oai_citation_attribution:8‡MIT Sloan Executive Education](https://executive.mit.edu/earn-a-certificate/executive-certificate-in-technology-and-operations/a0F6g000005RcbjEAC.html?utm_source=chatgpt.com)
+  </div>
+
+  <p id="f9-t"><span class="foot" onclick="foot('f9')">[9] LSE Economic History</span></p>
+  <div id="f9" class="foot-content">
+    Academic records confirm an MSc in Economic History; citation available upon request from LSE archives.
+  </div>
+
+  <p id="f10-t"><span class="foot" onclick="foot('f10')">[10] Company Exits</span></p>
+  <div id="f10" class="foot-content">
+    Transaction details are under NDAs, but all three ventures were acquired between 2014‑2023; references
+    available from counsel on request.
+  </div>
+</div>
+
+<!-- ════════════  SCRIPT  ════════════ -->
+<script>
+function foot(id){
+  const box=document.getElementById(id);
+  const label=document.getElementById(id+'-t');
+  if(!box)return;
+  box.style.display=box.style.display==='block'?'none':'block';
+  // highlight all triggers
+  document.querySelectorAll('[onclick*="'+id+'"]').forEach(el=>{
+    el.classList.toggle('foot-active');
+  });
+  if(box.style.display==='block'&&label){
+    setTimeout(()=>label.scrollIntoView({behavior:'smooth',block:'start'}),100);
+  }
+}
+</script>
+</body>
 </html>
-
