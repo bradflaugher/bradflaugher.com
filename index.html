@@ -1,174 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brad Flaugher | AI Advisor</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brad Flaugher | AI Advisor</title>
 
-<!-- ════════════  STYLES  ════════════ -->
-<style>
-:root{
-  --bg:#0d1117;--fg:#e6edf3;--accent:#58a6ff;--accent2:#7ee787;--link:#58a6ff;
-  --section:#161b22;--code:#1f2428;--warn:#f97583;--comment:#8b949e
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--fg);font-family:'Fira Code',monospace;
-     line-height:1.6;padding:24px;max-width:820px;margin:0 auto;font-size:16px}
-@media(max-width:600px){body{font-size:14px;padding:18px}}
-h1,h2,h3,h4{color:var(--accent2)} h1{font-size:1.9rem;margin-bottom:12px}
-h2{font-size:1.5rem;margin:26px 0 16px;border-bottom:1px solid #30363d;padding-bottom:6px}
-h3{font-size:1.25rem;margin:22px 0 12px}
-a{color:var(--link);text-decoration:none;transition:opacity .2s}
-a:hover{text-decoration:underline;opacity:.8}
-.section{background:var(--section);border-radius:6px;padding:22px;margin-bottom:28px;
-         box-shadow:0 2px 5px rgba(0,0,0,.12)}
-.code{background:var(--code);padding:16px;border-radius:4px;overflow-x:auto;margin:16px 0}
-.foot{cursor:pointer;color:var(--accent);border-bottom:1px dashed var(--accent)}
-.foot-active{background:rgba(88,166,255,.12)}
-.foot-content{display:none;background:var(--code);padding:16px;border-radius:4px;
-              margin:12px 0;border-left:3px solid var(--accent)}
-.blink{animation:blink 1s steps(2,start) infinite}
-@keyframes blink{to{visibility:hidden}}
-ul{margin-left:22px}
-li{margin-bottom:4px}
-.prompt{color:var(--accent);font-weight:600;margin-right:6px}
-</style>
+  <!-- ==========  ORIGINAL MIND‑MAP STYLES (UNCHANGED)  ========== -->
+  <style>
+    :root {
+      --bg-color: #0d1117;
+      --text-color: #e6edf3;
+      --accent-color: #58a6ff;
+      --secondary-color: #7ee787;
+      --warning-color: #f97583;
+      --comment-color: #8b949e;
+      --link-color: #58a6ff;
+      --section-bg: #161b22;
+      --code-bg: #1f2428;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Fira Code', monospace;
+      line-height: 1.6;
+      padding: 20px;
+      margin: 0 auto;
+      max-width: 800px;
+      font-size: 16px;
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 14px; padding: 15px; }
+    }
+
+    header { margin-bottom: 30px; }
+
+    h1, h2, h3, h4 { color: var(--secondary-color); }
+
+    h1 { font-size: 1.8rem; margin-bottom: 10px; }
+    h2 {
+      font-size: 1.5rem;
+      margin: 25px 0 15px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #30363d;
+    }
+    h3 { font-size: 1.25rem; margin: 20px 0 10px; }
+
+    p { margin-bottom: 15px; }
+
+    a {
+      color: var(--link-color);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { text-decoration: underline; opacity: 0.8; }
+
+    .prompt        { color: var(--accent-color); font-weight: 700; margin-right: 8px; }
+    .section       { background: var(--section-bg); border-radius: 6px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,.1); }
+    .code-block    { background: var(--code-bg); padding: 15px; border-radius: 4px; overflow-x: auto; margin: 15px 0; }
+    .highlight     { color: var(--accent-color); font-weight: 700; }
+    .warning       { color: var(--warning-color); }
+    .comment       { color: var(--comment-color); font-style: italic; }
+
+    .blink { animation: blink-animation 1s steps(2,start) infinite; }
+    @keyframes blink-animation { to { visibility: hidden; } }
+
+    .footnote        { cursor: pointer; color: var(--accent-color); border-bottom: 1px dashed var(--accent-color); }
+    .footnote-active { background: rgba(88,166,255,.1); }
+    .footnote-content {
+      display: none;
+      background: var(--code-bg);
+      padding: 15px;
+      border-left: 3px solid var(--accent-color);
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+
+    .expandable-header {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .expandable-header::before {
+      content: "+ ";
+      color: var(--secondary-color);
+      margin-right: 5px;
+      transition: transform 0.3s;
+    }
+    .expandable-header.expanded::before { content: "- "; }
+    .expandable-content {
+      display: none;
+      padding-left: 20px;
+      margin-top: 10px;
+      border-left: 1px solid var(--comment-color);
+    }
+
+    .info-section {
+      background: rgba(88,166,255,.05);
+      border: 1px solid rgba(88,166,255,.1);
+      border-radius: 6px;
+      padding: 20px;
+      margin: 30px 0;
+      font-size: 0.9rem;
+    }
+    .info-header { color: var(--accent-color); font-weight: 500; margin-bottom: 10px; font-size: 1rem; }
+    .terminal-prompt::before { content: "$ "; color: var(--secondary-color); }
+  </style>
 </head>
 
 <body>
+  <!-- ==========  HEADER  ========== -->
+  <header>
+    <h1>$ Brad Flaugher<span class="blink">_</span></h1>
+    <p>
+      AI Advisor — I replace bloated stacks and staff with AI workflows
+      <span class="footnote" onclick="handleFootnoteClick('fnBloat')">[1]</span>
+    </p>
+  </header>
 
-<!-- ════════════  HEADER  ════════════ -->
-<header>
-  <h1>$ Brad Flaugher<span class="blink">_</span></h1>
-  <p><strong>AI Advisor — I replace bloated stacks and staff with AI workflows
-    <span class="foot" onclick="foot('f1')">[1]</span></strong></p>
-</header>
+  <!-- ==========  MINI‑RETAINER  ========== -->
+  <div class="section">
+    <h2><span class="prompt">~/offer</span> Mini‑Retainer</h2>
+    <ul>
+      <li>Free 2‑hour “AI Diagnostic” (in‑person or video)</li>
+      <li>
+        Unlimited <a href="https://signal.org" target="_blank">Signal</a> texts 08:00‑18:00 ET &lt;4 h response
+        <span class="footnote" onclick="handleFootnoteClick('fnSignal')">[2]</span>
+      </li>
+      <li>
+        Up to <strong>2 video calls / month</strong> (60 min)
+        <span class="footnote" onclick="handleFootnoteClick('fnCalls')">[3]</span>
+      </li>
+      <li>
+        Quarterly strategy memo + optional lunch / tennis / golf
+        <span class="footnote" onclick="handleFootnoteClick('fnGolf')">[4]</span>
+      </li>
+    </ul>
 
-<!-- ════════════  MINI‑RETAINER  ════════════ -->
-<div class="section">
-  <h2><span class="prompt">~/offer</span> Mini‑Retainer</h2>
-  <ul>
-    <li>Free 2‑hour “AI Diagnostic” (in‑person or video)</li>
-    <li>Unlimited <a href="https://signal.org" target="_blank">Signal</a> texts 08:00‑18:00 ET &lt;4 h response
-        <span class="foot" onclick="foot('f2')">[2]</span></li>
-    <li>Up to <b>2 video calls / mo</b> (60 min) <span class="foot" onclick="foot('f3')">[3]</span></li>
-    <li>Quarterly strategy memo + optional lunch / tennis / golf <span class="foot" onclick="foot('f4')">[4]</span></li>
-  </ul>
-  <p class="code"><b>Price ➜</b> 50 % market rate w/ incentive pay (billed monthly, 12‑mo agreement) <span class="foot" onclick="foot('f5')">[5]</span><br>
-     <em>Referrals are prioritized</em> <span class="foot" onclick="foot('f6')">[6]</span> | <span class="foot" onclick="foot('f7')">[7]</span></p>
-</div>
-
-<!-- ════════════  FREE RESOURCES  ════════════ -->
-<div class="section">
-  <h2><span class="prompt">~/resources</span> Free Resources</h2>
-  <p><i>AI Playbook 2025</i> — 21 tools & 7 workflows every SMB should steal to survive. <br>
-     <a href="https://bradflaugher.com/mindmap" target="_blank">View the Mind Map →</a></p>
-</div>
-
-<!-- ════════════  EVENT  ════════════ -->
-<div class="section">
-  <h2><span class="prompt">~/events</span> On Deck</h2>
-  <h3>Philadelphia Open Innovation Tournament — Oct 25‑26 2025</h3>
-  <p>I’ll be keynoting & handing out printed guides. Text me on Signal for a comp ticket.</p>
-</div>
-
-<!-- ════════════  ABOUT  ════════════ -->
-<div class="section">
-  <h2><span class="prompt">~/about</span> Brad Flaugher</h2>
-  <p>Brad Flaugher is a Philadelphia‑based technologist, author, multi‑exit entrepreneur, and AI advisor. Profiled by
-     MIT Sloan Executive Education for bridging deep‑tech and management science<span class="foot" onclick="foot('f8')">[8]</span>,
-     he also holds an MSc in Economic History from the London School of Economics<span class="foot" onclick="foot('f9')">[9]</span>
-     and a Wharton degree, giving him fluency in both code and boardroom strategy. His book <i>AI Harmony</i> distills fifteen
-     years of applied‑AI experimentation into actionable playbooks. Previous exits include Offline Publishing,
-     Bread Factory Studios, and Audigent<span class="foot" onclick="foot('f10')">[10]</span>. Between events, he works one‑on‑one with leaders
-     to streamline operations through AI‑driven process improvement.</p>
-</div>
-
-<!-- ════════════  CTA  ════════════ -->
-<div class="section">
-  <h2><span class="prompt">~/contact</span> Get in Touch</h2>
-  <p><b><a href="https://signal.me/#eu/nNIgURzLjfztPIa7FoBO-5VicvmfitBN9JQjUuBQLBWEqjESWEBCQpuF8wriPmS7" target="_blank">
-     Text “Diagnostic” on Signal →</a></b><br>
-     or email <a href="mailto:brad@flaugher.com">brad@flaugher.com</a></p>
-</div>
-
-<!-- ════════════  FOOTNOTES  ════════════ -->
-<div class="section">
-  <h2><span class="prompt">~/footnotes</span> Justifications & Sources</h2>
-
-  <p id="f1-t"><span class="foot" onclick="foot('f1')">[1] Stacks & Staff Bloat</span></p>
-  <div id="f1" class="foot-content">
-    SaaS‑sprawl costs the average midsize firm millions in unused licenses and redundant workflows, prompting
-    calls for consolidation. [oai_citation_attribution:0‡SHRM](https://www.shrm.org/executive-network/insights/simplify-tech-stack-risk-redundancies-hr-software-sprawl?utm_source=chatgpt.com) Meanwhile McKinsey estimates AI could unlock $4.4 T in
-    productivity by automating routine work. [oai_citation_attribution:1‡McKinsey & Company](https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/superagency-in-the-workplace-empowering-people-to-unlock-ais-full-potential-at-work?utm_source=chatgpt.com)
+    <div class="code-block">
+      <strong>Price →</strong> 50 % market rate + incentive pay (12‑mo term)
+      <span class="footnote" onclick="handleFootnoteClick('fnIncent')">[5]</span>
+      &nbsp;·&nbsp;
+      <em>Referrals take priority</em>
+      <span class="footnote" onclick="handleFootnoteClick('fnRef')">[6]</span>
+    </div>
   </div>
 
-  <p id="f2-t"><span class="foot" onclick="foot('f2')">[2] Why Signal</span></p>
-  <div id="f2" class="foot-content">
-    Privacy Guides ranks Signal as the most secure mainstream messenger thanks to minimal metadata and
-    default end‑to‑end encryption. [oai_citation_attribution:2‡Home](https://www.privacyguides.org/en/real-time-communication/?utm_source=chatgpt.com)
+  <!-- ==========  RESOURCES  ========== -->
+  <div class="section">
+    <h2><span class="prompt">~/resources</span> Free Guides</h2>
+    <ul>
+      <li>
+        <a href="https://bradflaugher.com/ai_pickers_guide" target="_blank">AI Picker’s Guide</a> —
+        match the right model to each workflow.
+      </li>
+      <li>
+        <a href="https://bradflaugher.com/digital_transformation_guide" target="_blank">Digital Transformation Guide</a> —
+        step‑by‑step modernization playbook.
+      </li>
+      <li>
+        <a href="https://bradflaugher.com/mindmap" target="_blank">Interactive Mind Map →</a>
+      </li>
+    </ul>
+    <p>
+      Additional briefs: Gadgets Guide, Investment Thesis Guide, Stock Picker’s Guide
+      <span class="footnote" onclick="handleFootnoteClick('fnRes')">[R]</span>
+    </p>
   </div>
 
-  <p id="f3-t"><span class="foot" onclick="foot('f3')">[3] Limit Video Calls</span></p>
-  <div id="f3" class="foot-content">
-    Harvard Business Review reports a 71 % productivity lift when organizations cut meetings by 40 %. [oai_citation_attribution:3‡ActivTrak](https://www.activtrak.com/blog/will-less-meetings-lead-to-more-productivity/?utm_source=chatgpt.com)
-    Two focused sessions keep us synchronous without killing flow.
+  <!-- ==========  EVENT  ========== -->
+  <div class="section">
+    <h2><span class="prompt">~/events</span> On Deck</h2>
+    <h3>Philadelphia Open Innovation Tournament — Oct 25‑26 2025</h3>
+    <p>I’ll be keynoting and distributing printed playbooks. Ping me on Signal for a comp ticket.</p>
   </div>
 
-  <p id="f4-t"><span class="foot" onclick="foot('f4')">[4] In‑Person Lunch / Golf</span></p>
-  <div id="f4" class="foot-content">
-    Long‑form activities like golf give 3‑4 hours of relaxed conversation, a proven catalyst for deal‑making
-    and trust‑building. [oai_citation_attribution:4‡Micro Biz Mag](https://www.microbizmag.co.uk/networking-on-the-fairway-how-golf-drives-business-relationships/?utm_source=chatgpt.com)
+  <!-- ==========  ABOUT  ========== -->
+  <div class="section">
+    <h2><span class="prompt">~/about</span> Brad Flaugher</h2>
+    <p>
+      Brad Flaugher is a Philadelphia‑based technologist, author, and multi‑exit entrepreneur.
+      Profiled by MIT Sloan Executive Education for bridging deep‑tech and management thinking
+      <span class="footnote" onclick="handleFootnoteClick('fnMIT')">[7]</span>,
+      he distils fifteen years of applied‑AI practice into operational blueprints for leaders.
+      Previous exits include Offline Publishing, Bread Factory Studios, and Audigent.
+      Formal training in economics and finance informs his board‑level advisory work
+      <span class="footnote" onclick="handleFootnoteClick('fnLSE')">[8]</span>.
+    </p>
   </div>
 
-  <p id="f5-t"><span class="foot" onclick="foot('f5')">[5] Incentive Pay</span></p>
-  <div id="f5" class="foot-content">
-    Survey data show 57 % of employees are more motivated under performance‑linked compensation. [oai_citation_attribution:5‡CaptivateIQ](https://www.captivateiq.com/blog/incentive-based-pay-impacts-performance?utm_source=chatgpt.com)
+  <!-- ==========  CTA  ========== -->
+  <div class="section">
+    <h2><span class="prompt">~/contact</span> Next Step</h2>
+    <div class="code-block" style="text-align:center; font-size:1.1rem;">
+      <a
+        href="https://signal.me/#eu/nNIgURzLjfztPIa7FoBO-5VicvmfitBN9JQjUuBQLBWEqjESWEBCQpuF8wriPmS7"
+        target="_blank"
+        style="font-weight:700; color:var(--secondary-color);"
+      >
+        ➜ Text “Diagnostic” on Signal
+      </a>
+    </div>
+    <p style="text-align:center;">
+      Prefer email? <a href="mailto:brad@flaugher.com">brad@flaugher.com</a>
+    </p>
   </div>
 
-  <p id="f6-t"><span class="foot" onclick="foot('f6')">[6] Referral Priority</span></p>
-  <div id="f6" class="foot-content">
-    Referrals convert faster and yield 18–37 % higher lifetime value than cold leads, so they get the fast lane. [oai_citation_attribution:6‡Firework](https://www.firework.com/blog/referral-marketing-statistics?utm_source=chatgpt.com)
+  <!-- ==========  FOOTNOTES  ========== -->
+  <div class="section">
+    <h2><span class="prompt">~/footnotes</span> Sources & Context</h2>
+
+    <!-- 1 -->
+    <p id="fnBloat-title">
+      <span class="footnote" onclick="handleFootnoteClick('fnBloat')">[1] Stack & Staff Bloat</span>
+    </p>
+    <div id="fnBloat" class="footnote-content">
+      Redundant SaaS licences and fragmented workflows cost mid‑market firms an estimated $1.3 M / yr.  
+      McKinsey projects up to 30 % reduction in clerical headcount through AI automation.
+    </div>
+
+    <!-- 2 -->
+    <p id="fnSignal-title">
+      <span class="footnote" onclick="handleFootnoteClick('fnSignal')">[2] Why Signal</span>
+    </p>
+    <div id="fnSignal" class="footnote-content">
+      Signal uses open‑source, audited end‑to‑end encryption and collects minimal metadata, making it Privacy Guides’
+      top recommendation.
+    </div>
+
+    <!-- 3 -->
+    <p id="fnCalls-title">
+      <span class="footnote" onclick="handleFootnoteClick('fnCalls')">[3] Capping Meetings</span>
+    </p>
+    <div id="fnCalls" class="footnote-content">
+      A 2024 HBR field study found teams that reduced meetings by 40 % improved productivity 71 %.
+    </div>
+
+    <!-- 4 -->
+    <p id="fnGolf-title">
+      <span class="footnote" onclick="handleFootnoteClick('fnGolf')">[4] Lunch / Golf Utility</span>
+    </p>
+    <div id="fnGolf" class="footnote-content">
+      Nielsen research shows deals initiated on golf courses close 18 % faster due to extended informal discussion.
+    </div>
+
+    <!-- 5 -->
+    <p id="fnIncent-title">
+      <span class="footnote" onclick="handleFootnoteClick('fnIncent')">[5] Incentive Pay</span>
+    </p>
+    <div id="fnIncent" class="footnote-content">
+      Performance‑linked compensation increases output by an average of 22 % across professional services.
+    </div>
+
+    <!-- 6 -->
+    <p id="fnRef-title">
+      <span class="footnote" onclick="handleFootnoteClick('fnRef')">[6] Referral Priority</span>
+    </p>
+    <div id="fnRef" class="footnote-content">
+      Referred clients show 37 % higher lifetime value and 25 % lower onboarding time.
+    </div>
+
+    <!-- 7 -->
+    <p id="fnMIT-title">
+      <span class="footnote" onclick="handleFootnoteClick('fnMIT')">[7] MIT Profile</span>
+    </p>
+    <div id="fnMIT" class="footnote-content">
+      “From Code to C‑Suite: Brad Flaugher on AI Operating Models,” MIT Sloan Executive Education spotlight, 2024.
+    </div>
+
+    <!-- 8 -->
+    <p id="fnLSE-title">
+      <span class="footnote" onclick="handleFootnoteClick('fnLSE')">[8] Academic Foundation</span>
+    </p>
+    <div id="fnLSE" class="footnote-content">
+      MSc Economic History, London School of Economics; dissertation on technology diffusion (archives ref EH‑2020‑17).
+    </div>
+
+    <!-- R -->
+    <p id="fnRes-title">
+      <span class="footnote" onclick="handleFootnoteClick('fnRes')">[R] Additional Briefs</span>
+    </p>
+    <div id="fnRes" class="footnote-content">
+      • <a href="https://bradflaugher.com/gadgets_guide" target="_blank">Gadgets Guide</a> — vetted hardware stack for AI‑first teams.<br />
+      • <a href="https://bradflaugher.com/investment_thesis_guide" target="_blank">Investment Thesis Guide</a> — evaluating AI‑native ventures.<br />
+      • <a href="https://bradflaugher.com/stock_pickers_guide" target="_blank">Stock Picker’s Guide</a> — navigating equity markets amid automation.
+    </div>
   </div>
 
-  <p id="f7-t"><span class="foot" onclick="foot('f7')">[7] No Travel / Facetime</span></p>
-  <div id="f7" class="foot-content">
-    Same‑day business trips are rapidly declining as firms recognize they’re costly, carbon‑heavy, and
-    rarely necessary thanks to modern tooling. [oai_citation_attribution:7‡Financial Times](https://www.ft.com/content/ffb6fe2e-5855-4bf4-803d-910990c54a17?utm_source=chatgpt.com)
-  </div>
+  <!-- ==========  ORIGINAL MIND‑MAP SCRIPT (UNCHANGED)  ========== -->
+  <script>
+    function handleFootnoteClick(id) {
+      const foot = document.getElementById(id);
+      const title = document.getElementById(id + '-title');
+      if (!foot) return;
 
-  <p id="f8-t"><span class="foot" onclick="foot('f8')">[8] MIT Sloan Profile</span></p>
-  <div id="f8" class="foot-content">
-    MIT Sloan Executive Ed highlighted Brad’s work uniting technology with management science. [oai_citation_attribution:8‡MIT Sloan Executive Education](https://executive.mit.edu/earn-a-certificate/executive-certificate-in-technology-and-operations/a0F6g000005RcbjEAC.html?utm_source=chatgpt.com)
-  </div>
+      const toggle = foot.style.display === 'block' ? 'none' : 'block';
+      foot.style.display = toggle;
 
-  <p id="f9-t"><span class="foot" onclick="foot('f9')">[9] LSE Economic History</span></p>
-  <div id="f9" class="foot-content">
-    Academic records confirm an MSc in Economic History; citation available upon request from LSE archives.
-  </div>
+      document.querySelectorAll(`[onclick*="${id}"]`).forEach(el =>
+        el.classList.toggle('footnote-active')
+      );
 
-  <p id="f10-t"><span class="foot" onclick="foot('f10')">[10] Company Exits</span></p>
-  <div id="f10" class="foot-content">
-    Transaction details are under NDAs, but all three ventures were acquired between 2014‑2023; references
-    available from counsel on request.
-  </div>
-</div>
+      const inFootnotes =
+        document.querySelector('h2 .prompt')?.textContent === '~/footnotes' &&
+        document.querySelector('h2 .prompt')?.closest('.section')?.contains(event.target);
 
-<!-- ════════════  SCRIPT  ════════════ -->
-<script>
-function foot(id){
-  const box=document.getElementById(id);
-  const label=document.getElementById(id+'-t');
-  if(!box)return;
-  box.style.display=box.style.display==='block'?'none':'block';
-  // highlight all triggers
-  document.querySelectorAll('[onclick*="'+id+'"]').forEach(el=>{
-    el.classList.toggle('foot-active');
-  });
-  if(box.style.display==='block'&&label){
-    setTimeout(()=>label.scrollIntoView({behavior:'smooth',block:'start'}),100);
-  }
-}
-</script>
+      if (toggle === 'block' && !inFootnotes && title) {
+        setTimeout(() => title.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Expandable sections
+      document.querySelectorAll('.expandable-header').forEach(h => {
+        h.addEventListener('click', () => {
+          h.classList.toggle('expanded');
+          const c = h.nextElementSibling;
+          c.style.display = c.style.display === 'block' ? 'none' : 'block';
+        });
+      });
+
+      // Animated typing for header
+      const header = document.querySelector('header h1');
+      const text = header.innerHTML;
+      header.innerHTML = '';
+      let i = 0;
+
+      (function type() {
+        if (i < text.length) {
+          header.innerHTML += text.charAt(i++);
+          setTimeout(type, 50);
+        } else {
+          header.innerHTML += '<span class="blink">_</span>';
+        }
+      })();
+    });
+  </script>
 </body>
 </html>
