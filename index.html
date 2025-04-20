@@ -39,9 +39,7 @@
                 margin-bottom:25px; box-shadow:0 2px 5px rgba(0,0,0,.1); }
     .code-block{ background:var(--code-bg); padding:15px; border-radius:4px;
                  overflow-x:auto; margin:15px 0; }
-    .code-block a{ white-space:nowrap; }           /* never wrap CTA link           */
-    .nowrap  { white-space:nowrap; }
-
+    .code-block a{ white-space:nowrap; }  /* keep long CTA on one line */
     .footnote{ cursor:pointer; color:var(--accent-color);
                border-bottom:1px dashed var(--accent-color); }
     .footnote-active{ background:rgba(88,166,255,.1); }
@@ -51,7 +49,7 @@
     }
 
     .blink{ animation:blink 1s steps(2,start) infinite; }
-    @keyframes blink{ to { visibility:hidden; } }
+    @keyframes blink{ to{ visibility:hidden; } }
 
     /* mobile wrap fix */
     @media(max-width:600px){
@@ -136,23 +134,19 @@
   <div class="section">
     <h2><span class="prompt">~/about</span> Brad Flaugher</h2>
     <p>
-      Philadelphia‑based technologist and multi‑exit founder. MIT Sloan Executive Education profiled my work translating
-      advanced AI into operating models for growth‑stage firms
-      <span class="footnote" onclick="handleFootnoteClick('fnMIT')">[7]</span>.
-      Previous ventures: Offline Publishing, Bread Factory Studios, Audigent.
-      Economic training supports board‑level capital‑allocation advice
-      <span class="footnote" onclick="handleFootnoteClick('fnLSE')">[8]</span>.
+      I’m a Philadelphia‑based technologist, author, and repeat founder focused on turning AI breakthroughs into operating
+      leverage. My book <em>AI Harmony</em> condenses fifteen years of experimentation into hands‑on playbooks. I co‑created
+      Kalamazoo College’s Interdisciplinary Fund for Complex Systems to back student research at the frontier of AI.  
+      Every autumn I run the Philadelphia Open Innovation Tournament—two days of rapid, real‑world problem‑solving.  
+      The rest of the year I work one‑on‑one with leadership teams to cut waste and scale impact through AI.
     </p>
-    <p><em>Curious what a lean‑AI operating model would look like in your organisation?</em></p>
   </div>
 
   <!-- ==========  CTA  ========== -->
   <div class="section">
     <h2><span class="prompt">~/contact</span> Start Your Diagnostic</h2>
 
-    <p>
-      Send one secure message and we’ll schedule your complimentary diagnostic call.
-    </p>
+    <p>Send one secure message and we’ll schedule your complimentary diagnostic call.</p>
 
     <div class="code-block" style="text-align:center; font-size:1.05rem;">
       <a
@@ -177,56 +171,42 @@
       <span class="footnote" onclick="handleFootnoteClick('fnBloat')">[1] Why Stacks Shrink</span>
     </p>
     <div id="fnBloat" class="footnote-content">
-      Most software portfolios balloon over time; AI lets us consolidate tooling and re‑deploy talent to higher‑value work.
+      Large tool stacks drain budgets and attention. Consolidating around AI unlocks cleaner processes and leaner teams.
     </div>
 
     <p id="fnSignal-title">
       <span class="footnote" onclick="handleFootnoteClick('fnSignal')">[2] Why Signal</span>
     </p>
     <div id="fnSignal" class="footnote-content">
-      Engineers and privacy experts agree Signal is the simplest way to keep conversations confidential and distraction‑free.
+      Signal is secure, distraction‑free, and leaves no marketing trail—perfect for candid discussions.
     </div>
 
     <p id="fnCalls-title">
       <span class="footnote" onclick="handleFootnoteClick('fnCalls')">[3] Session Cadence</span>
     </p>
     <div id="fnCalls" class="footnote-content">
-      Two focused working sessions per month drive steady progress without burdening your calendar.
+      Two focused sessions maintain momentum without clogging your calendar.
     </div>
 
     <p id="fnGolf-title">
       <span class="footnote" onclick="handleFootnoteClick('fnGolf')">[4] Tennis / Golf Option</span>
     </p>
     <div id="fnGolf" class="footnote-content">
-      Strategic discussions flow better when we’re moving—rackets or clubs break down formality and surface new ideas.
+      Moving discussions outdoors strips away formality and surfaces better ideas—plus it’s more fun.
     </div>
 
     <p id="fnIncent-title">
       <span class="footnote" onclick="handleFootnoteClick('fnIncent')">[5] Aligned Fees</span>
     </p>
     <div id="fnIncent" class="footnote-content">
-      Performance‑linked pricing keeps us mutually focused on measurable business impact—not billable hours.
+      When compensation moves with impact, everyone’s incentives point the same direction—toward your results.
     </div>
 
     <p id="fnRef-title">
       <span class="footnote" onclick="handleFootnoteClick('fnRef')">[6] Warm Introductions</span>
     </p>
     <div id="fnRef" class="footnote-content">
-      Starting with context saves discovery time and lets us get to real work faster. If someone you trust sends you here, you move to the front of the queue.
-    </div>
-
-    <p id="fnMIT-title">
-      <span class="footnote" onclick="handleFootnoteClick('fnMIT')">[7] MIT Sloan Profile</span>
-    </p>
-    <div id="fnMIT" class="footnote-content">
-      MIT Sloan highlighted my approach to embedding AI into core operations—proof that academia and practice can converge.
-    </div>
-
-    <p id="fnLSE-title">
-      <span class="footnote" onclick="handleFootnoteClick('fnLSE')">[8] Academic Perspective</span>
-    </p>
-    <div id="fnLSE" class="footnote-content">
-      An economics lens keeps our AI decisions grounded in productivity and value creation, not hype.
+      A shared connection means less ramp‑up time and faster deployment for your team.
     </div>
 
     <p id="fnRes-title">
