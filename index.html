@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Brad Flaugher | AI Advisor</title>
 
-  <!-- ==========  ORIGINAL MIND‑MAP STYLES (UNCHANGED)  ========== -->
+  <!-- ==========  ORIGINAL MIND‑MAP STYLES (with mobile wrap fix)  ========== -->
   <style>
     :root {
       --bg-color: #0d1117;
@@ -108,6 +108,12 @@
     }
     .info-header { color: var(--accent-color); font-weight: 500; margin-bottom: 10px; font-size: 1rem; }
     .terminal-prompt::before { content: "$ "; color: var(--secondary-color); }
+
+    /* ==========  MOBILE WRAP FIX  ========== */
+    @media (max-width: 600px) {
+      body, .section, .code-block { overflow-wrap: anywhere; }
+    }
+    .code-block { word-break: break-all; }
   </style>
 </head>
 
@@ -218,7 +224,7 @@
       <span class="footnote" onclick="handleFootnoteClick('fnBloat')">[1] Stack & Staff Bloat</span>
     </p>
     <div id="fnBloat" class="footnote-content">
-      Redundant SaaS licences and fragmented workflows cost mid‑market firms an estimated $1.3 M / yr.  
+      Redundant SaaS licences and fragmented workflows cost mid‑market firms an estimated $1.3 M / yr.<br />
       McKinsey projects up to 30 % reduction in clerical headcount through AI automation.
     </div>
 
@@ -227,8 +233,7 @@
       <span class="footnote" onclick="handleFootnoteClick('fnSignal')">[2] Why Signal</span>
     </p>
     <div id="fnSignal" class="footnote-content">
-      Signal uses open‑source, audited end‑to‑end encryption and collects minimal metadata, making it Privacy Guides’
-      top recommendation.
+      Signal uses open‑source, audited end‑to‑end encryption and collects minimal metadata—Privacy Guides’ top recommendation.
     </div>
 
     <!-- 3 -->
@@ -276,7 +281,7 @@
       <span class="footnote" onclick="handleFootnoteClick('fnLSE')">[8] Academic Foundation</span>
     </p>
     <div id="fnLSE" class="footnote-content">
-      MSc Economic History, London School of Economics; dissertation on technology diffusion (archives ref EH‑2020‑17).
+      MSc Economic History, London School of Economics; dissertation on technology diffusion (archives ref EH‑2020‑17).
     </div>
 
     <!-- R -->
@@ -297,8 +302,8 @@
       const title = document.getElementById(id + '-title');
       if (!foot) return;
 
-      const toggle = foot.style.display === 'block' ? 'none' : 'block';
-      foot.style.display = toggle;
+      const show = foot.style.display !== 'block';
+      foot.style.display = show ? 'block' : 'none';
 
       document.querySelectorAll(`[onclick*="${id}"]`).forEach(el =>
         el.classList.toggle('footnote-active')
@@ -308,7 +313,7 @@
         document.querySelector('h2 .prompt')?.textContent === '~/footnotes' &&
         document.querySelector('h2 .prompt')?.closest('.section')?.contains(event.target);
 
-      if (toggle === 'block' && !inFootnotes && title) {
+      if (show && !inFootnotes && title) {
         setTimeout(() => title.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
       }
     }
@@ -325,13 +330,13 @@
 
       // Animated typing for header
       const header = document.querySelector('header h1');
-      const text = header.innerHTML;
-      header.innerHTML = '';
+      const text = header.textContent;
+      header.textContent = '';
       let i = 0;
 
       (function type() {
         if (i < text.length) {
-          header.innerHTML += text.charAt(i++);
+          header.textContent += text.charAt(i++);
           setTimeout(type, 50);
         } else {
           header.innerHTML += '<span class="blink">_</span>';
