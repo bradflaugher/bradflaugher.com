@@ -8,7 +8,7 @@
         content="I help leadership teams slash software bloat and unlock lean operating leverage with pragmatic AI systems." />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- ==========  ORIGINAL MIND‑MAP STYLES (with mobile wrap fix)  ========== -->
+  <!-- ==========  ORIGINAL MIND‑MAP STYLES  ========== -->
   <style>
     :root{
       --bg-color:#0d1117;      --text-color:#e6edf3;
@@ -38,9 +38,14 @@
     .prompt{ color:var(--accent-color); font-weight:700; margin-right:8px; }
     .section{ background:var(--section-bg); border-radius:6px; padding:20px;
               margin-bottom:25px; box-shadow:0 2px 5px rgba(0,0,0,.1); }
-    .code-block{ background:var(--code-bg); padding:15px; border-radius:4px;
-                 overflow-x:auto; margin:15px 0; }
-    .code-block a{ white-space:nowrap; }  /* keep long CTA on one line            */
+
+    .code-block{
+      background:var(--code-bg); padding:15px; border-radius:4px;
+      overflow-x:auto; margin:15px 0;
+      word-break:normal;               /* prevent mid‑word breaks            */
+      overflow-wrap:anywhere;          /* but still allow long tokens to wrap*/
+    }
+    .code-block a{ white-space:nowrap; }  /* keep long CTA on one line          */
 
     .footnote{ cursor:pointer; color:var(--accent-color);
                border-bottom:1px dashed var(--accent-color); }
@@ -57,7 +62,6 @@
     @media(max-width:600px){
       body,.section,.code-block{ overflow-wrap:anywhere; }
     }
-    .code-block{ word-break:break-all; }
   </style>
 </head>
 
@@ -137,7 +141,6 @@
   <!-- ==========  CTA  ========== -->
   <div class="section">
     <h2><span class="prompt">~/contact</span> Start Your Diagnostic</h2>
-
     <p>Send one secure message and we’ll schedule your refundable diagnostic session.</p>
 
     <div class="code-block" style="text-align:center; font-size:1.05rem;">
