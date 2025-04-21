@@ -273,20 +273,6 @@
     </div>
 
     <div class="info-section">
-        <div class="info-header">Current Research & Experiments</div>
-        <p>I'm currently exploring how founders can leverage AI to replace traditional team structures. My recent work with Philadelphia-based startups suggests that properly implemented AI systems can replace 60-80% of early-stage hiring needs, fundamentally changing capital requirements and go-to-market timelines.</p>
-        <p>This work builds on insights from Innovation Philadelphia, where we've been documenting the emergent patterns of AI-first company formation since 2023.</p>
-        <p class="terminal-prompt">If you're working on something similar, I occasionally collaborate with like-minded researchers and founders.</p>
-    </div>
-
-    <div class="info-section">
-        <div class="info-header">Innovation Philadelphia Community Notes</div>
-        <p>Our community continues to explore the frontiers of AI-augmented innovation through our quarterly experiments and annual tournament. Recent findings suggest that small, AI-empowered teams consistently outperform larger traditional teams when measured by innovation velocity and solution quality.</p>
-        <p>The most successful participants aren't those with the most technical knowledge of AI, but those who develop systematic approaches to prompt engineering and feedback integration.</p>
-	<p class="terminal-prompt">Participate in our annual tournament by signing up at <a href="https://innovationphilly.com" target="_blank">https://innovationphilly.com</a>.</p>
-    </div>
-
-    <div class="info-section">
       <div class="info-header">More from Brad</div>
       <p>
         Ready to put these ideas to work?  
@@ -312,27 +298,7 @@
                 });
             });
 
-            // Header typing effect (kept from original)
-             const header = document.querySelector('header h1');
-             // Ensure header exists before trying to manipulate it
-             if (header) {
-                const headerText = header.innerHTML;
-                header.innerHTML = '';
-                let i = 0;
-                const typeHeader = () => {
-                    if (i < headerText.length) {
-                        header.innerHTML += headerText.charAt(i);
-                        i++;
-                        setTimeout(typeHeader, 50);
-                    } else {
-                        // Add blinking cursor after typing
-                         if (!header.querySelector('.blink')) { // Prevent adding multiple cursors
-                           header.innerHTML += '<span class="blink">_</span>';
-                         }
-                    }
-                };
-                typeHeader();
-             }
+            }
         });
     </script>
 </body>
