@@ -381,7 +381,7 @@
         <section class="section">
             <h2>Professional Summary</h2>
                 <p>
-                Strategic technology leader with extensive experience founding, scaling, and advising innovative companies through growth and acquisition. Expert in deploying AI-driven operational improvements and building high-performance technical organizations. Advisor to venture-backed startups and established firms on AI strategy, digital transformation, and lean operations.
+                Strategic technology leader with extensive experience founding, scaling, and advising innovative companies through growth and acquisition. Expert in deploying AI-driven operational improvements and building high-performance technical organizations. Advisor to venture-backed startups and established firms on AI strategy, digital transformation, and lean operations. Recently leveraged an OpenRouter cost-router to slash Gen-AI spend 90%.
                 </p>
                 
                 <p>
@@ -402,7 +402,7 @@
                 </div>
                 <div class="responsibilities">
                     <ul>
-                        <li>Advisory on agentic AI, lean operations, and strategic technology planning for executives and investors.</li>
+                        <li>Designed LLM cost-router (↓ 90% token cost; p95 150 ms) for client agentic workflows.</li>
                         <li>AI diagnostics, executive strategy sessions, and software stack optimization.</li>
                     </ul>
                 </div>
@@ -416,7 +416,7 @@
                 <div class="responsibilities">
                     <ul>
                         <li>Generated $1-2M in annual business as Solutions Lead, personally closing 65% of new enterprise deals post-merger.</li>
-                        <li>Directed global teams of 30+ developers in delivering enterprise solutions across JavaScript/TypeScript, .NET, and OSS stacks.</li>
+                        <li>Integrated 100-person engineering org post-merger; scaled to 240 engineers and directly managed 30 delivering Audigent platform.</li>
                         <li>Accelerated client time-to-market by 40% through rapid prototyping and production-grade mobile application development.</li>
                         <li>Transitioned to advisory role in 2020 while maintaining executive leadership connection; no longer hold equity following corporate reorganization.</li>
                     </ul>
@@ -431,7 +431,7 @@
                 <div class="responsibilities">
                     <ul>
                         <li>Advanced from Machine Learning Lead to executive leadership, managing data systems processing 4B+ user interactions monthly.</li>
-                        <li>Directed consulting engagements with Procter & Gamble and Blair, delivering 30% improvement in targeting efficiency.</li>
+                        <li>Built DataPipelines (eventually Airflow) pipeline ingesting 2B+ interactions/day, 99.99% uptime; 40% BigQuery cost cut.</li>
                         <li>Founded <a href="https://audigent.com/blog/data-bootcamp" target="_blank">Data Bootcamp</a>, training 40+ staff on Python, Docker, Linux, and AI fundamentals.</li>
                         <li>Note: Audigent was as a client of Inoxoft and hired me full time with additional equity compensation for almost four years.</li>
                     </ul>
@@ -519,28 +519,28 @@
             <h2>Skills & Expertise</h2>
             <div class="skills-matrix">
                 <div>
-                    <h3>AI & Machine Learning</h3>
-                    <p>AI systems design, agentic AI integration, LLM APIs (Anthropic, OpenAI, Meta LLaMA, Gemini, Mistral, DeepSeek, NotDiamond), PyTorch, TensorFlow, Scikit-Learn, <a href="https://github.com/bradflaugher/AI-101" target="_blank">AI-101 open source curriculum</a></p>
+                    <h3>Gen-AI & Machine Learning</h3>
+                    <p>LLM cost-router (OpenRouter, async batching, cache) → ↓ 90% token cost vs. naïve GPT-4 calls; agentic pipelines in prod; 100M+ tokens/day at p95 ≤ 150 ms; WhiteLightning.ai synthetic-data distillation → edge text classifiers < 60 MB; PyTorch/TensorFlow; distilled & deployed 15+ custom models</p>
                 </div>
 
                 <div>
-                    <h3>DevOps & Systems Engineering</h3>
-                    <p>Built and tested custom Linux kernels for RISC-V edge AI applications; implemented Docker-based CI/CD pipelines reducing deployment time by 60%; automated infrastructure provisioning across multi-cloud environments</p>
-                </div>
-
-                <div>
-                    <h3>Cloud Architecture & Data Platforms</h3>
-                    <p>Architected multi-region data pipelines handling 10TB+ daily on AWS, GCP, Azure; optimized BigQuery and SQL costs by 40%; designed highly available distributed systems with 99.99% uptime</p>
-                </div>
-
-                <div>
-                    <h3>Software Development</h3>
-                    <p>Delivered 20+ production applications using Python, JavaScript, TypeScript, C/C++; built cross-platform mobile apps with Swift, Kotlin, Flutter; developed prototype projects and hobby applications in Rust and Go</p>
+                    <h3>Cloud & Data Engineering</h3>
+                    <p>Airflow-orchestrated multi-region pipeline ingesting 4B+ web interactions/day, 99.99% uptime; BigQuery tuning cut query spend ~40%; petabyte-scale archives on GCP; automated infrastructure provisioning across multi-cloud environments</p>
                 </div>
 
                 <div>
                     <h3>Security & Privacy Engineering</h3>
-                    <p>Designed privacy-compliant JS instrumentation pipeline capturing 1B+ ad-tech events; performed web application penetration tests revealing critical vulnerabilities; contributed feedback to W3C Privacy Sandbox draft specifications; participant in PrivacyGuides.org community and experienced with hardened systems (GrapheneOS, SecureBoot, Hardened Fedora); FSF member with interest in free software security initiatives</p>
+                    <p>Privacy-compliant JS instrumentation on ~40% of ad-tech web (GDPR & CCPA); contributor, W3C Privacy Sandbox red-team reviews; hardened Android (GrapheneOS) & SecureBoot; participant in PrivacyGuides.org community</p>
+                </div>
+
+                <div>
+                    <h3>Software & Edge Systems</h3>
+                    <p>Python, TypeScript, C/C++; mobile (Swift, Kotlin, Flutter); custom RISC-V Linux for edge AI; built and tested custom Linux kernels for RISC-V edge AI applications; implemented Docker-based CI/CD pipelines reducing deployment time by 60%</p>
+                </div>
+
+                <div>
+                    <h3>Leadership & Operations</h3>
+                    <p>Integrated 100-person engineering org post-merger; supported growth to 240 engineers; directly led 30 engineers delivering Audigent data products; closed $1–2M ARR/year as Solutions Lead; designed highly available distributed systems with 99.99% uptime</p>
                 </div>
             </div>
         </section>
@@ -567,11 +567,19 @@
             <div class="responsibilities">
                 <ul>
                     <li><span class="project-title">Author:</span> <a href="https://a.co/d/2BAlait" target="_blank"><em>AI Harmony</em></a> (2023), endorsed by YouTube, Wharton, Silver Lake executives.</li>
+                    <li><span class="project-title">WhiteLightning.ai:</span> Open-source synthetic-data distiller creating ultra-small edge models (<a href="https://github.com/volodymyrparanyak/whitelightning.ai" target="_blank">GitHub Project</a>).</li>
                     <li><span class="project-title">Translate Tribune:</span> Open-source autonomous AI agent multilingual news aggregator (<a href="https://github.com/bradflaugher/TranslateTribune" target="_blank">GitHub Project</a>), reaching 30k monthly visitors.</li>
                     <li><span class="project-title">Complex Systems Fund:</span> Co-founded the Interdisciplinary Fund for Complex Systems Studies honoring Professor Péter Érdi (<a href="https://www.kzoo.edu/news/complex-systems-studies-professor/" target="_blank">Profile</a>).</li>
-                    <li><span class="project-title">ACM & FSF:</span> Lifetime Member of the Association for Computing Machinery and Associate Member of The Free Software Foundation.</li>
                 </ul>
             </div>
+        </section>
+        
+        <div class="divider"></div>
+        
+        <!-- Affiliations -->
+        <section class="section">
+            <h2>Affiliations & Community</h2>
+            <p>Lifetime Member of the Association for Computing Machinery (ACM) and Associate Member of The Free Software Foundation (FSF).</p>
         </section>
     </div>
 </body>
