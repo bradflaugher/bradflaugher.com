@@ -235,6 +235,50 @@
             font-weight: 600;
         }
         
+        /* Download Button Styles */
+        .download-resume {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            max-width: 250px;
+        }
+        
+        .download-resume:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            text-decoration: none;
+            color: white;
+        }
+        
+        .download-resume:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .download-section {
+            text-align: center;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+        
         /* Print Styles */
         @media print {
             body {
@@ -285,6 +329,10 @@
             .contact-info {
                 gap: 0.5rem;
             }
+            
+            .download-section {
+                display: none;
+            }
         }
         
         /* Responsive Styles */
@@ -329,6 +377,15 @@
             .skills-matrix {
                 grid-template-columns: 1fr;
             }
+            
+            .download-section {
+                padding: 0.75rem;
+            }
+            
+            .download-resume {
+                width: 100%;
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -353,6 +410,18 @@
                 </div>
             </div>
         </header>
+        
+        <!-- Download Section -->
+        <div class="download-section">
+            <a href="https://bradflaugher.com/Brad_Flaugher_Resume.pdf" class="download-resume" download target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download Resume PDF
+            </a>
+        </div>
         
         <div class="divider"></div>
         
