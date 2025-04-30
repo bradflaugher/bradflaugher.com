@@ -58,6 +58,33 @@
     .blink{ animation:blink 1s steps(2,start) infinite; }
     @keyframes blink{ to{ visibility:hidden; } }
 
+    /* Profile image styles */
+    .profile-image-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-image {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--secondary-color);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .profile-image:hover {
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 600px) {
+      .profile-image {
+        width: 150px;
+        height: 150px;
+      }
+    }
+
     /* mobile wrap fix */
     @media(max-width:600px){
       body,.section,.code-block{ overflow-wrap:anywhere; }
@@ -126,6 +153,11 @@
 
   <div class="section">
     <h2><span class="prompt">~/about</span> <span class="nowrap">Brad Flaugher</span></h2>
+    
+    <div class="profile-image-container">
+      <img src="brad.jpg" alt="Brad Flaugher" class="profile-image">
+    </div>
+    
     <p>
       I'm a Philadelphia‑based technologist, author, and repeat founder focused on turning AI breakthroughs into operating
       leverage. My book <a href="https://a.co/d/eZ06kp5" target="_blank"><em>AI Harmony</em></a> distills fifteen years of
