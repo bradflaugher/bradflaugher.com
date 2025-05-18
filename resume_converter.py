@@ -137,7 +137,7 @@ def optimize_header(soup):
             if item.parent:  # Check if item has a parent
                 item_copy = item.extract()
                 
-                # Add dividers between items
+                # Add simple pipe dividers between items
                 if len(contact_section.contents) > 0:
                     divider = soup.new_tag('span')
                     divider['class'] = 'contact-divider'
@@ -205,7 +205,7 @@ def optimize_header(soup):
         letter-spacing: 1px;
     }
 
-    /* Simple contact row */
+    /* Simple contact row with minimal spacing */
     .header-contact {
         display: flex;
         justify-content: center;
@@ -214,6 +214,7 @@ def optimize_header(soup):
         font-size: 10pt;
         color: #34495e;
         margin-top: 0.5em;
+        gap: 0;  /* Remove any default gap */
     }
 
     .header-contact a {
@@ -223,7 +224,7 @@ def optimize_header(soup):
     }
 
     .contact-divider {
-        margin: 0 10px;
+        margin: 0 3px;  /* Minimal spacing around pipe */
         color: #7f8c8d;
     }
 
@@ -458,7 +459,7 @@ def main():
     print(f"PDF saved to: {os.path.abspath(pdf_path)}")
     print("\nBest practices implemented:")
     print("- Professional typography and spacing")
-    print("- Clean, centered header layout on a single line")
+    print("- Clean header layout with minimal separator spacing")
     print("- Removed all emojis and icons")
     print("- Intelligent page breaks")
     print("- Proper heading hierarchy")
