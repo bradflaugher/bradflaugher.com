@@ -120,6 +120,31 @@ def optimize_header(soup):
     
     return soup
 
+def optimize_skills_matrix(soup):
+    """Optimize the skills matrix to be more compact."""
+    # Find the skills matrix
+    skills_matrix = soup.select_one('.skills-matrix')
+    if not skills_matrix:
+        return soup  # No skills matrix found
+    
+    # Add a class to each skill area to make it more compact
+    for skill_div in skills_matrix.select('div'):
+        skill_div['class'] = 'skill-area compact'
+        
+        # Make the h3 and p display inline
+        h3 = skill_div.select_one('h3')
+        p = skill_div.select_one('p')
+        
+        if h3 and p:
+            # Add style to make content more compact
+            h3['style'] = 'display: inline; margin-right: 5px;'
+            p['style'] = 'display: inline; margin: 0;'
+    
+    # Add a style attribute to the matrix itself
+    skills_matrix['style'] = 'display: grid; grid-template-columns: 1fr; gap: 0.1em;'
+    
+    return soup
+
 def remove_emojis(soup):
     """Remove all emoji characters from the HTML content."""
     # Unicode ranges for emojis - in case any remain in text nodes
@@ -156,54 +181,6 @@ def remove_emojis(soup):
     
     return soup
 
-def optimize_skills_section(soup):
-    """Optimize the skills section to be more compact and fit on one line."""
-    # Find the skills section
-    skills_section = None
-    for section in soup.select('.section'):
-        if section.select_one('h2') and 'skill' in section.select_one('h2').get_text().lower():
-            skills_section = section
-            break
-    
-    if not skills_section:
-        return soup  # No skills section found
-    
-    # Find the skills list
-    skills_list = skills_section.select_one('ul, ol, .skills-list')
-    if not skills_list:
-        return soup  # No skills list found
-    
-    # Get all skill items
-    skill_items = skills_list.select('li')
-    if not skill_items:
-        return soup  # No skills found
-    
-    # Create a new compact skills container
-    skills_container = soup.new_tag('div')
-    skills_container['class'] = 'compact-skills'
-    
-    # Add the skills as inline elements with separators
-    for i, skill in enumerate(skill_items):
-        skill_text = skill.get_text(strip=True)
-        
-        if i > 0:
-            # Add separator
-            separator = soup.new_tag('span')
-            separator['class'] = 'skill-separator'
-            separator.string = ' • '
-            skills_container.append(separator)
-        
-        # Add skill
-        skill_span = soup.new_tag('span')
-        skill_span['class'] = 'skill-item'
-        skill_span.string = skill_text
-        skills_container.append(skill_span)
-    
-    # Replace the original skills list with the compact version
-    skills_list.replace_with(skills_container)
-    
-    return soup
-
 def compact_content(soup):
     """Make the content more compact to fit on two pages."""
     # Find all list items and reduce their margin
@@ -213,8 +190,8 @@ def compact_content(soup):
         else:
             li['style'] += ' margin-bottom: 0.2em;'
     
-    # Find all paragraphs and reduce their margin
-    for p in soup.select('p'):
+    # Find all paragraphs and reduce their margin (except in skills matrix)
+    for p in soup.select('p:not(.skills-matrix p)'):
         if 'style' not in p.attrs:
             p['style'] = 'margin: 0.3em 0;'
         else:
@@ -371,7 +348,7 @@ def add_compact_styles(soup):
     .section h2 {
         font-size: 13pt;
         color: #2c3e50;
-        margin: 0 0 0.4em;
+        margin: 0 0 0.3em;
         padding-bottom: 0.2em;
         border-bottom: 1px solid #eee;
         text-transform: uppercase;
@@ -441,41 +418,42 @@ def add_compact_styles(soup):
         line-height: 1.2;
     }
 
-    /* Skills Section - Ultra Compact */
-    .compact-skills {
+    /* Skills Matrix Styles - Ultra Compact */
+    .skills-matrix {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.1em !important;
+        margin: 0.2em 0 0.4em 0;
+    }
+
+    .skill-area {
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1.1 !important;
+    }
+
+    .skill-area.compact {
         display: flex;
         flex-wrap: wrap;
-        align-items: center;
-        margin: 0.3em 0 0.5em 0;
-        line-height: 1.3;
+        align-items: baseline;
     }
 
-    .skill-item {
+    .skill-area h3 {
+        font-size: 10pt !important;
+        font-weight: 600 !important;
+        margin: 0 4px 0 0 !important;
+        padding: 0 !important;
+        line-height: 1.1 !important;
+        color: #444;
         display: inline;
-        margin: 0;
-        padding: 0;
-        white-space: nowrap;
     }
 
-    .skill-separator {
-        margin: 0 0.3em;
-        color: #7f8c8d;
-        font-size: 80%;
-    }
-
-    /* Skills Section - Original Style (backup) */
-    .skills-list {
-        column-count: 3; /* Increased column count */
-        column-gap: 1em; /* Reduced gap */
-        margin: 0.2em 0;
-        padding-left: 1em;
-    }
-
-    .skills-list li {
-        margin-bottom: 0.1em; /* Minimal spacing */
-        break-inside: avoid;
-        line-height: 1.1; /* Tighter line height for skills */
-        font-size: 10pt; /* Slightly smaller */
+    .skill-area p {
+        font-size: 9.5pt !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1.1 !important;
+        display: inline;
     }
 
     /* Hide all icon and emoji elements */
@@ -569,8 +547,8 @@ def main():
     # Optimize the header
     soup = optimize_header(soup)
     
-    # Optimize the skills section to be more compact
-    soup = optimize_skills_section(soup)
+    # Optimize the skills matrix
+    soup = optimize_skills_matrix(soup)
     
     # Make content more compact to fit on two pages
     soup = compact_content(soup)
@@ -589,7 +567,7 @@ def main():
     print(f"PDF saved to: {os.path.abspath(pdf_path)}")
     print("\nBest practices implemented:")
     print("- Two-page layout with balanced line height")
-    print("- Ultra-compact skills section (inline with bullet separators)")
+    print("- Ultra-compact skills matrix with inline h3/p elements")
     print("- Proper orphans/widows handling to prevent awkward breaks")
     print("- Optimized spacing between elements")
     print("- Clean header with preserved hyperlinks")
