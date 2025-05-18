@@ -15,7 +15,6 @@ import sys
 import re
 from pathlib import Path
 from bs4 import BeautifulSoup
-import weasyprint
 from weasyprint import HTML, CSS
 import argparse
 
@@ -26,21 +25,10 @@ def setup_argparse():
                         help='Path to HTML resume file')
     parser.add_argument('output', type=str, nargs='?', default='professional_resume.pdf',
                         help='Output PDF file path')
-    parser.add_argument('--css', type=str, default='resume_styles.css',
-                        help='Path to CSS styles file (default: resume_styles.css)')
     parser.add_argument('--font-dir', type=str, 
                         default='/usr/share/fonts',
                         help='Directory containing fonts (default: /usr/share/fonts)')
     return parser.parse_args()
-
-def validate_files(html_path, css_path):
-    """Validate that input files exist."""
-    if not os.path.exists(html_path):
-        print(f"Error: HTML file not found: {html_path}")
-        sys.exit(1)
-    if not os.path.exists(css_path):
-        print(f"Error: CSS file not found: {css_path}")
-        sys.exit(1)
 
 def extract_resume_content(html_path):
     """Extract and parse resume content from HTML file."""
@@ -94,7 +82,7 @@ def optimize_header(soup):
     
     # Process contact info
     if contact_info:
-        # Find all links inside contact items, but first remove emojis
+        # Find all links inside contact items, first remove emojis
         for emoji_span in contact_info.select('.contact-emoji'):
             emoji_span.decompose()
         
@@ -104,9 +92,6 @@ def optimize_header(soup):
             link = contact_item.find('a')
             if link:
                 links.append(link)
-        
-        # Print for debugging
-        print(f"Found {len(links)} contact links")
         
         # Add links to contact section with separators
         for i, link in enumerate(links):
@@ -132,204 +117,6 @@ def optimize_header(soup):
     
     # Replace old header with new header
     header.replace_with(new_header)
-    
-    # Add inline CSS for the improved header styling
-    style_tag = soup.find('style') or soup.new_tag('style')
-    style_tag.string = """
-    /* Resume PDF Styles */
-    @page {
-        size: letter;
-        margin: 0.75in 0.75in 0.75in 0.75in;
-        @bottom-right {
-            content: "Page " counter(page) " of " counter(pages);
-            font-size: 9pt;
-            color: #555;
-        }
-    }
-
-    /* Global Styles */
-    body {
-        font-family: 'Georgia', 'Times New Roman', serif;
-        line-height: 1.4;
-        color: #333;
-        margin: 0;
-        padding: 0;
-        font-size: 11pt;
-    }
-
-    .container {
-        max-width: 100%;
-        margin: 0 auto;
-    }
-
-    /* Professional Header Styles */
-    .professional-header {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 1.5em;
-        border-bottom: 2px solid #2c3e50;
-        padding-bottom: 0.5em;
-        page-break-inside: avoid;
-    }
-
-    .header-name {
-        margin-bottom: 0.5em;
-    }
-
-    .header-name h1 {
-        font-size: 24pt;
-        font-weight: 700;
-        color: #2c3e50;
-        margin: 0;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    /* Simple contact row with minimal spacing */
-    .header-contact {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: nowrap;
-        font-size: 10pt;
-        color: #34495e;
-        margin-top: 0.5em;
-        gap: 0;  /* Remove any default gap */
-    }
-
-    .header-contact a {
-        color: #34495e;
-        text-decoration: none;
-        white-space: nowrap;
-    }
-
-    .contact-divider {
-        margin: 0 3px;  /* Minimal spacing around pipe */
-        color: #7f8c8d;
-    }
-
-    /* Section Styles */
-    .section {
-        margin-bottom: 1.5em;
-        page-break-inside: avoid;
-    }
-
-    .section h2 {
-        font-size: 14pt;
-        color: #2c3e50;
-        margin: 0 0 0.7em;
-        padding-bottom: 0.3em;
-        border-bottom: 1px solid #eee;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    /* Professional Summary */
-    .professional-summary p {
-        margin-top: 0;
-        text-align: justify;
-    }
-
-    /* Education Section */
-    .education-item {
-        margin-bottom: 1em;
-        page-break-inside: avoid;
-    }
-
-    .institution {
-        font-weight: 600;
-        font-size: 12pt;
-    }
-
-    .degree {
-        font-style: italic;
-        color: #555;
-    }
-
-    /* Experience Section */
-    .experience-item {
-        margin-bottom: 1.2em;
-        page-break-inside: avoid;
-    }
-
-    .company {
-        font-weight: 600;
-        font-size: 12pt;
-    }
-
-    .job-title {
-        font-weight: normal;
-        font-style: italic;
-        margin-bottom: 0.3em;
-    }
-
-    .duration {
-        color: #555;
-        font-size: 10pt;
-    }
-
-    .responsibilities ul {
-        margin: 0.5em 0;
-        padding-left: 1.5em;
-    }
-
-    .responsibilities li {
-        margin-bottom: 0.5em;
-        text-align: justify;
-    }
-
-    /* Skills Section */
-    .skills-list {
-        column-count: 2;
-        column-gap: 2em;
-        margin: 0;
-        padding-left: 1.5em;
-    }
-
-    .skills-list li {
-        margin-bottom: 0.5em;
-        break-inside: avoid;
-    }
-
-    /* Page Break Controls */
-    h2 {
-        page-break-after: avoid;
-    }
-
-    .section:first-of-type {
-        page-break-before: avoid;
-    }
-
-    /* Print Optimizations */
-    @media print {
-        .section {
-            page-break-inside: auto;
-        }
-        
-        .experience-item, .education-item {
-            page-break-inside: avoid;
-        }
-        
-        h2, h3 {
-            page-break-after: avoid;
-        }
-        
-        .professional-header {
-            page-break-after: avoid;
-        }
-        
-        /* Avoid orphans and widows */
-        p, li {
-            orphans: 3;
-            widows: 3;
-        }
-    }
-    """
-    
-    if not soup.find('style'):
-        soup.head.append(style_tag)
-    else:
-        soup.find('style').replace_with(style_tag)
     
     return soup
 
@@ -366,6 +153,45 @@ def remove_emojis(soup):
     emoji_elements = soup.select('[class*="emoji"], [class*="icon"], .fa, .fab, .fas, .far, .fal')
     for element in emoji_elements:
         element.decompose()
+    
+    return soup
+
+def compact_content(soup):
+    """Make the content more compact to fit on two pages."""
+    # Find all list items and reduce their margin
+    for li in soup.select('li'):
+        if 'style' not in li.attrs:
+            li['style'] = 'margin-bottom: 0.2em;'
+        else:
+            li['style'] += ' margin-bottom: 0.2em;'
+    
+    # Find all paragraphs and reduce their margin
+    for p in soup.select('p'):
+        if 'style' not in p.attrs:
+            p['style'] = 'margin: 0.3em 0;'
+        else:
+            p['style'] += ' margin: 0.3em 0;'
+    
+    # Reduce spacing in sections
+    for section in soup.select('.section'):
+        if 'style' not in section.attrs:
+            section['style'] = 'margin-bottom: 0.7em;'
+        else:
+            section['style'] += ' margin-bottom: 0.7em;'
+    
+    # Reduce spacing in experience items
+    for exp_item in soup.select('.experience-item'):
+        if 'style' not in exp_item.attrs:
+            exp_item['style'] = 'margin-bottom: 0.6em;'
+        else:
+            exp_item['style'] += ' margin-bottom: 0.6em;'
+    
+    # Reduce spacing in education items
+    for edu_item in soup.select('.education-item'):
+        if 'style' not in edu_item.attrs:
+            edu_item['style'] = 'margin-bottom: 0.5em;'
+        else:
+            edu_item['style'] += ' margin-bottom: 0.5em;'
     
     return soup
 
@@ -410,17 +236,231 @@ def add_meta_tags(soup):
     
     return soup
 
-def convert_to_pdf(html_content, css_path, output_path, font_dir=None):
+def add_compact_styles(soup):
+    """Add compact styling to make resume fit on two pages."""
+    style_tag = soup.find('style') or soup.new_tag('style')
+    style_tag.string = """
+    /* Resume PDF Styles - Compact Version */
+    @page {
+        size: letter;
+        margin: 0.5in 0.5in 0.5in 0.5in; /* Balanced margins */
+        @bottom-right {
+            content: "Page " counter(page) " of " counter(pages);
+            font-size: 8pt;
+            color: #777;
+        }
+    }
+
+    /* Global Styles */
+    body {
+        font-family: 'Georgia', 'Times New Roman', serif;
+        line-height: 1.2; /* More balanced line height */
+        color: #333;
+        margin: 0;
+        padding: 0;
+        font-size: 10.5pt; /* Slightly larger for readability */
+    }
+
+    .container {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Professional Header Styles */
+    .professional-header {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 0.7em;
+        border-bottom: 1px solid #2c3e50;
+        padding-bottom: 0.3em;
+        page-break-inside: avoid;
+    }
+
+    .header-name {
+        margin-bottom: 0.3em;
+    }
+
+    .header-name h1 {
+        font-size: 20pt; /* Balanced header size */
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        line-height: 1.1;
+    }
+
+    /* Simple contact row with minimal spacing */
+    .header-contact {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
+        font-size: 9.5pt;
+        color: #34495e;
+        margin-top: 0.3em;
+        gap: 0;
+    }
+
+    .header-contact a {
+        color: #34495e;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .contact-divider {
+        margin: 0 3px;
+        color: #7f8c8d;
+    }
+
+    /* Section Styles */
+    .section {
+        margin-bottom: 0.7em;
+        page-break-inside: avoid;
+    }
+
+    .section h2 {
+        font-size: 13pt;
+        color: #2c3e50;
+        margin: 0 0 0.4em;
+        padding-bottom: 0.2em;
+        border-bottom: 1px solid #eee;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        line-height: 1.2;
+    }
+
+    /* Professional Summary */
+    .professional-summary p {
+        margin: 0.3em 0;
+        text-align: justify;
+        line-height: 1.25;
+    }
+
+    /* Education Section */
+    .education-item {
+        margin-bottom: 0.5em;
+        page-break-inside: avoid;
+    }
+
+    .institution {
+        font-weight: 600;
+        font-size: 11pt;
+        line-height: 1.2;
+    }
+
+    .degree {
+        font-style: italic;
+        color: #555;
+        font-size: 10.5pt;
+        line-height: 1.2;
+    }
+
+    /* Experience Section */
+    .experience-item {
+        margin-bottom: 0.6em;
+        page-break-inside: avoid;
+    }
+
+    .company {
+        font-weight: 600;
+        font-size: 11pt;
+        line-height: 1.2;
+    }
+
+    .job-title {
+        font-weight: normal;
+        font-style: italic;
+        margin-bottom: 0.2em;
+        font-size: 10.5pt;
+        line-height: 1.2;
+    }
+
+    .duration {
+        color: #555;
+        font-size: 9.5pt;
+    }
+
+    .responsibilities ul {
+        margin: 0.3em 0;
+        padding-left: 1.2em;
+    }
+
+    .responsibilities li {
+        margin-bottom: 0.2em;
+        text-align: justify;
+        line-height: 1.2;
+    }
+
+    /* Skills Section */
+    .skills-list {
+        column-count: 2;
+        column-gap: 1.2em;
+        margin: 0;
+        padding-left: 1.2em;
+    }
+
+    .skills-list li {
+        margin-bottom: 0.2em;
+        break-inside: avoid;
+        line-height: 1.2;
+    }
+
+    /* Hide all icon and emoji elements */
+    .emoji, .icon, .fa, .fab, .fas, .far, .fal {
+        display: none !important;
+    }
+
+    /* Compact Page Break Controls */
+    h2 {
+        page-break-after: avoid;
+        margin-top: 0.6em;
+    }
+
+    .section:first-of-type h2 {
+        margin-top: 0;
+    }
+
+    /* Print Optimizations */
+    @media print {
+        .section {
+            page-break-inside: auto;
+        }
+        
+        .experience-item, .education-item {
+            page-break-inside: avoid;
+        }
+        
+        h2, h3 {
+            page-break-after: avoid;
+        }
+        
+        .professional-header {
+            page-break-after: avoid;
+        }
+        
+        /* Orphans and widows handling */
+        p, li {
+            orphans: 2;
+            widows: 2;
+        }
+    }
+    """
+    
+    if not soup.find('style'):
+        soup.head.append(style_tag)
+    else:
+        soup.find('style').replace_with(style_tag)
+    
+    return soup
+
+def convert_to_pdf(html_content, output_path, font_dir=None):
     """Convert HTML content to PDF with custom styling."""
     print(f"Converting resume to PDF: {output_path}")
     
     # Create base URL for resolving relative paths
-    base_url = Path(os.path.abspath(css_path)).parent.as_uri()
-    
-    # Load external CSS if it exists, but we'll primarily use the embedded CSS
-    css_files = []
-    if os.path.exists(css_path):
-        css_files.append(CSS(filename=css_path))
+    base_url = Path.cwd().as_uri()
     
     # Configure WeasyPrint with font directories
     from weasyprint.text.fonts import FontConfiguration
@@ -431,10 +471,9 @@ def convert_to_pdf(html_content, css_path, output_path, font_dir=None):
         print(f"Using font directory: {font_dir}")
         os.environ['WEASYPRINT_FONT_CONFIG'] = font_dir
     
-    # Convert to PDF - note we're prioritizing the embedded styles
+    # Convert to PDF - use embedded styles
     HTML(string=str(html_content), base_url=base_url).write_pdf(
         output_path, 
-        stylesheets=css_files,
         font_config=font_config
     )
     
@@ -445,7 +484,7 @@ def main():
     """Main function to convert HTML resume to PDF."""
     args = setup_argparse()
     
-    # Validate files
+    # Check if file exists
     if not os.path.exists(args.html):
         print(f"Error: HTML file not found: {args.html}")
         sys.exit(1)
@@ -453,31 +492,34 @@ def main():
     # Extract content
     soup = extract_resume_content(args.html)
     
-    # First remove emojis from the content
+    # Remove emojis from the content
     soup = remove_emojis(soup)
     
-    # Then optimize the header
+    # Optimize the header
     soup = optimize_header(soup)
+    
+    # Make content more compact to fit on two pages
+    soup = compact_content(soup)
     
     # Additional optimizations
     soup = optimize_for_pdf(soup)
     soup = add_meta_tags(soup)
     
+    # Add compact styles
+    soup = add_compact_styles(soup)
+    
     # Convert to PDF
-    pdf_path = convert_to_pdf(soup, args.css, args.output, args.font_dir)
+    pdf_path = convert_to_pdf(soup, args.output, args.font_dir)
     
     print(f"\nResume conversion complete!")
     print(f"PDF saved to: {os.path.abspath(pdf_path)}")
     print("\nBest practices implemented:")
-    print("- Professional typography and spacing")
-    print("- Clean header layout with preserved hyperlinks")
+    print("- Two-page layout with balanced line height (1.2)")
+    print("- Proper orphans/widows handling to prevent awkward breaks")
+    print("- Optimized spacing between elements")
+    print("- Clean header with preserved hyperlinks")
     print("- Removed all emojis and icons")
-    print("- Intelligent page breaks")
-    print("- Proper heading hierarchy")
-    print("- Embedded fonts for consistent rendering")
-    print("- Multi-language support")
-    print("- Page numbering for multi-page resumes")
-    print("- Optimized for both screen viewing and printing")
+    print("- Professional typography with optimal readability")
 
 if __name__ == "__main__":
     main()
