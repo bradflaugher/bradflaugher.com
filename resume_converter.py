@@ -124,21 +124,33 @@ def optimize_header(soup):
         name_element_copy = name_element.extract()
         name_section.append(name_element_copy)
     
-    # Process contact info - keep it simple with a single row
+    # Process contact info - now with better empty element filtering
     if contact_info:
-        # Filter contact items to exclude empty ones and emojis
-        contact_items = []
-        for item in contact_info.select('a, span, p, div'):
-            if item.get_text(strip=True) and not any(c for c in item.get_text() if ord(c) > 8000):
-                contact_items.append(item)
+        # Find all potential contact items
+        all_items = contact_info.select('a, span, p, div')
         
-        # Add each item to the contact section
-        for item in contact_items:
+        # Filter to only keep items with actual content
+        valid_items = []
+        for item in all_items:
+            # Get text and strip all whitespace
+            text = item.get_text(strip=True)
+            
+            # Only keep items that have text and don't contain emojis
+            if text and not any(ord(c) > 8000 for c in text):
+                # Also check if the item is not purely decorative (like a divider)
+                if not (text in ['|', '-', '•', '·'] or item.get('class') and any('divider' in c for c in item.get('class'))):
+                    valid_items.append(item)
+        
+        # Debug print
+        print(f"Found {len(valid_items)} valid contact items")
+        
+        # Add each valid item to the contact section
+        for i, item in enumerate(valid_items):
             if item.parent:  # Check if item has a parent
                 item_copy = item.extract()
                 
-                # Add simple pipe dividers between items
-                if len(contact_section.contents) > 0:
+                # Add dividers only between items (not before first or after last)
+                if i > 0:
                     divider = soup.new_tag('span')
                     divider['class'] = 'contact-divider'
                     divider.string = ' | '
@@ -459,7 +471,7 @@ def main():
     print(f"PDF saved to: {os.path.abspath(pdf_path)}")
     print("\nBest practices implemented:")
     print("- Professional typography and spacing")
-    print("- Clean header layout with minimal separator spacing")
+    print("- Clean header layout with proper filtering of empty elements")
     print("- Removed all emojis and icons")
     print("- Intelligent page breaks")
     print("- Proper heading hierarchy")
