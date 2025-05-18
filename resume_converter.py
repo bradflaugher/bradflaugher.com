@@ -6,12 +6,13 @@ This script converts an HTML resume to a professionally formatted PDF document
 using WeasyPrint. It applies custom CSS styling, ensures proper page breaks,
 and follows resume best practices for formatting.
 
-Author: Manus AI
+Author: Manus AI and Claude 3.7 Sonnet
 Date: May 18, 2025
 """
 
 import os
 import sys
+import re
 from pathlib import Path
 from bs4 import BeautifulSoup
 import weasyprint
@@ -63,6 +64,38 @@ def extract_resume_content(html_path):
     
     return soup
 
+def remove_emojis(soup):
+    """Remove all emoji characters from the HTML content."""
+    # Unicode ranges for emojis
+    emoji_pattern = re.compile(
+        "["
+        "\U0001F600-\U0001F64F"  # emoticons
+        "\U0001F300-\U0001F5FF"  # symbols & pictographs
+        "\U0001F680-\U0001F6FF"  # transport & map symbols
+        "\U0001F700-\U0001F77F"  # alchemical symbols
+        "\U0001F780-\U0001F7FF"  # Geometric Shapes
+        "\U0001F800-\U0001F8FF"  # Supplemental Arrows-C
+        "\U0001F900-\U0001F9FF"  # Supplemental Symbols and Pictographs
+        "\U0001FA00-\U0001FA6F"  # Chess Symbols
+        "\U0001FA70-\U0001FAFF"  # Symbols and Pictographs Extended-A
+        "\U00002702-\U000027B0"  # Dingbats
+        "\U000024C2-\U0001F251" 
+        "]+", flags=re.UNICODE
+    )
+    
+    # Find all text nodes and remove emojis
+    for text in soup.find_all(text=True):
+        if emoji_pattern.search(text):
+            new_text = emoji_pattern.sub('', text)
+            text.replace_with(new_text)
+    
+    # Also remove any elements with emoji classes
+    emoji_elements = soup.select('[class*="emoji"], [class*="icon"], .fa, .fab, .fas, .far, .fal')
+    for element in emoji_elements:
+        element.decompose()
+    
+    return soup
+
 def optimize_header(soup):
     """Optimize header to be more compact and professional."""
     header = soup.select_one('.header')
@@ -70,295 +103,251 @@ def optimize_header(soup):
         print("Warning: Cannot optimize header - no '.header' element found")
         return soup
     
-    # Restructure the header for a more compact and professional look
-    # First, let's clean up the existing header content
+    # Based on the image, implement a clean, professional header layout
+    # First, extract header elements
     name_element = header.select_one('h1, .name')
     contact_info = header.select_one('.contact-info, .contact')
-    title_element = header.select_one('.title, .job-title')
     
-    # If we have the basic elements, let's restructure them
-    if name_element and contact_info:
-        # Create a new header structure
-        new_header = soup.new_tag('div')
-        new_header['class'] = 'header professional-header'
+    # Create a new header structure
+    new_header = soup.new_tag('div')
+    new_header['class'] = 'header professional-header'
+    
+    # Create a name section
+    name_section = soup.new_tag('div')
+    name_section['class'] = 'header-name'
+    
+    # Create contact section
+    contact_section = soup.new_tag('div')
+    contact_section['class'] = 'header-contact'
+    
+    # Move name to name section
+    if name_element:
+        name_element_copy = name_element.extract()
+        name_section.append(name_element_copy)
+    
+    # Process contact info to make it more professional
+    if contact_info:
+        # Get all contact items
+        contact_items = contact_info.select('a, span, p, div')
         
-        # Create left section for name and title
-        left_section = soup.new_tag('div')
-        left_section['class'] = 'header-left'
-        
-        # Create right section for contact info
-        right_section = soup.new_tag('div')
-        right_section['class'] = 'header-right'
-        
-        # Move name and title to left section
-        if name_element:
-            left_section.append(name_element)
-        if title_element:
-            left_section.append(title_element)
-        
-        # Process contact info to make it more compact
-        if contact_info:
-            # Create a more structured contact layout
-            contact_items = contact_info.select('a, span, p, div')
-            
-            # Group contact items into rows for a more compact layout
-            contact_row = soup.new_tag('div')
-            contact_row['class'] = 'contact-row'
-            
-            for i, item in enumerate(contact_items):
-                # Add dividers between contact items
-                if i > 0:
-                    divider = soup.new_tag('span')
-                    divider['class'] = 'contact-divider'
-                    divider.string = ' | '
-                    contact_row.append(divider)
+        # Create a cleaner contact layout
+        for item in contact_items:
+            # Skip empty items 
+            if not item.get_text(strip=True):
+                continue
                 
-                # Clean up and add the contact item
-                item_copy = item.extract()
-                contact_row.append(item_copy)
-                
-                # Create a new row every 3 items for better organization
-                if (i + 1) % 3 == 0 and i < len(contact_items) - 1:
-                    right_section.append(contact_row)
-                    contact_row = soup.new_tag('div')
-                    contact_row['class'] = 'contact-row'
+            # Clean up the contact item
+            item_copy = item.extract()
             
-            # Add the last row if it has items
-            if len(contact_row.contents) > 0:
-                right_section.append(contact_row)
-        
-        # Add left and right sections to the new header
-        new_header.append(left_section)
-        new_header.append(right_section)
-        
-        # Replace old header with new header
-        header.replace_with(new_header)
-        
-        # Add inline CSS for the header styling
-        style_tag = soup.new_tag('style')
-        style_tag.string = """
-        /* Resume PDF Styles */
-        @page {
-            size: letter;
-            margin: 0.5in;
-            @bottom-right {
-                content: "Page " counter(page) " of " counter(pages);
-                font-size: 9pt;
-                color: #666;
-            }
-        }
-
-        /* Global Styles */
-        body {
-            font-family: 'Roboto', 'Noto Sans CJK', 'WenQuanYi Zen Hei', sans-serif;
-            line-height: 1.5;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            font-size: 10pt;
-        }
-
-        .container {
-            max-width: 100%;
-            margin: 0 auto;
-        }
-
-        /* Improved Header Styles */
-        .professional-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 1px solid #2c3e50;
-            padding-bottom: 0.8em;
-            margin-bottom: 1.5em;
-            page-break-inside: avoid;
-        }
-
-        .header-left {
-            flex: 1;
-        }
-
-        .header-right {
-            text-align: right;
-            line-height: 1.5;
-        }
-
-        .header-left h1 {
-            font-size: 18pt;
-            font-weight: 700;
-            color: #2c3e50;
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        .header-left .job-title, .header-left .title {
-            font-size: 12pt;
-            color: #34495e;
-            margin: 0.3em 0 0;
-            font-weight: normal;
-        }
-
-        .contact-row {
-            margin-bottom: 5px;
+            # Wrap in a div for styling
+            item_div = soup.new_tag('div')
+            item_div['class'] = 'contact-item'
+            item_div.append(item_copy)
+            
+            contact_section.append(item_div)
+    
+    # Add name and contact sections to the new header
+    new_header.append(name_section)
+    new_header.append(contact_section)
+    
+    # Replace old header with new header
+    header.replace_with(new_header)
+    
+    # Add inline CSS for the improved header styling
+    style_tag = soup.find('style') or soup.new_tag('style')
+    style_tag.string = """
+    /* Resume PDF Styles */
+    @page {
+        size: letter;
+        margin: 0.75in 0.75in 0.75in 0.75in;
+        @bottom-right {
+            content: "Page " counter(page) " of " counter(pages);
             font-size: 9pt;
-            color: #34495e;
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.8em;
+            color: #555;
         }
+    }
 
-        .contact-divider {
-            color: #bdc3c7;
-        }
+    /* Global Styles */
+    body {
+        font-family: 'Georgia', 'Times New Roman', serif;
+        line-height: 1.4;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        font-size: 11pt;
+    }
 
-        .header-right a {
-            color: #3498db;
-            text-decoration: none;
-        }
+    .container {
+        max-width: 100%;
+        margin: 0 auto;
+    }
 
-        .header-right a:hover {
-            text-decoration: underline;
-        }
+    /* Professional Header Styles */
+    .professional-header {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1.5em;
+        border-bottom: 2px solid #2c3e50;
+        padding-bottom: 0.5em;
+        page-break-inside: avoid;
+    }
 
-        /* Hide download section in PDF */
-        .download-section {
-            display: none;
-        }
+    .header-name {
+        margin-bottom: 0.5em;
+    }
 
-        /* Section Styles */
+    .header-name h1 {
+        font-size: 24pt;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .header-contact {
+        display: flex;
+        justify-content: space-between;
+        font-size: 10pt;
+        color: #34495e;
+    }
+
+    .contact-item {
+        margin-right: 1.5em;
+    }
+
+    .contact-item a {
+        color: #34495e;
+        text-decoration: none;
+    }
+
+    /* Section Styles */
+    .section {
+        margin-bottom: 1.5em;
+        page-break-inside: avoid;
+    }
+
+    .section h2 {
+        font-size: 14pt;
+        color: #2c3e50;
+        margin: 0 0 0.7em;
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid #eee;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Professional Summary */
+    .professional-summary p {
+        margin-top: 0;
+        text-align: justify;
+    }
+
+    /* Education Section */
+    .education-item {
+        margin-bottom: 1em;
+        page-break-inside: avoid;
+    }
+
+    .institution {
+        font-weight: 600;
+        font-size: 12pt;
+    }
+
+    .degree {
+        font-style: italic;
+        color: #555;
+    }
+
+    /* Experience Section */
+    .experience-item {
+        margin-bottom: 1.2em;
+        page-break-inside: avoid;
+    }
+
+    .company {
+        font-weight: 600;
+        font-size: 12pt;
+    }
+
+    .job-title {
+        font-weight: normal;
+        font-style: italic;
+        margin-bottom: 0.3em;
+    }
+
+    .duration {
+        color: #555;
+        font-size: 10pt;
+    }
+
+    .responsibilities ul {
+        margin: 0.5em 0;
+        padding-left: 1.5em;
+    }
+
+    .responsibilities li {
+        margin-bottom: 0.5em;
+        text-align: justify;
+    }
+
+    /* Skills Section */
+    .skills-list {
+        column-count: 2;
+        column-gap: 2em;
+        margin: 0;
+        padding-left: 1.5em;
+    }
+
+    .skills-list li {
+        margin-bottom: 0.5em;
+        break-inside: avoid;
+    }
+
+    /* Hide all icon and emoji elements */
+    .emoji, .icon, .fa, .fab, .fas, .far, .fal {
+        display: none !important;
+    }
+
+    /* Page Break Controls */
+    h2 {
+        page-break-after: avoid;
+    }
+
+    .section:first-of-type {
+        page-break-before: avoid;
+    }
+
+    /* Print Optimizations */
+    @media print {
         .section {
-            margin-bottom: 1.2em;
+            page-break-inside: auto;
+        }
+        
+        .experience-item, .education-item {
             page-break-inside: avoid;
         }
-
-        .section h2 {
-            font-size: 14pt;
-            color: #2c3e50;
-            margin: 0 0 0.7em;
-            padding-bottom: 0.3em;
-            border-bottom: 1px solid #eee;
-        }
-
-        /* Divider */
-        .divider {
-            display: none; /* Hide dividers in PDF */
-        }
-
-        /* Education Section */
-        .education-item {
-            margin-bottom: 0.7em;
-            page-break-inside: avoid;
-        }
-
-        .institution {
-            font-weight: 600;
-            font-size: 11pt;
-        }
-
-        .degree {
-            font-style: italic;
-            color: #555;
-        }
-
-        /* Experience Section */
-        .experience-item {
-            margin-bottom: 1em;
-            page-break-inside: avoid;
-        }
-
-        .job-title {
-            margin-bottom: 0.3em;
-        }
-
-        .company {
-            font-weight: 600;
-            font-size: 11pt;
-        }
-
-        .duration {
-            color: #555;
-        }
-
-        .responsibilities ul {
-            margin: 0.3em 0;
-            padding-left: 1.5em;
-        }
-
-        .responsibilities li {
-            margin-bottom: 0.3em;
-        }
-
-        /* Skills Section */
-        .skills-matrix {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1em;
-            page-break-inside: avoid;
-        }
-
-        .skills-matrix h3 {
-            font-size: 11pt;
-            margin: 0 0 0.3em;
-            color: #2c3e50;
-        }
-
-        .skills-matrix p {
-            margin: 0;
-            color: #555;
-        }
-
-        /* Page Break Controls */
-        h2 {
+        
+        h2, h3 {
             page-break-after: avoid;
         }
-
-        .section:first-of-type {
-            page-break-before: avoid;
+        
+        .professional-header {
+            page-break-after: avoid;
         }
-
-        /* Ensure good page breaks */
-        @media print {
-            .section {
-                page-break-inside: auto;
-            }
-            
-            .experience-item, .education-item {
-                page-break-inside: avoid;
-            }
-            
-            h2, h3 {
-                page-break-after: avoid;
-            }
-            
-            .professional-header {
-                page-break-after: avoid;
-                border-bottom-color: #000;
-            }
-            
-            .header-left h1 {
-                color: #000;
-            }
-            
-            .header-left .job-title, .header-left .title {
-                color: #333;
-            }
-            
-            .contact-row {
-                color: #000;
-            }
-            
-            .header-right a {
-                color: #000;
-            }
-            
-            /* Avoid orphans and widows */
-            p, li {
-                orphans: 3;
-                widows: 3;
-            }
+        
+        /* Avoid orphans and widows */
+        p, li {
+            orphans: 3;
+            widows: 3;
         }
-        """
+    }
+    """
+    
+    if not soup.find('style'):
         soup.head.append(style_tag)
+    else:
+        soup.find('style').replace_with(style_tag)
     
     return soup
 
@@ -396,28 +385,10 @@ def add_meta_tags(soup):
     head.append(print_meta)
     
     # Add font link tags for better font support
-    roboto_link = soup.new_tag('link')
-    roboto_link['rel'] = 'stylesheet'
-    roboto_link['href'] = 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap'
-    head.append(roboto_link)
-    
-    # Add style tag for font-face definitions
-    style = soup.new_tag('style')
-    style.string = """
-    @font-face {
-        font-family: 'Noto Sans CJK';
-        src: url('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc') format('truetype');
-        font-weight: normal;
-        font-style: normal;
-    }
-    @font-face {
-        font-family: 'WenQuanYi Zen Hei';
-        src: url('/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc') format('truetype');
-        font-weight: normal;
-        font-style: normal;
-    }
-    """
-    head.append(style)
+    font_link = soup.new_tag('link')
+    font_link['rel'] = 'stylesheet'
+    font_link['href'] = 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Georgia&display=swap'
+    head.append(font_link)
     
     return soup
 
@@ -445,7 +416,7 @@ def convert_to_pdf(html_content, css_path, output_path, font_dir=None):
     # Convert to PDF - note we're prioritizing the embedded styles
     HTML(string=str(html_content), base_url=base_url).write_pdf(
         output_path, 
-        stylesheets=css_files,  # Use embedded CSS
+        stylesheets=css_files,
         font_config=font_config
     )
     
@@ -461,12 +432,16 @@ def main():
         print(f"Error: HTML file not found: {args.html}")
         sys.exit(1)
     
-    # Extract and optimize content
+    # Extract content
     soup = extract_resume_content(args.html)
     
-    # Add the new optimize_header function to the pipeline
+    # Remove emojis from the content
+    soup = remove_emojis(soup)
+    
+    # Optimize the header
     soup = optimize_header(soup)
     
+    # Additional optimizations
     soup = optimize_for_pdf(soup)
     soup = add_meta_tags(soup)
     
@@ -476,14 +451,15 @@ def main():
     print(f"\nResume conversion complete!")
     print(f"PDF saved to: {os.path.abspath(pdf_path)}")
     print("\nBest practices implemented:")
-    print("✓ Professional typography and spacing")
-    print("✓ Compact, modern header layout")
-    print("✓ Intelligent page breaks to avoid splitting sections")
-    print("✓ Proper heading hierarchy and section organization")
-    print("✓ Embedded fonts for consistent rendering")
-    print("✓ Multilingual support with CJK fonts")
-    print("✓ Page numbering for multi-page resumes")
-    print("✓ Optimized for both screen viewing and printing")
+    print("- Professional typography and spacing")
+    print("- Clean, modern header layout")
+    print("- Removed all emojis and icons")
+    print("- Intelligent page breaks")
+    print("- Proper heading hierarchy")
+    print("- Embedded fonts for consistent rendering")
+    print("- Multi-language support")
+    print("- Page numbering for multi-page resumes")
+    print("- Optimized for both screen viewing and printing")
 
 if __name__ == "__main__":
     main()
