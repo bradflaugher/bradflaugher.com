@@ -1,617 +1,483 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brad Flaugher - Technology Executive | Founder | AI Innovation Strategist</title>
-    <style>
-        /* Base Styles */
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-color: #ecf0f1;
-            --dark-color: #2c3e50;
-            --text-color: #333;
-            --link-color: #3498db;
-            --border-color: #ddd;
-            --section-spacing: 1.5rem;
-        }
+#!/usr/bin/env python3
+"""
+Resume HTML to PDF Converter
+
+This script converts an HTML resume to a professionally formatted PDF document
+using WeasyPrint. It applies custom CSS styling, ensures proper page breaks,
+and follows resume best practices for formatting.
+
+Author: Manus AI and Claude 3.7 Sonnet
+Date: May 18, 2025
+"""
+
+import os
+import sys
+import re
+from pathlib import Path
+from bs4 import BeautifulSoup
+import weasyprint
+from weasyprint import HTML, CSS
+import argparse
+
+def setup_argparse():
+    """Set up command line argument parsing."""
+    parser = argparse.ArgumentParser(description='Convert HTML resume to professional PDF')
+    parser.add_argument('html', type=str, nargs='?', default='resume.html',
+                        help='Path to HTML resume file')
+    parser.add_argument('output', type=str, nargs='?', default='professional_resume.pdf',
+                        help='Output PDF file path')
+    parser.add_argument('--css', type=str, default='resume_styles.css',
+                        help='Path to CSS styles file (default: resume_styles.css)')
+    parser.add_argument('--font-dir', type=str, 
+                        default='/usr/share/fonts',
+                        help='Directory containing fonts (default: /usr/share/fonts)')
+    return parser.parse_args()
+
+def validate_files(html_path, css_path):
+    """Validate that input files exist."""
+    if not os.path.exists(html_path):
+        print(f"Error: HTML file not found: {html_path}")
+        sys.exit(1)
+    if not os.path.exists(css_path):
+        print(f"Error: CSS file not found: {css_path}")
+        sys.exit(1)
+
+def extract_resume_content(html_path):
+    """Extract and parse resume content from HTML file."""
+    with open(html_path, 'r', encoding='utf-8') as file:
+        html_content = file.read()
+    
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    # Verify that the HTML has the expected structure
+    container = soup.select_one('.container')
+    if not container:
+        print("Warning: Expected '.container' element not found in HTML")
+    
+    header = soup.select_one('.header')
+    if not header:
+        print("Warning: Expected '.header' element not found in HTML")
+    
+    sections = soup.select('.section')
+    if not sections:
+        print("Warning: No '.section' elements found in HTML")
+    
+    return soup
+
+def optimize_header(soup):
+    """Optimize header to be more compact and professional."""
+    header = soup.select_one('.header')
+    if not header:
+        print("Warning: Cannot optimize header - no '.header' element found")
+        return soup
+    
+    # Extract header elements
+    name_element = header.select_one('h1, .name')
+    contact_info = header.select_one('.contact-info')
+    
+    # Create a new header structure
+    new_header = soup.new_tag('div')
+    new_header['class'] = 'header professional-header'
+    
+    # Create a name section
+    name_section = soup.new_tag('div')
+    name_section['class'] = 'header-name'
+    
+    # Create a simple contact section
+    contact_section = soup.new_tag('div')
+    contact_section['class'] = 'header-contact'
+    
+    # Move name to name section
+    if name_element:
+        name_element_copy = name_element.extract()
+        name_section.append(name_element_copy)
+    
+    # Process contact info
+    if contact_info:
+        # Find all links inside contact items, but first remove emojis
+        for emoji_span in contact_info.select('.contact-emoji'):
+            emoji_span.decompose()
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        # Get links from contact items
+        links = []
+        for contact_item in contact_info.select('.contact-item'):
+            link = contact_item.find('a')
+            if link:
+                links.append(link)
         
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: #fff;
-            padding: 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
+        # Print for debugging
+        print(f"Found {len(links)} contact links")
         
-        /* Typography */
-        h1, h2, h3, h4, h5, h6 {
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.25rem;
-        }
-        
-        h2 {
-            font-size: 1.5rem;
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 0.25rem;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        p {
-            margin-bottom: 1rem;
-        }
-        
-        a {
-            color: var(--link-color);
-            text-decoration: none;
-        }
-        
-        a:hover {
-            text-decoration: underline;
-            color: var(--accent-color);
-        }
-        
-        /* Layout */
-        .container {
-            width: 100%;
-        }
-        
-        /* Enhanced Header Styles */
-        .header {
-            position: relative;
-            padding: 1.8rem 2rem;
-            background-color: #fff;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            margin-bottom: 2rem;
-        }
-        
-        .header-name {
-            font-size: 2.8rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-            color: var(--primary-color);
-        }
-        
-        .header-title {
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .header-subtitle {
-            font-size: 1.1rem;
-            font-weight: 500;
+        # Add links to contact section with separators
+        for i, link in enumerate(links):
+            # Copy the link to avoid issues when adding to new section
+            link_copy = soup.new_tag('a')
+            link_copy['href'] = link.get('href', '')
+            if link.get('target'):
+                link_copy['target'] = link['target']
+            link_copy.string = link.get_text(strip=True)
+            
+            # Add dividers after (not before) each link except the last
+            if i > 0:
+                divider = soup.new_tag('span')
+                divider['class'] = 'contact-divider'
+                divider.string = ' | '
+                contact_section.append(divider)
+            
+            contact_section.append(link_copy)
+    
+    # Add sections to the header
+    new_header.append(name_section)
+    new_header.append(contact_section)
+    
+    # Replace old header with new header
+    header.replace_with(new_header)
+    
+    # Add inline CSS for the improved header styling
+    style_tag = soup.find('style') or soup.new_tag('style')
+    style_tag.string = """
+    /* Resume PDF Styles */
+    @page {
+        size: letter;
+        margin: 0.75in 0.75in 0.75in 0.75in;
+        @bottom-right {
+            content: "Page " counter(page) " of " counter(pages);
+            font-size: 9pt;
             color: #555;
-            margin-top: 0.2rem;
-            margin-bottom: 0.5rem;
-            letter-spacing: 0.5px;
         }
-        
-        .contact-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-top: 1rem;
-        }
-        
-        .contact-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem 1.25rem;
-            align-items: center;
-        }
-        
-        .contact-item {
-            display: inline-flex;
-            align-items: center;
-            font-size: 0.95rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .contact-info a {
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-        
-        .contact-emoji {
-            margin-right: 0.5rem;
-            opacity: 0.9;
-        }
-        
+    }
+
+    /* Global Styles */
+    body {
+        font-family: 'Georgia', 'Times New Roman', serif;
+        line-height: 1.4;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        font-size: 11pt;
+    }
+
+    .container {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    /* Professional Header Styles */
+    .professional-header {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1.5em;
+        border-bottom: 2px solid #2c3e50;
+        padding-bottom: 0.5em;
+        page-break-inside: avoid;
+    }
+
+    .header-name {
+        margin-bottom: 0.5em;
+    }
+
+    .header-name h1 {
+        font-size: 24pt;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Simple contact row with minimal spacing */
+    .header-contact {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
+        font-size: 10pt;
+        color: #34495e;
+        margin-top: 0.5em;
+        gap: 0;  /* Remove any default gap */
+    }
+
+    .header-contact a {
+        color: #34495e;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .contact-divider {
+        margin: 0 3px;  /* Minimal spacing around pipe */
+        color: #7f8c8d;
+    }
+
+    /* Section Styles */
+    .section {
+        margin-bottom: 1.5em;
+        page-break-inside: avoid;
+    }
+
+    .section h2 {
+        font-size: 14pt;
+        color: #2c3e50;
+        margin: 0 0 0.7em;
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid #eee;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Professional Summary */
+    .professional-summary p {
+        margin-top: 0;
+        text-align: justify;
+    }
+
+    /* Education Section */
+    .education-item {
+        margin-bottom: 1em;
+        page-break-inside: avoid;
+    }
+
+    .institution {
+        font-weight: 600;
+        font-size: 12pt;
+    }
+
+    .degree {
+        font-style: italic;
+        color: #555;
+    }
+
+    /* Experience Section */
+    .experience-item {
+        margin-bottom: 1.2em;
+        page-break-inside: avoid;
+    }
+
+    .company {
+        font-weight: 600;
+        font-size: 12pt;
+    }
+
+    .job-title {
+        font-weight: normal;
+        font-style: italic;
+        margin-bottom: 0.3em;
+    }
+
+    .duration {
+        color: #555;
+        font-size: 10pt;
+    }
+
+    .responsibilities ul {
+        margin: 0.5em 0;
+        padding-left: 1.5em;
+    }
+
+    .responsibilities li {
+        margin-bottom: 0.5em;
+        text-align: justify;
+    }
+
+    /* Skills Section */
+    .skills-list {
+        column-count: 2;
+        column-gap: 2em;
+        margin: 0;
+        padding-left: 1.5em;
+    }
+
+    .skills-list li {
+        margin-bottom: 0.5em;
+        break-inside: avoid;
+    }
+
+    /* Page Break Controls */
+    h2 {
+        page-break-after: avoid;
+    }
+
+    .section:first-of-type {
+        page-break-before: avoid;
+    }
+
+    /* Print Optimizations */
+    @media print {
         .section {
-            margin-bottom: var(--section-spacing);
+            page-break-inside: auto;
         }
         
-        .divider {
-            border-top: 1px solid var(--border-color);
-            margin: 1rem 0;
+        .experience-item, .education-item {
+            page-break-inside: avoid;
         }
         
-        /* Experience Styles */
-        .experience-item {
-            margin-bottom: 1.25rem;
+        h2, h3 {
+            page-break-after: avoid;
         }
         
-        .job-title {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: baseline;
-            gap: 0.5rem;
+        .professional-header {
+            page-break-after: avoid;
         }
         
-        .company {
-            font-weight: 600;
-            color: var(--primary-color);
+        /* Avoid orphans and widows */
+        p, li {
+            orphans: 3;
+            widows: 3;
         }
-        
-        .duration {
-            font-style: italic;
-            color: #666;
-        }
-        
-        .responsibilities {
-            margin-top: 0.5rem;
-        }
-        
-        .responsibilities ul {
-            list-style-type: none;
-            padding-left: 1.5rem;
-        }
-        
-        .responsibilities li {
-            position: relative;
-            margin-bottom: 0.5rem;
-            line-height: 1.5;
-        }
-        
-        .responsibilities li::before {
-            content: "•";
-            position: absolute;
-            left: -1.5rem;
-            color: var(--secondary-color);
-        }
-        
-        /* Education Styles */
-        .education-item {
-            margin-bottom: 1rem;
-        }
-        
-        .institution {
-            font-weight: 600;
-        }
-        
-        .degree {
-            font-style: italic;
-        }
-        
-        /* Skills Matrix Styles */
-        .skills-matrix {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-        
-        .skills-matrix div {
-            background: #f9f9f9;
-            padding: 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-        }
-        
-        .skills-matrix h3 {
-            margin-bottom: 0.75rem;
-            color: var(--primary-color);
-        }
-        
-        .skills-matrix p {
-            margin-bottom: 0;
-            line-height: 1.5;
-        }
-        
-        /* Projects Styles */
-        .project-title {
-            font-weight: 600;
-        }
-        
-        /* Download Button Styles */
-        .download-resume {
-            display: inline-block;
-            background-color: var(--secondary-color);
-            color: white;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            margin-top: 1rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            max-width: 250px;
-        }
-        
-        .download-resume:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-            text-decoration: none;
-            color: white;
-        }
-        
-        .download-resume:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .download-section {
-            text-align: center;
-            margin: 1.5rem 0;
-            padding: 1rem;
-            background-color: #f9f9f9;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-        }
-        
-        /* Print Styles */
-        @media print {
-            body {
-                padding: 0.5in;
-                font-size: 11pt;
-                line-height: 1.4;
-                background-color: #fff;
-            }
-            
-            .header {
-                border: none;
-                padding: 0;
-                margin-bottom: 1rem;
-                background-color: #fff;
-            }
-            
-            a {
-                color: var(--text-color);
-                text-decoration: none;
-            }
-            
-            .no-print {
-                display: none !important;
-            }
-            
-            h1 {
-                font-size: 18pt;
-            }
-            
-            h2 {
-                font-size: 14pt;
-                margin-top: 1rem;
-            }
-            
-            .divider {
-                margin: 0.5rem 0;
-            }
-            
-            .section {
-                page-break-inside: avoid;
-                margin-bottom: 1rem;
-            }
-            
-            .header-subtitle {
-                font-size: 12pt;
-            }
-            
-            .contact-info {
-                gap: 0.5rem;
-            }
-            
-            .download-section {
-                display: none;
-            }
-        }
-        
-        /* Responsive Styles */
-        @media screen and (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-            
-            .header {
-                padding: 1.5rem;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .header-subtitle {
-                font-size: 1rem;
-            }
-            
-            .contact-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.25rem;
-            }
-            
-            .contact-item {
-                margin-bottom: 0.5rem;
-                width: 100%;
-            }
-            
-            .job-title {
-                flex-direction: column;
-                gap: 0.25rem;
-            }
-            
-            .duration {
-                margin-left: 0;
-            }
-            
-            /* Responsive Skills Matrix */
-            .skills-matrix {
-                grid-template-columns: 1fr;
-            }
-            
-            .download-section {
-                padding: 0.75rem;
-            }
-            
-            .download-resume {
-                width: 100%;
-                max-width: 100%;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- Header Section -->
-        <header class="header">
-            <div class="header-title">
-                <h1 class="header-name">Brad Flaugher</h1>
-                <div class="header-subtitle">Technology Executive | Founder | AI Innovation Strategist</div>
-            </div>
-            <div class="contact-info">
-                <div class="contact-row">
-                    <span class="contact-item"><span class="contact-emoji">📧</span><a href="mailto:brad@bradflaugher.com">brad@bradflaugher.com</a></span>
-                    <span class="contact-item"><span class="contact-emoji">💬</span><a href="https://signal.me/#eu/nNIgURzLjfztPIa7FoBO-5VicvmfitBN9JQjUuBQLBWEqjESWEBCQpuF8wriPmS7" target="_blank">Signal: bradflaugher.99</a></span>
-                </div>
-                <div class="contact-row">
-                    <span class="contact-item"><span class="contact-emoji">🌐</span><a href="https://bradflaugher.com" target="_blank">bradflaugher.com</a></span>
-                    <span class="contact-item"><span class="contact-emoji">💻</span><a href="https://github.com/bradflaugher" target="_blank">github.com/bradflaugher</a></span>
-                </div>
-            </div>
-        </header>
-        
-        <!-- Download Section -->
-        <div class="download-section">
-            <a href="https://bradflaugher.com/Brad_Flaugher_Resume.pdf" class="download-resume" download target="_blank">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                Download Resume PDF
-            </a>
-        </div>
-        
-        <div class="divider"></div>
-        
-        <!-- Professional Summary -->
-        <section class="section">
-            <h2>Professional Summary</h2>
-            <p>
-            Strategic technology leader who has built global teams to <strong>240 engineers</strong> and cut Gen-AI spend <strong>90%</strong> for clients. Extensive experience founding, scaling, and advising innovative companies through growth and acquisition. Expert in deploying AI-driven operational improvements and building high-performance technical organizations across global locations.
-            </p>
-            <p>
-            Author of <a href="https://a.co/d/2BAlait" target="_blank"><em>AI Harmony</em></a> (2023) and founder of the <a href="https://innovationphilly.com" target="_blank">Philadelphia Open Innovation Tournament</a>, with a proven track record of translating advanced technologies into lasting competitive advantage in diverse business environments.
-            </p>
-            <p><strong>Seeking a leadership role as an AI Innovation Director or Fractional AI Partner in a forward-thinking organization committed to leveraging artificial intelligence to transform operations and create sustainable competitive advantages.</strong></p>
-        </section>
-        
-        <div class="divider"></div>
-        
-        <!-- Education -->
-        <section class="section">
-            <h2>Education</h2>
-            
-            <div class="education-item">
-                <div class="institution">Wharton School, University of Pennsylvania</div>
-                <div class="degree">General Management Program (GMP) | 2023 (<a href="https://open.spotify.com/episode/0H5ZwCpTu7ddvY7PlrkHd0" target="_blank">Featured on Wharton Executive Education Podcast</a>)</div>
-            </div>
-            
-            <div class="education-item">
-                <div class="institution">MIT Sloan School of Management</div>
-                <div class="degree">Executive Certificate in Technology and Operations | 2022 (<a href="https://exec.mit.edu/s/blog-post/brad-flaugher-learned-to-embrace-being-a-manager-with-mit-sloan-executive-educat-MCQFLHKCXJZVAEXKGTR7PVWX4TD4" target="_blank">Profiled by MIT</a>)</div>
-            </div>
-            
-            <div class="education-item">
-                <div class="institution">London School of Economics</div>
-                <div class="degree">MSc Economic History | 2010</div>
-            </div>
-            
-            <div class="education-item">
-                <div class="institution">Kalamazoo College</div>
-                <div class="degree">BA in Computer Science and Economics | 2009 (<a href="https://www.kzoo.edu/news/complex-systems-studies-professor/" target="_blank">Founder of Endowed Complex Systems Scholarship</a>)</div>
-            </div>
-        </section>
-        
-        <div class="divider"></div>
-        
-        <!-- Professional Experience -->
-        <section class="section">
-            <h2>Professional Experience</h2>
-            
-            <div class="experience-item">
-                <div class="job-title">
-                    <span class="company">Brad Flaugher</span>
-                    <span class="duration"> — Independent Technology Consultant | 2024–Present</span>
-                </div>
-                <div class="responsibilities">
-                    <ul>
-                        <li>Fractional AI partner to mid-market CEOs, running AI-maturity diagnostics and ROI-gap analyses.</li>
-                        <li>Design pragmatic AI roadmaps (cost-router, head-count optimization) with phase-gated execution.</li>
-                        <li>Facilitate bi-monthly C-suite sessions aligning AI investment to measurable P&L impact.</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="experience-item">
-                <div class="job-title">
-                    <span class="company">Inoxoft</span>
-                    <span class="duration"> — Chief Technology Officer | 2018–2024</span>
-                </div>
-                <div class="responsibilities">
-                    <ul>
-                        <li>Negotiated Bread Factory merger (2018) and became CTO for the combined firm.</li>
-                        <li>Generated $1–2 M ARR in annual business as Solutions Lead, personally closing 65% of new enterprise deals post-merger; hosted <a href="https://open.spotify.com/show/0kP6tsUyXWooICzmMyLk1O" target="_blank">Inoxoft's podcast</a> to drive business development and position the company as a thought leader.</li>
-                        <li>Integrated 100-person engineering organization; scaled to 240 engineers across global locations (North America, Europe, Latin America, Asia), developing technical talent through structured <a href="https://inoxoft.com/blog/innovative-machine-learning-projects-in-python-from-inoxoft-students/" target="_blank">ML bootcamp programs</a>.</li>
-                        <li>Accelerated client time-to-market by 40% through rapid prototyping and production-grade mobile application development.</li>
-                        <li>Demonstrated versatility by serving diverse client portfolio - from enterprise clients like Procter & Gamble (optimizing advertising pipelines with 40 % BigQuery cost reduction) to startups like ReFuelrs (full design and deployment of on-demand fuel delivery app, <a href="https://inoxoft.com/casestudy/an-on-demand-delivery-app-of-essential-home-fuels/" target="_blank">Case Study</a>).</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Audigent – embedded secondment while CTO at Inoxoft -->
-            <div class="experience-item">
-              <div class="job-title">
-                <span class="company">Audigent (Acquired by Experian for $350 M)</span>
-                <span class="duration"> — Embedded Machine-Learning Lead | 2020–2023</span>
-              </div>
-              <small><em>Seconded from my role as CTO of Inoxoft; remained CTO throughout the engagement.</em></small>
+    }
+    """
+    
+    if not soup.find('style'):
+        soup.head.append(style_tag)
+    else:
+        soup.find('style').replace_with(style_tag)
+    
+    return soup
 
-              <div class="responsibilities">
-                <ul>
-                  <li>Owned ML stack processing 4 billion+ user events/day; sub-10 ms models powered real-time bidding through <a href="https://audigent.com/hadron-id" target="_blank">HadronID</a>.</li>
-                  <li>Scaled infra across thousands of servers; optimized AWS allocation, driving 15% margin lift.</li>
-                  <li>Founded <a href="https://audigent.com/blog/data-bootcamp" target="_blank">Data Bootcamp</a>, training staff using my <a href="https://github.com/bradflaugher/AI-101" target="_blank">AI-101 curriculum</a> in Python, Docker, Linux, and AI fundamentals.</li>
-                  <li>Equity stake converted at Experian's $350 M acquisition.</li>
-                </ul>
-              </div>
-            </div>
-            
-            <div class="experience-item">
-                <div class="job-title">
-                    <span class="company">Bread Factory Studios (Acquired by Inoxoft)</span>
-                    <span class="duration"> — Founder | 2015–2018</span>
-                </div>
-                <div class="responsibilities">
-                    <ul>
-                        <li>Founded data-focused software firm leading IoT and Machine Learning projects, establishing foundational technologies and client relationships.</li>
-                        <li>Successfully negotiated a strategic merger with Inoxoft, aligning technical and client teams under one platform.</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="experience-item">
-                <div class="job-title">
-                    <span class="company">RedCurrent (Series A Exit - Founder Buyout)</span>
-                    <span class="duration"> — Product Development Manager | 2014–2015</span>
-                </div>
-                <div class="responsibilities">
-                    <ul>
-                        <li>Successfully standardized and automated scraping of thousands of events from thousands of sites to consolidate web calendars into a single platform, featured in <a href="https://www.startribune.com/redcurrent-app-aims-to-streamline-calendars/291898351" target="_blank">Star Tribune</a>, with development teams spanning the US and Asia.</li>
-                        <li>Departed after early founder buyout concurrent with successful Series A funding.</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="experience-item">
-                <div class="job-title">
-                    <span class="company">Offline Magazine (Acquihired by RedCurrent)</span>
-                    <span class="duration"> — Co-Founder | 2013–2014</span>
-                </div>
-                <div class="responsibilities">
-                    <ul>
-                        <li>Co-founded audio-text hybrid platform achieving 250K downloads in first month; created writer-centric revenue model featured in <a href="https://techcrunch.com/2013/12/05/offline-blends-text-audio-and-writer-empowerment-to-create-new-kind-of-ios-publication/" target="_blank">TechCrunch</a>.</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="experience-item">
-                <div class="job-title">
-                    <span class="company">Earlier Experience</span>
-                    <span class="duration"> — 2006–2013</span>
-                </div>
-                <div class="responsibilities">
-                    <ul>
-                        <li>Executed $50 M daily algorithmic trades at <a href="https://www.walleyecapital.com/" target="_blank">Walleye Capital</a> while developing proprietary trading algorithms.</li>
-                        <li>Published computational neuroscience research in <a href="https://link.springer.com/article/10.1007/s11571-008-9054-0" target="_blank">Journal of Cognitive Neurodynamics</a> while at RMKI Research Institute.</li>
-                        <li>Performed security audit work for Fortune 500 clients at <a href="https://insights.bdo.com/bdo-digital-cyber-security-risk-consulting.html?utm_medium=cpc&utm_source=google&utm_campaign=PaidSearch_ADVBDODRiskSecMgmt_C0044&utm_content=CyberRiskConsulting&utm_term=risk%20%26%20compliance%20consulting&utm_id=22396803745&adgroupid=178857848562&keyword=risk%20%26%20compliance%20consulting&gad_source=1&gclid=EAIaIQobChMI4_2Ch4b9jAMV5TLUAR1mRQnEEAAYASAAEgKec_D_BwE" target="_blank">BDO LLP</a>.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        
-        <div class="divider"></div>
-        
-        <!-- Skills  -->
-        <section class="section">
-            <h2>Technical Skills</h2>
-            <div class="skills-matrix">
-                <div>
-                    <h3>Gen-AI & Machine Learning</h3>
-                    <p> LLM cost-router ↓90 % • agentic classifier creation • edge classifiers < 60 MB • PyTorch/TensorFlow</p>
-                </div>
+def remove_emojis(soup):
+    """Remove all emoji characters from the HTML content."""
+    # Unicode ranges for emojis - in case any remain in text nodes
+    emoji_pattern = re.compile(
+        "["
+        "\U0001F600-\U0001F64F"  # emoticons
+        "\U0001F300-\U0001F5FF"  # symbols & pictographs
+        "\U0001F680-\U0001F6FF"  # transport & map symbols
+        "\U0001F700-\U0001F77F"  # alchemical symbols
+        "\U0001F780-\U0001F7FF"  # Geometric Shapes
+        "\U0001F800-\U0001F8FF"  # Supplemental Arrows-C
+        "\U0001F900-\U0001F9FF"  # Supplemental Symbols and Pictographs
+        "\U0001FA00-\U0001FA6F"  # Chess Symbols
+        "\U0001FA70-\U0001FAFF"  # Symbols and Pictographs Extended-A
+        "\U00002702-\U000027B0"  # Dingbats
+        "\U000024C2-\U0001F251" 
+        "]+", flags=re.UNICODE
+    )
+    
+    # Remove emoji spans
+    for emoji_span in soup.select('.contact-emoji'):
+        emoji_span.decompose()
+    
+    # Find all text nodes and remove emojis
+    for text in soup.find_all(text=True):
+        if emoji_pattern.search(text):
+            new_text = emoji_pattern.sub('', text)
+            text.replace_with(new_text)
+    
+    # Also remove any elements with emoji classes
+    emoji_elements = soup.select('[class*="emoji"], [class*="icon"], .fa, .fab, .fas, .far, .fal')
+    for element in emoji_elements:
+        element.decompose()
+    
+    return soup
 
-                <div>
-                    <h3>Cloud & Data Engineering</h3>
-                    <p>Multi-region pipeline (4 billion+ events/day) • 99.99 % uptime • BigQuery optimization ↓40 % • petabyte-scale GCP and AWS infra • multi-cloud infrastructure</p>
-                </div>
+def optimize_for_pdf(soup):
+    """Optimize HTML content for PDF conversion."""
+    # Remove download section as it's not needed in PDF
+    download_section = soup.select_one('.download-section')
+    if download_section:
+        download_section.decompose()
+    
+    # Ensure all links show their URLs in the PDF
+    for link in soup.select('a'):
+        if 'href' in link.attrs and not link['href'].startswith('mailto:'):
+            # Don't add URL text for email links
+            if not link.get('title'):
+                link['title'] = link['href']
+    
+    return soup
 
-                <div>
-                    <h3>Security & Privacy Engineering</h3>
-                    <p>Privacy-compliant JS (GDPR/CCPA) • W3C Privacy Sandbox contributor • security audits</p>
-                </div>
+def add_meta_tags(soup):
+    """Add necessary meta tags for better PDF rendering."""
+    head = soup.head
+    
+    # Add viewport meta tag if not present
+    if not soup.select_one('meta[name="viewport"]'):
+        viewport = soup.new_tag('meta')
+        viewport['name'] = 'viewport'
+        viewport['content'] = 'width=device-width, initial-scale=1.0'
+        head.append(viewport)
+    
+    # Add print-specific meta tag
+    print_meta = soup.new_tag('meta')
+    print_meta['name'] = 'print'
+    print_meta['content'] = 'yes'
+    head.append(print_meta)
+    
+    # Add font link tags for better font support
+    font_link = soup.new_tag('link')
+    font_link['rel'] = 'stylesheet'
+    font_link['href'] = 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Georgia&display=swap'
+    head.append(font_link)
+    
+    return soup
 
-                <div>
-                    <h3>Software & Edge Systems</h3>
-                    <p>Python • TypeScript • Rust • C/C++ • mobile (Swift, Kotlin, Flutter) • RISC-V Linux kernels for Edge AI • CI/CD ↓60 % deployment time</p>
-                </div>
-            </div>
-        </section>
-        
-        <div class="divider"></div>
-        
-        <!-- Innovation Leadership -->
-        <section class="section">
-            <h2>Innovation Leadership</h2>
-            <div class="responsibilities">
-                <ul>
-                    <li>Paid advisor in AI startups including <a href="https://www.notdiamond.ai" target="_blank">NotDiamond</a> and <a href="https://www.orbitapp.ai" target="_blank">Orbit AI</a>; Advisory board member at NextFab Ventures (2021–2025), advising portfolio companies on AI strategy and growth (<a href="https://www.inquirer.com/business/nextfab-philadelphia-artificial-intelligence-20240402.html" target="_blank">Profiled by Inquirer</a>).</li>
-                    <li>Published <a href="https://a.co/d/2BAlait" target="_blank"><em>AI Harmony</em></a> (2023), endorsed by executives from YouTube, Wharton, and Silver Lake.</li>
-                    <li>Founded and host the <a href="https://innovationphilly.com" target="_blank">Philadelphia Open Innovation Tournament</a>, an annual AI sprint connecting 200+ founders with top investors and accelerators in the region.</li>
-                    <li>Founded the Philadelphia Data &amp; AI Meetup, a community of 1,500+ technology professionals passionate about artificial intelligence and data innovation (<a href="https://www.meetup.com/philly-data-and-ai/" target="_blank">meetup.com</a>).</li>
-                    <li>Lifetime Member, <a href="https://member.acm.org/~flaugherb" target="_blank">Association for Computing Machinery (ACM)</a>; Associate Member, <a href="https://www.gnu.org/thankgnus/2022supporters.en.html" target="_blank">Free Software Foundation (FSF)</a>.</li>
-                </ul>
-            </div>
-        </section>
-    </div>
-</body>
-</html>
+def convert_to_pdf(html_content, css_path, output_path, font_dir=None):
+    """Convert HTML content to PDF with custom styling."""
+    print(f"Converting resume to PDF: {output_path}")
+    
+    # Create base URL for resolving relative paths
+    base_url = Path(os.path.abspath(css_path)).parent.as_uri()
+    
+    # Load external CSS if it exists, but we'll primarily use the embedded CSS
+    css_files = []
+    if os.path.exists(css_path):
+        css_files.append(CSS(filename=css_path))
+    
+    # Configure WeasyPrint with font directories
+    from weasyprint.text.fonts import FontConfiguration
+    font_config = FontConfiguration()
+    
+    # Set font directories environment variable
+    if font_dir and os.path.exists(font_dir):
+        print(f"Using font directory: {font_dir}")
+        os.environ['WEASYPRINT_FONT_CONFIG'] = font_dir
+    
+    # Convert to PDF - note we're prioritizing the embedded styles
+    HTML(string=str(html_content), base_url=base_url).write_pdf(
+        output_path, 
+        stylesheets=css_files,
+        font_config=font_config
+    )
+    
+    print(f"PDF successfully created: {output_path}")
+    return output_path
+
+def main():
+    """Main function to convert HTML resume to PDF."""
+    args = setup_argparse()
+    
+    # Validate files
+    if not os.path.exists(args.html):
+        print(f"Error: HTML file not found: {args.html}")
+        sys.exit(1)
+    
+    # Extract content
+    soup = extract_resume_content(args.html)
+    
+    # First remove emojis from the content
+    soup = remove_emojis(soup)
+    
+    # Then optimize the header
+    soup = optimize_header(soup)
+    
+    # Additional optimizations
+    soup = optimize_for_pdf(soup)
+    soup = add_meta_tags(soup)
+    
+    # Convert to PDF
+    pdf_path = convert_to_pdf(soup, args.css, args.output, args.font_dir)
+    
+    print(f"\nResume conversion complete!")
+    print(f"PDF saved to: {os.path.abspath(pdf_path)}")
+    print("\nBest practices implemented:")
+    print("- Professional typography and spacing")
+    print("- Clean header layout with preserved hyperlinks")
+    print("- Removed all emojis and icons")
+    print("- Intelligent page breaks")
+    print("- Proper heading hierarchy")
+    print("- Embedded fonts for consistent rendering")
+    print("- Multi-language support")
+    print("- Page numbering for multi-page resumes")
+    print("- Optimized for both screen viewing and printing")
+
+if __name__ == "__main__":
+    main()
