@@ -21,12 +21,12 @@ import argparse
 def setup_argparse():
     """Set up command line argument parsing."""
     parser = argparse.ArgumentParser(description='Convert HTML resume to professional PDF')
-    parser.add_argument('--html', type=str, default='resume.html',
-                        help='Path to HTML resume file (default: resume.html)')
+    parser.add_argument('html', type=str, nargs='?', default='resume.html',
+                        help='Path to HTML resume file')
+    parser.add_argument('output', type=str, nargs='?', default='professional_resume.pdf',
+                        help='Output PDF file path')
     parser.add_argument('--css', type=str, default='resume_styles.css',
                         help='Path to CSS styles file (default: resume_styles.css)')
-    parser.add_argument('--output', type=str, default='professional_resume.pdf',
-                        help='Output PDF file path (default: professional_resume.pdf)')
     parser.add_argument('--font-dir', type=str, 
                         default='/usr/share/fonts',
                         help='Directory containing fonts (default: /usr/share/fonts)')
@@ -137,64 +137,224 @@ def optimize_header(soup):
         # Add inline CSS for the header styling
         style_tag = soup.new_tag('style')
         style_tag.string = """
+        /* Resume PDF Styles */
+        @page {
+            size: letter;
+            margin: 0.5in;
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-size: 9pt;
+                color: #666;
+            }
+        }
+
+        /* Global Styles */
+        body {
+            font-family: 'Roboto', 'Noto Sans CJK', 'WenQuanYi Zen Hei', sans-serif;
+            line-height: 1.5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            font-size: 10pt;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Improved Header Styles */
         .professional-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            border-bottom: 2px solid #2c3e50;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            border-bottom: 1px solid #2c3e50;
+            padding-bottom: 0.8em;
+            margin-bottom: 1.5em;
+            page-break-inside: avoid;
         }
+
         .header-left {
             flex: 1;
         }
+
         .header-right {
             text-align: right;
             line-height: 1.5;
         }
+
         .header-left h1 {
-            margin: 0;
+            font-size: 18pt;
+            font-weight: 700;
             color: #2c3e50;
-            font-size: 28px;
+            margin: 0;
             line-height: 1.2;
         }
+
         .header-left .job-title, .header-left .title {
-            margin: 5px 0 0;
-            font-size: 18px;
-            color: #7f8c8d;
+            font-size: 12pt;
+            color: #34495e;
+            margin: 0.3em 0 0;
             font-weight: normal;
         }
+
         .contact-row {
             margin-bottom: 5px;
-            font-size: 14px;
+            font-size: 9pt;
             color: #34495e;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8em;
         }
+
         .contact-divider {
             color: #bdc3c7;
-            margin: 0 5px;
         }
+
         .header-right a {
             color: #3498db;
             text-decoration: none;
         }
+
         .header-right a:hover {
             text-decoration: underline;
         }
+
+        /* Hide download section in PDF */
+        .download-section {
+            display: none;
+        }
+
+        /* Section Styles */
+        .section {
+            margin-bottom: 1.2em;
+            page-break-inside: avoid;
+        }
+
+        .section h2 {
+            font-size: 14pt;
+            color: #2c3e50;
+            margin: 0 0 0.7em;
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Divider */
+        .divider {
+            display: none; /* Hide dividers in PDF */
+        }
+
+        /* Education Section */
+        .education-item {
+            margin-bottom: 0.7em;
+            page-break-inside: avoid;
+        }
+
+        .institution {
+            font-weight: 600;
+            font-size: 11pt;
+        }
+
+        .degree {
+            font-style: italic;
+            color: #555;
+        }
+
+        /* Experience Section */
+        .experience-item {
+            margin-bottom: 1em;
+            page-break-inside: avoid;
+        }
+
+        .job-title {
+            margin-bottom: 0.3em;
+        }
+
+        .company {
+            font-weight: 600;
+            font-size: 11pt;
+        }
+
+        .duration {
+            color: #555;
+        }
+
+        .responsibilities ul {
+            margin: 0.3em 0;
+            padding-left: 1.5em;
+        }
+
+        .responsibilities li {
+            margin-bottom: 0.3em;
+        }
+
+        /* Skills Section */
+        .skills-matrix {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1em;
+            page-break-inside: avoid;
+        }
+
+        .skills-matrix h3 {
+            font-size: 11pt;
+            margin: 0 0 0.3em;
+            color: #2c3e50;
+        }
+
+        .skills-matrix p {
+            margin: 0;
+            color: #555;
+        }
+
+        /* Page Break Controls */
+        h2 {
+            page-break-after: avoid;
+        }
+
+        .section:first-of-type {
+            page-break-before: avoid;
+        }
+
+        /* Ensure good page breaks */
         @media print {
+            .section {
+                page-break-inside: auto;
+            }
+            
+            .experience-item, .education-item {
+                page-break-inside: avoid;
+            }
+            
+            h2, h3 {
+                page-break-after: avoid;
+            }
+            
             .professional-header {
+                page-break-after: avoid;
                 border-bottom-color: #000;
             }
+            
             .header-left h1 {
                 color: #000;
             }
+            
             .header-left .job-title, .header-left .title {
                 color: #333;
             }
+            
             .contact-row {
                 color: #000;
             }
+            
             .header-right a {
                 color: #000;
+            }
+            
+            /* Avoid orphans and widows */
+            p, li {
+                orphans: 3;
+                widows: 3;
             }
         }
         """
@@ -268,8 +428,10 @@ def convert_to_pdf(html_content, css_path, output_path, font_dir=None):
     # Create base URL for resolving relative paths
     base_url = Path(os.path.abspath(css_path)).parent.as_uri()
     
-    # Load CSS
-    css = CSS(filename=css_path)
+    # Load external CSS if it exists, but we'll primarily use the embedded CSS
+    css_files = []
+    if os.path.exists(css_path):
+        css_files.append(CSS(filename=css_path))
     
     # Configure WeasyPrint with font directories
     from weasyprint.text.fonts import FontConfiguration
@@ -280,10 +442,10 @@ def convert_to_pdf(html_content, css_path, output_path, font_dir=None):
         print(f"Using font directory: {font_dir}")
         os.environ['WEASYPRINT_FONT_CONFIG'] = font_dir
     
-    # Convert to PDF
+    # Convert to PDF - note we're prioritizing the embedded styles
     HTML(string=str(html_content), base_url=base_url).write_pdf(
         output_path, 
-        stylesheets=[css],
+        stylesheets=css_files,  # Use embedded CSS
         font_config=font_config
     )
     
@@ -294,8 +456,10 @@ def main():
     """Main function to convert HTML resume to PDF."""
     args = setup_argparse()
     
-    # Validate input files
-    validate_files(args.html, args.css)
+    # Validate files
+    if not os.path.exists(args.html):
+        print(f"Error: HTML file not found: {args.html}")
+        sys.exit(1)
     
     # Extract and optimize content
     soup = extract_resume_content(args.html)
