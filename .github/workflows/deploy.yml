@@ -33,7 +33,7 @@ jobs:
           python -m pip install weasyprint beautifulsoup4
 
       - name: Generate resume.pdf
-        run: python resume_converter.py resume.html Brad_Flaugher_Resume.pdf
+        run: python resume_converter.py resume.html --html resume.html --output Brad_Flaugher_Resume.pdf
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
