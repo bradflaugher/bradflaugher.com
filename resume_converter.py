@@ -103,8 +103,7 @@ def optimize_header(soup):
         print("Warning: Cannot optimize header - no '.header' element found")
         return soup
     
-    # Based on the image, implement a clean, professional header layout
-    # First, extract header elements
+    # Extract header elements
     name_element = header.select_one('h1, .name')
     contact_info = header.select_one('.contact-info, .contact')
     
@@ -116,7 +115,7 @@ def optimize_header(soup):
     name_section = soup.new_tag('div')
     name_section['class'] = 'header-name'
     
-    # Create contact section
+    # Create a simple contact section
     contact_section = soup.new_tag('div')
     contact_section['class'] = 'header-contact'
     
@@ -125,28 +124,29 @@ def optimize_header(soup):
         name_element_copy = name_element.extract()
         name_section.append(name_element_copy)
     
-    # Process contact info to make it more professional
+    # Process contact info - keep it simple with a single row
     if contact_info:
-        # Get all contact items
-        contact_items = contact_info.select('a, span, p, div')
+        # Filter contact items to exclude empty ones and emojis
+        contact_items = []
+        for item in contact_info.select('a, span, p, div'):
+            if item.get_text(strip=True) and not any(c for c in item.get_text() if ord(c) > 8000):
+                contact_items.append(item)
         
-        # Create a cleaner contact layout
+        # Add each item to the contact section
         for item in contact_items:
-            # Skip empty items 
-            if not item.get_text(strip=True):
-                continue
+            if item.parent:  # Check if item has a parent
+                item_copy = item.extract()
                 
-            # Clean up the contact item
-            item_copy = item.extract()
-            
-            # Wrap in a div for styling
-            item_div = soup.new_tag('div')
-            item_div['class'] = 'contact-item'
-            item_div.append(item_copy)
-            
-            contact_section.append(item_div)
+                # Add dividers between items
+                if len(contact_section.contents) > 0:
+                    divider = soup.new_tag('span')
+                    divider['class'] = 'contact-divider'
+                    divider.string = ' | '
+                    contact_section.append(divider)
+                
+                contact_section.append(item_copy)
     
-    # Add name and contact sections to the new header
+    # Add sections to the header
     new_header.append(name_section)
     new_header.append(contact_section)
     
@@ -205,20 +205,31 @@ def optimize_header(soup):
         letter-spacing: 1px;
     }
 
+    /* Simple contact row */
     .header-contact {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
         font-size: 10pt;
         color: #34495e;
+        margin-top: 0.5em;
     }
 
-    .contact-item {
-        margin-right: 1.5em;
-    }
-
-    .contact-item a {
+    .header-contact a {
         color: #34495e;
         text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .contact-divider {
+        margin: 0 10px;
+        color: #7f8c8d;
+    }
+
+    /* Hide all icon and emoji elements */
+    .emoji, .icon, .fa, .fab, .fas, .far, .fal {
+        display: none !important;
     }
 
     /* Section Styles */
@@ -302,11 +313,6 @@ def optimize_header(soup):
     .skills-list li {
         margin-bottom: 0.5em;
         break-inside: avoid;
-    }
-
-    /* Hide all icon and emoji elements */
-    .emoji, .icon, .fa, .fab, .fas, .far, .fal {
-        display: none !important;
     }
 
     /* Page Break Controls */
@@ -452,7 +458,7 @@ def main():
     print(f"PDF saved to: {os.path.abspath(pdf_path)}")
     print("\nBest practices implemented:")
     print("- Professional typography and spacing")
-    print("- Clean, modern header layout")
+    print("- Clean, centered header layout on a single line")
     print("- Removed all emojis and icons")
     print("- Intelligent page breaks")
     print("- Proper heading hierarchy")
