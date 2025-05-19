@@ -30,6 +30,8 @@ def setup_argparse():
     parser.add_argument('--font-dir', type=str, 
                         default='/usr/share/fonts',
                         help='Directory containing fonts (default: /usr/share/fonts)')
+    parser.add_argument('--align', type=str, choices=['left', 'justify'], default='left',
+                        help='Text alignment style (default: left)')
     return parser.parse_args()
 
 def extract_resume_content(html_path):
@@ -331,58 +333,62 @@ def add_meta_tags(soup):
     
     return soup
 
-def add_improved_styles(soup):
+def add_improved_styles(soup, text_align="left"):
     """Add improved styling with balanced typography and consistent spacing."""
     head = soup.head
     if not head:
         head = soup.new_tag('head')
         soup.html.insert(0, head)
     
+    # Set the text alignment consistently
+    text_align_value = text_align if text_align in ["left", "justify"] else "left"
+    
     style_tag = soup.find('style') or soup.new_tag('style')
-    style_tag.string = """
+    style_tag.string = f"""
     /* Resume PDF Styles - Improved Typography Version */
-    @page {
+    @page {{
         size: letter;
         margin: 0.6in 0.6in 0.6in 0.6in; /* Slightly increased margins for better readability */
-        @bottom-right {
+        @bottom-right {{
             content: "Page " counter(page) " of " counter(pages);
             font-size: 8pt;
             color: #777;
             font-family: 'Roboto', 'Liberation Sans', Arial, sans-serif;
-        }
-    }
+        }}
+    }}
 
     /* Global Styles with improved font stack */
-    body {
+    body {{
         font-family: 'Roboto', 'Liberation Sans', 'Noto Sans', Arial, sans-serif;
         line-height: 1.3; /* Improved line height for readability */
         color: #333;
         margin: 0;
         padding: 0;
         font-size: 10.5pt;
-    }
+        text-align: {text_align_value};
+    }}
 
-    .container {
+    .container {{
         max-width: 100%;
         margin: 0;
         padding: 0;
-    }
+    }}
 
     /* Professional Header Styles */
-    .professional-header {
+    .professional-header {{
         display: flex;
         flex-direction: column;
         margin-bottom: 1em;
         border-bottom: 1px solid #2c3e50;
         padding-bottom: 0.4em;
         page-break-inside: avoid;
-    }
+    }}
 
-    .header-name {
+    .header-name {{
         margin-bottom: 0.4em;
-    }
+    }}
 
-    .header-name h1 {
+    .header-name h1 {{
         font-size: 18pt; /* Slightly smaller for better proportion */
         font-weight: 700; /* Standard bold weight */
         color: #2c3e50;
@@ -391,10 +397,11 @@ def add_improved_styles(soup):
         letter-spacing: 0.5px;
         line-height: 1.1;
         font-family: 'Roboto', 'Liberation Sans', 'Noto Sans', Arial, sans-serif;
-    }
+        text-align: center;
+    }}
 
     /* Simple contact row with improved spacing */
-    .header-contact {
+    .header-contact {{
         display: flex;
         justify-content: center;
         align-items: center;
@@ -403,26 +410,27 @@ def add_improved_styles(soup):
         color: #34495e;
         margin-top: 0.4em;
         gap: 0;
-    }
+        text-align: center;
+    }}
 
-    .header-contact a {
+    .header-contact a {{
         color: #34495e;
         text-decoration: none;
         white-space: nowrap;
-    }
+    }}
 
-    .contact-divider {
+    .contact-divider {{
         margin: 0 5px; /* Slightly more spacing */
         color: #7f8c8d;
-    }
+    }}
 
     /* Section Styles */
-    .section {
+    .section {{
         margin-bottom: 0.9em;
         page-break-inside: avoid;
-    }
+    }}
 
-    .section h2 {
+    .section h2 {{
         font-size: 13pt;
         color: #2c3e50;
         margin: 0 0 0.4em;
@@ -433,107 +441,107 @@ def add_improved_styles(soup):
         line-height: 1.2;
         font-weight: 600; /* More balanced bold */
         font-family: 'Roboto', 'Liberation Sans', 'Noto Sans', Arial, sans-serif;
-    }
+    }}
 
     /* Professional Summary */
-    .professional-summary p {
+    .professional-summary p {{
         margin: 0.4em 0;
-        text-align: justify;
+        text-align: {text_align_value};
         line-height: 1.3;
-    }
+    }}
 
     /* Highlight key terms in summary with moderate bold */
-    .professional-summary strong {
+    .professional-summary strong {{
         font-weight: 600;
         color: #2c3e50;
-    }
+    }}
 
     /* Education Section */
-    .education-item {
+    .education-item {{
         margin-bottom: 0.6em;
         page-break-inside: avoid;
-    }
+    }}
 
-    .institution {
+    .institution {{
         font-weight: 600; /* More balanced bold */
         font-size: 11pt;
         line-height: 1.3;
         color: #2c3e50;
-    }
+    }}
 
-    .degree {
+    .degree {{
         font-style: italic;
         color: #555;
         font-size: 10.5pt;
         line-height: 1.3;
-    }
+    }}
 
     /* Experience Section */
-    .experience-item {
+    .experience-item {{
         margin-bottom: 0.8em;
         page-break-inside: avoid;
-    }
+    }}
 
-    .company {
+    .company {{
         font-weight: 600; /* More balanced bold */
         font-size: 11pt;
         line-height: 1.3;
         color: #2c3e50;
-    }
+    }}
 
-    .job-title {
+    .job-title {{
         font-weight: normal;
         font-style: italic;
         margin-bottom: 0.3em;
         font-size: 10.5pt;
         line-height: 1.3;
         color: #34495e;
-    }
+    }}
 
-    .duration {
+    .duration {{
         color: #555;
         font-size: 9.5pt;
-    }
+    }}
 
-    .responsibilities ul {
+    .responsibilities ul {{
         margin: 0.4em 0;
         padding-left: 1.3em;
-    }
+    }}
 
-    .responsibilities li {
+    .responsibilities li {{
         margin-bottom: 0.3em;
-        text-align: justify;
+        text-align: {text_align_value};
         line-height: 1.3;
-    }
+    }}
 
     /* Normal bold text with system fonts */
-    strong, b {
+    strong, b {{
         font-weight: 600; /* More balanced bold */
         color: #2c3e50;
         font-family: inherit;
-    }
+    }}
 
     /* Skills Matrix Styles - Clean with consistent text size */
-    .skills-matrix {
+    .skills-matrix {{
         display: grid;
         grid-template-columns: 1fr;
         gap: 0.2em;
         margin: 0.3em 0 0.5em 0;
-    }
+    }}
 
-    .skill-area {
+    .skill-area {{
         margin: 0;
         padding: 0;
         line-height: 1.3;
-    }
+    }}
 
-    .skill-area.compact {
+    .skill-area.compact {{
         display: flex;
         flex-wrap: wrap;
         align-items: baseline;
-    }
+    }}
 
-    .skill-area h3 {
+    .skill-area h3 {{
         font-size: 10.5pt;
         font-weight: 600; /* More balanced bold */
         margin: 0 5px 0 0;
@@ -542,24 +550,24 @@ def add_improved_styles(soup):
         color: #2c3e50;
         display: inline;
         font-family: 'Roboto', 'Liberation Sans', 'Noto Sans', Arial, sans-serif;
-    }
+    }}
 
-    .skill-area p {
+    .skill-area p {{
         font-size: 10.5pt;
         margin: 0;
         padding: 0;
         line-height: 1.3;
         display: inline;
         color: #333;
-    }
+    }}
 
     /* Hide all icon and emoji elements */
-    .emoji, .icon, .fa, .fab, .fas, .far, .fal {
+    .emoji, .icon, .fa, .fab, .fas, .far, .fal {{
         display: none !important;
-    }
+    }}
 
     /* Timestamp at bottom */
-    .timestamp-container {
+    .timestamp-container {{
         text-align: center;
         margin-top: 20px;
         font-style: italic;
@@ -567,42 +575,42 @@ def add_improved_styles(soup):
         color: #777;
         border-top: 1px solid #eee;
         padding-top: 5px;
-    }
+    }}
 
     /* Page Break Controls with improved spacing */
-    h2 {
+    h2 {{
         page-break-after: avoid;
         margin-top: 0.8em;
-    }
+    }}
 
-    .section:first-of-type h2 {
+    .section:first-of-type h2 {{
         margin-top: 0;
-    }
+    }}
 
     /* Print Optimizations */
-    @media print {
-        .section {
+    @media print {{
+        .section {{
             page-break-inside: auto;
-        }
+        }}
         
-        .experience-item, .education-item {
+        .experience-item, .education-item {{
             page-break-inside: avoid;
-        }
+        }}
         
-        h2, h3 {
+        h2, h3 {{
             page-break-after: avoid;
-        }
+        }}
         
-        .professional-header {
+        .professional-header {{
             page-break-after: avoid;
-        }
+        }}
         
         /* Orphans and widows handling */
-        p, li {
+        p, li {{
             orphans: 2;
             widows: 2;
-        }
-    }
+        }}
+    }}
     """
     
     if not soup.find('style'):
@@ -734,6 +742,7 @@ def main():
         sys.exit(1)
     
     print(f"Processing HTML resume: {args.html}")
+    print(f"Using text alignment: {args.align}")
     
     # Extract content
     soup = extract_resume_content(args.html)
@@ -763,8 +772,8 @@ def main():
     # Configure fonts to use system fonts properly
     soup = configure_fonts(soup)
     
-    # Add improved styles with balanced typography
-    soup = add_improved_styles(soup)
+    # Add improved styles with balanced typography and consistent text alignment
+    soup = add_improved_styles(soup, args.align)
     
     # Convert to PDF
     pdf_path = convert_to_pdf(soup, args.output, args.font_dir)
@@ -772,6 +781,7 @@ def main():
     print(f"\nResume conversion complete!")
     print(f"PDF saved to: {os.path.abspath(pdf_path)}")
     print("\nBest practices implemented:")
+    print(f"- Consistent text alignment ({args.align})")
     print("- Balanced typography with system font prioritization")
     print("- Proper font weight consistency for headings and body text")
     print("- Improved spacing between elements for better readability")
