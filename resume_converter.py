@@ -717,6 +717,73 @@ def add_font_file(soup):
     head.append(font_style)
     return soup
 
+def convert_to_pdf(soup, output_path, font_dir):
+    """Convert BeautifulSoup HTML to PDF using WeasyPrint."""
+    print(f"Converting resume to PDF: {output_path}")
+    
+    # Set font directories environment variable if provided
+    if font_dir and os.path.exists(font_dir):
+        print(f"Using font directory: {font_dir}")
+        os.environ['WEASYPRINT_FONTS'] = font_dir
+    
+    # Create temporary HTML file with processed content
+    temp_html_path = Path(output_path).with_suffix('.temp.html')
+    
+    try:
+        # Write the HTML content to the temporary file
+        with open(temp_html_path, 'w', encoding='utf-8') as f:
+            f.write(str(soup))
+        
+        # Create base URL for resolving relative paths
+        base_url = Path.cwd().as_uri()
+        
+        # Configure WeasyPrint with font configuration
+        from weasyprint.text.fonts import FontConfiguration
+        font_config = FontConfiguration()
+        
+        # Create custom CSS for WeasyPrint
+        resume_css = CSS(string="""
+        @page {
+            size: letter;
+            margin: 0.5in 0.5in 0.5in 0.5in;
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-size: 8pt;
+                color: #777;
+            }
+        }
+        """)
+        
+        # Generate PDF - using both approaches for maximum compatibility
+        try:
+            # First approach (from newer version)
+            html = HTML(filename=str(temp_html_path))
+            html.write_pdf(output_path, stylesheets=[resume_css])
+        except Exception as e1:
+            print(f"First PDF generation approach failed: {e1}")
+            print("Trying alternative approach...")
+            
+            # Second approach (from older version)
+            with open(temp_html_path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            
+            HTML(string=html_content, base_url=base_url).write_pdf(
+                output_path, 
+                font_config=font_config
+            )
+        
+        print(f"PDF successfully created: {output_path}")
+        return output_path
+        
+    except Exception as e:
+        print(f"Error generating PDF: {e}")
+        raise e
+    finally:
+        # Clean up temporary file in all cases
+        if os.path.exists(temp_html_path):
+            os.remove(temp_html_path)
+            print("Temporary files cleaned up")
+
 def main():
     """Main function to convert HTML resume to PDF."""
     args = setup_argparse()
