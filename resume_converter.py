@@ -17,6 +17,8 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from weasyprint import HTML, CSS
 import argparse
+from datetime import datetime
+import pytz
 
 def setup_argparse():
     """Set up command line argument parsing."""
@@ -215,6 +217,27 @@ def enhance_experience_items(soup):
                 if indicator.lower() in text_content.lower():
                     li['class'] = 'achievement-item'
                     break
+                    
+            # Ensure the first line is actually bold by adding span tags
+            if 'achievement-item' in li.get('class', []):
+                text = li.get_text()
+                # Find where the first sentence ends
+                sentence_end = text.find('. ')
+                if sentence_end > 0:
+                    first_sentence = text[:sentence_end+1]
+                    rest_of_text = text[sentence_end+1:]
+                    
+                    # Clear the li and add the formatted content
+                    li.clear()
+                    
+                    # Add bold first sentence
+                    bold_span = soup.new_tag('strong')
+                    bold_span.string = first_sentence
+                    li.append(bold_span)
+                    
+                    # Add the rest of the text
+                    if rest_of_text:
+                        li.append(' ' + rest_of_text)
     
     return soup
 
@@ -303,6 +326,7 @@ def add_enhanced_styles(soup):
     style_tag = soup.find('style') or soup.new_tag('style')
     style_tag.string = """
     /* Resume PDF Styles - Enhanced Version with Strategic Bold Text */
+    /* !important flags added to ensure styles are applied */
     @page {
         size: letter;
         margin: 0.5in 0.5in 0.5in 0.5in; /* Balanced margins */
@@ -467,11 +491,11 @@ def add_enhanced_styles(soup):
 
     /* Style for achievement-oriented bullet points */
     .achievement-item {
-        font-weight: normal; /* Base weight */
+        font-weight: normal !important; /* Base weight */
     }
 
     .achievement-item::first-line {
-        font-weight: 600; /* Bold only the first line, which typically contains the achievement */
+        font-weight: 700 !important; /* Bold only the first line with !important flag */
     }
 
     /* Skills Matrix Styles - Ultra Compact with consistent text size */
@@ -526,6 +550,21 @@ def add_enhanced_styles(soup):
 
     .section:first-of-type h2 {
         margin-top: 0;
+    }
+
+    /* Resume footer with timestamp */
+    .resume-footer {
+        margin-top: 1em;
+        border-top: 1px solid #eee;
+        padding-top: 0.5em;
+        text-align: center;
+    }
+    
+    .timestamp {
+        font-size: 8pt;
+        color: #777;
+        font-style: italic;
+        margin: 0;
     }
 
     /* Print Optimizations */
@@ -617,6 +656,9 @@ def main():
     soup = optimize_for_pdf(soup)
     soup = add_meta_tags(soup)
     
+    # Add timestamp at the bottom
+    soup = add_timestamp(soup)
+    
     # Add enhanced styles with bold text
     soup = add_enhanced_styles(soup)
     
@@ -636,6 +678,7 @@ def main():
     print("- Clean header with preserved hyperlinks")
     print("- Removed all emojis and icons")
     print("- Professional typography with optimal readability")
+    print("- Added timestamp showing last update date and time in Eastern time")
 
 if __name__ == "__main__":
     main()
