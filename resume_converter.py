@@ -138,9 +138,19 @@ def optimize_skills_matrix(soup):
         p = skill_div.select_one('p')
         
         if h3 and p:
-            # Add style to make content more compact
-            h3['style'] = 'display: inline; margin-right: 5px; font-weight: bold;'
-            p['style'] = 'display: inline; margin: 0;'
+            # Add style to make content more compact and ensure h3 is bold
+            h3['style'] = 'display: inline; margin-right: 5px; font-weight: 900 !important; color: #2c3e50 !important;'
+            p['style'] = 'display: inline; margin: 0; font-size: 10.5pt !important;'
+            
+            # Add span with bold-text class for redundancy
+            if h3.string:
+                original_text = h3.string
+                h3.string = ''
+                
+                span = soup.new_tag('span')
+                span['class'] = 'bold-text'
+                span.string = original_text
+                h3.append(span)
     
     # Add a style attribute to the matrix itself
     skills_matrix['style'] = 'display: grid; grid-template-columns: 1fr; gap: 0.1em;'
@@ -153,11 +163,21 @@ def enhance_experience_items(soup):
     for exp_item in soup.select('.experience-item'):
         # Make company name bold
         company = exp_item.select_one('.company')
-        if company and company.string:
-            strong = soup.new_tag('strong')
-            strong.string = company.string
-            company.string = ''
-            company.append(strong)
+        if company:
+            # Try wrapping in both strong and span with bold-text class for redundancy
+            if company.string:
+                strong = soup.new_tag('strong')
+                strong.string = company.string
+                
+                span = soup.new_tag('span')
+                span['class'] = 'bold-text'
+                span.append(strong)
+                
+                company.string = ''
+                company.append(span)
+                
+                # Also add style directly to the element for maximum compatibility
+                company['style'] = 'font-weight: 900 !important; color: #2c3e50 !important;'
         
         # Find all list items in responsibilities
         for li in exp_item.select('.responsibilities li'):
@@ -166,7 +186,9 @@ def enhance_experience_items(soup):
             achievement_indicators = [
                 "increased", "decreased", "improved", "reduced", "developed",
                 "created", "launched", "implemented", "led", "managed",
-                "achieved", "exceeded", "generated", "secured", "won"
+                "achieved", "exceeded", "generated", "secured", "won",
+                "designed", "built", "maintained", "coordinated", "drove",
+                "directed", "produced", "delivered", "boosted", "expanded"
             ]
             
             # Mark achievements by bolding first section
@@ -187,10 +209,16 @@ def enhance_experience_items(soup):
                         # Clear li content
                         li.clear()
                         
-                        # Create and add bold part
+                        # Create and add bold part with multiple layers of bold
+                        span = soup.new_tag('span')
+                        span['class'] = 'bold-text'
+                        span['style'] = 'font-weight: 900 !important; color: #2c3e50 !important;'
+                        
                         bold = soup.new_tag('strong')
                         bold.string = first_part
-                        li.append(bold)
+                        span.append(bold)
+                        
+                        li.append(span)
                         
                         # Add rest of text
                         if rest:
@@ -200,10 +228,23 @@ def enhance_experience_items(soup):
     # Make institution names bold in education section
     for institution in soup.select('.institution'):
         if institution.string:
+            # Use both span and strong for redundancy
+            span = soup.new_tag('span')
+            span['class'] = 'bold-text'
+            span['style'] = 'font-weight: 900 !important; color: #2c3e50 !important;'
+            
             strong = soup.new_tag('strong')
             strong.string = institution.string
+            span.append(strong)
+            
             institution.string = ''
-            institution.append(strong)
+            institution.append(span)
+    
+    # Make section headings bold
+    for heading in soup.select('h2, h3'):
+        if heading.string:
+            # Add direct styling
+            heading['style'] = 'font-weight: 900 !important; color: #2c3e50 !important;'
     
     return soup
 
@@ -406,7 +447,7 @@ def add_enhanced_styles(soup):
 
     .header-name h1 {
         font-size: 20pt; /* Balanced header size */
-        font-weight: 700;
+        font-weight: 900 !important; /* Extra bold to ensure it renders */
         color: #2c3e50;
         margin: 0;
         text-transform: uppercase;
@@ -452,7 +493,7 @@ def add_enhanced_styles(soup):
         text-transform: uppercase;
         letter-spacing: 0.5px;
         line-height: 1.2;
-        font-weight: 700; /* Ensure section headers are bold */
+        font-weight: 900 !important; /* Extra bold to ensure it renders */
     }
 
     /* Professional Summary */
@@ -464,7 +505,7 @@ def add_enhanced_styles(soup):
 
     /* Highlight key terms in summary */
     .professional-summary strong {
-        font-weight: 700;
+        font-weight: 900 !important; /* Extra bold */
         color: #2c3e50;
     }
 
@@ -475,7 +516,7 @@ def add_enhanced_styles(soup):
     }
 
     .institution {
-        font-weight: 700; /* Increased from 600 to 700 for better emphasis */
+        font-weight: 900 !important; /* Extra bold */
         font-size: 11pt;
         line-height: 1.2;
         color: #2c3e50;
@@ -495,7 +536,7 @@ def add_enhanced_styles(soup):
     }
 
     .company {
-        font-weight: 700; /* Increased from 600 to 700 for better emphasis */
+        font-weight: 900 !important; /* Extra bold */
         font-size: 11pt;
         line-height: 1.2;
         color: #2c3e50;
@@ -527,8 +568,14 @@ def add_enhanced_styles(soup):
     }
 
     /* Make bold text show properly */
-    strong {
-        font-weight: 700 !important;
+    strong, b {
+        font-weight: 900 !important; /* Extra bold to ensure it renders */
+        color: #2c3e50 !important;
+    }
+
+    /* Add bold class for alternate method */
+    .bold-text {
+        font-weight: 900 !important; /* Extra bold */
         color: #2c3e50 !important;
     }
 
@@ -554,7 +601,7 @@ def add_enhanced_styles(soup):
 
     .skill-area h3 {
         font-size: 10.5pt !important; /* Match with experience text size */
-        font-weight: 700 !important; /* Make headers bold */
+        font-weight: 900 !important; /* Extra bold */
         margin: 0 4px 0 0 !important;
         padding: 0 !important;
         line-height: 1.1 !important;
@@ -630,30 +677,45 @@ def add_enhanced_styles(soup):
     
     return soup
 
-def convert_to_pdf(html_content, output_path, font_dir=None):
-    """Convert HTML content to PDF with custom styling."""
-    print(f"Converting resume to PDF: {output_path}")
+def add_font_file(soup):
+    """Add an embedded font to ensure bold works everywhere."""
+    head = soup.head
+    if not head:
+        head = soup.new_tag('head')
+        soup.html.insert(0, head)
     
-    # Create base URL for resolving relative paths
-    base_url = Path.cwd().as_uri()
+    # Add style tag with embedded font data
+    font_style = soup.new_tag('style')
+    font_style.string = """
+    /* Embed a basic font that supports bold */
+    @font-face {
+        font-family: 'EmbeddedFont';
+        font-style: normal;
+        font-weight: normal;
+        src: local('Arial'), local('Helvetica'), local('sans-serif');
+    }
     
-    # Configure WeasyPrint with font directories
-    from weasyprint.text.fonts import FontConfiguration
-    font_config = FontConfiguration()
+    @font-face {
+        font-family: 'EmbeddedFont';
+        font-style: normal;
+        font-weight: bold;
+        src: local('Arial Bold'), local('Helvetica Bold'), local('sans-serif');
+    }
     
-    # Set font directories environment variable
-    if font_dir and os.path.exists(font_dir):
-        print(f"Using font directory: {font_dir}")
-        os.environ['WEASYPRINT_FONT_CONFIG'] = font_dir
+    /* Apply embedded font to all elements */
+    body, p, h1, h2, h3, h4, h5, h6, li, span, div {
+        font-family: 'EmbeddedFont', 'Arial', 'Helvetica', sans-serif;
+    }
     
-    # Convert to PDF - use embedded styles
-    HTML(string=str(html_content), base_url=base_url).write_pdf(
-        output_path, 
-        font_config=font_config
-    )
+    /* Ensure strong and bold elements are actually bold */
+    strong, b, .bold-text {
+        font-family: 'EmbeddedFont', 'Arial Bold', 'Helvetica Bold', sans-serif;
+        font-weight: bold !important;
+    }
+    """
     
-    print(f"PDF successfully created: {output_path}")
-    return output_path
+    head.append(font_style)
+    return soup
 
 def main():
     """Main function to convert HTML resume to PDF."""
@@ -689,6 +751,9 @@ def main():
     # Add timestamp at the bottom
     soup = add_timestamp(soup)
     
+    # Add embedded font to ensure bold works
+    soup = add_font_file(soup)
+    
     # Add enhanced styles with bold text
     soup = add_enhanced_styles(soup)
     
@@ -709,6 +774,7 @@ def main():
     print("- Removed all emojis and icons")
     print("- Professional typography with optimal readability")
     print("- Added timestamp showing last update date and time in Eastern time")
+    print("- Enhanced font-handling to ensure bold text works in all environments")
 
 if __name__ == "__main__":
     main()
