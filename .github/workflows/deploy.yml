@@ -21,6 +21,21 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Install fonts for better PDF rendering
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            fonts-liberation \
+            fonts-noto \
+            fonts-roboto \
+            fonts-dejavu \
+            fonts-liberation2 \
+            fontconfig
+          # Force font cache refresh
+          sudo fc-cache -f -v
+          # Verify fonts are installed
+          fc-list | grep -i "arial\|helvetica\|liberation\|roboto"
+
       - name: Install WeasyPrint dependencies
         run: |
           sudo apt-get update
@@ -34,6 +49,8 @@ jobs:
 
       - name: Generate resume.pdf
         run: python resume_converter.py resume.html Brad_Flaugher_Resume.pdf
+        env:
+          WEASYPRINT_FONT_CONFIG: /usr/share/fonts
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
