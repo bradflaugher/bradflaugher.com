@@ -4,7 +4,7 @@ Resume HTML to PDF Converter
 
 This script converts an HTML resume to a professionally formatted PDF document
 using WeasyPrint. It applies custom CSS styling, ensures proper page breaks,
-and follows resume best practices for formatting.
+follows resume best practices for formatting, and adds a timestamp.
 
 Author: Manus AI and Claude 3.7 Sonnet
 Date: May 18, 2025
@@ -139,24 +139,71 @@ def optimize_skills_matrix(soup):
         
         if h3 and p:
             # Add style to make content more compact
-            h3['style'] = 'display: inline; margin-right: 5px;'
+            h3['style'] = 'display: inline; margin-right: 5px; font-weight: bold;'
             p['style'] = 'display: inline; margin: 0;'
-            
-            # Wrap skill categories in bold
-            if p.string:
-                skills_text = p.string
-                categories = skills_text.split(',')
-                p.clear()
-                
-                for i, category in enumerate(categories):
-                    category = category.strip()
-                    # Add the skills
-                    if i > 0:
-                        p.append(', ')
-                    p.append(category)
     
     # Add a style attribute to the matrix itself
     skills_matrix['style'] = 'display: grid; grid-template-columns: 1fr; gap: 0.1em;'
+    
+    return soup
+
+def enhance_experience_items(soup):
+    """Add strategic bold text to experience items for better readability."""
+    # Find all experience items
+    for exp_item in soup.select('.experience-item'):
+        # Make company name bold
+        company = exp_item.select_one('.company')
+        if company and company.string:
+            strong = soup.new_tag('strong')
+            strong.string = company.string
+            company.string = ''
+            company.append(strong)
+        
+        # Find all list items in responsibilities
+        for li in exp_item.select('.responsibilities li'):
+            # Look for achievement indicators
+            text_content = li.get_text()
+            achievement_indicators = [
+                "increased", "decreased", "improved", "reduced", "developed",
+                "created", "launched", "implemented", "led", "managed",
+                "achieved", "exceeded", "generated", "secured", "won"
+            ]
+            
+            # Mark achievements by bolding first section
+            for indicator in achievement_indicators:
+                if indicator.lower() in text_content.lower():
+                    # Find a good breaking point
+                    end_pos = -1
+                    for punct in ['. ', ': ', ', ']:
+                        pos = text_content.find(punct)
+                        if pos > 0 and (end_pos == -1 or pos < end_pos):
+                            end_pos = pos + len(punct) - 1
+                    
+                    if end_pos > 0:
+                        # Split the text
+                        first_part = text_content[:end_pos+1]
+                        rest = text_content[end_pos+1:]
+                        
+                        # Clear li content
+                        li.clear()
+                        
+                        # Create and add bold part
+                        bold = soup.new_tag('strong')
+                        bold.string = first_part
+                        li.append(bold)
+                        
+                        # Add rest of text
+                        if rest:
+                            li.append(' ' + rest)
+                    break
+    
+    # Make institution names bold in education section
+    for institution in soup.select('.institution'):
+        if institution.string:
+            strong = soup.new_tag('strong')
+            strong.string = institution.string
+            institution.string = ''
+            institution.append(strong)
     
     return soup
 
@@ -196,48 +243,31 @@ def remove_emojis(soup):
     
     return soup
 
-def enhance_experience_items(soup):
-    """Add strategic bold text to experience items for better readability."""
-    # Find all experience items
-    for exp_item in soup.select('.experience-item'):
-        # Find all list items in responsibilities
-        for li in exp_item.select('.responsibilities li'):
-            # Add class for applying bold to key achievements
-            text_content = li.get_text()
-            
-            # Look for common achievement indicators
-            achievement_indicators = [
-                "increased", "decreased", "improved", "reduced", "developed",
-                "created", "launched", "implemented", "led", "managed",
-                "achieved", "exceeded", "generated", "secured", "won"
-            ]
-            
-            # Add class to items that likely contain achievements
-            for indicator in achievement_indicators:
-                if indicator.lower() in text_content.lower():
-                    li['class'] = 'achievement-item'
-                    break
-                    
-            # Ensure the first line is actually bold by adding span tags
-            if 'achievement-item' in li.get('class', []):
-                text = li.get_text()
-                # Find where the first sentence ends
-                sentence_end = text.find('. ')
-                if sentence_end > 0:
-                    first_sentence = text[:sentence_end+1]
-                    rest_of_text = text[sentence_end+1:]
-                    
-                    # Clear the li and add the formatted content
-                    li.clear()
-                    
-                    # Add bold first sentence
-                    bold_span = soup.new_tag('strong')
-                    bold_span.string = first_sentence
-                    li.append(bold_span)
-                    
-                    # Add the rest of the text
-                    if rest_of_text:
-                        li.append(' ' + rest_of_text)
+def add_timestamp(soup):
+    """Add timestamp at the bottom of the resume."""
+    # Get current time in Eastern Time
+    eastern = pytz.timezone('US/Eastern')
+    now = datetime.now(eastern)
+    timestamp = now.strftime("Last updated: %B %d, %Y at %I:%M %p ET")
+    
+    # Find container to append timestamp
+    container = soup.select_one('.container')
+    if not container:
+        # Try to find body
+        container = soup.body
+        if not container:
+            # Create body if it doesn't exist
+            container = soup.new_tag('body')
+            soup.html.append(container)
+    
+    # Create timestamp container
+    timestamp_div = soup.new_tag('div')
+    timestamp_div['class'] = 'timestamp-container'
+    timestamp_div['style'] = 'text-align: center; margin-top: 20px; font-style: italic; font-size: 8pt; color: #777;'
+    timestamp_div.string = timestamp
+    
+    # Append to the end
+    container.append(timestamp_div)
     
     return soup
 
@@ -299,6 +329,9 @@ def optimize_for_pdf(soup):
 def add_meta_tags(soup):
     """Add necessary meta tags for better PDF rendering."""
     head = soup.head
+    if not head:
+        head = soup.new_tag('head')
+        soup.html.insert(0, head)
     
     # Add viewport meta tag if not present
     if not soup.select_one('meta[name="viewport"]'):
@@ -323,10 +356,14 @@ def add_meta_tags(soup):
 
 def add_enhanced_styles(soup):
     """Add enhanced styling with strategic bold text to improve readability."""
+    head = soup.head
+    if not head:
+        head = soup.new_tag('head')
+        soup.html.insert(0, head)
+    
     style_tag = soup.find('style') or soup.new_tag('style')
     style_tag.string = """
     /* Resume PDF Styles - Enhanced Version with Strategic Bold Text */
-    /* !important flags added to ensure styles are applied */
     @page {
         size: letter;
         margin: 0.5in 0.5in 0.5in 0.5in; /* Balanced margins */
@@ -489,13 +526,10 @@ def add_enhanced_styles(soup):
         line-height: 1.2;
     }
 
-    /* Style for achievement-oriented bullet points */
-    .achievement-item {
-        font-weight: normal !important; /* Base weight */
-    }
-
-    .achievement-item::first-line {
-        font-weight: 700 !important; /* Bold only the first line with !important flag */
+    /* Make bold text show properly */
+    strong {
+        font-weight: 700 !important;
+        color: #2c3e50 !important;
     }
 
     /* Skills Matrix Styles - Ultra Compact with consistent text size */
@@ -542,6 +576,17 @@ def add_enhanced_styles(soup):
         display: none !important;
     }
 
+    /* Timestamp at bottom */
+    .timestamp-container {
+        text-align: center;
+        margin-top: 20px;
+        font-style: italic;
+        font-size: 8pt;
+        color: #777;
+        border-top: 1px solid #eee;
+        padding-top: 5px;
+    }
+
     /* Compact Page Break Controls */
     h2 {
         page-break-after: avoid;
@@ -550,21 +595,6 @@ def add_enhanced_styles(soup):
 
     .section:first-of-type h2 {
         margin-top: 0;
-    }
-
-    /* Resume footer with timestamp */
-    .resume-footer {
-        margin-top: 1em;
-        border-top: 1px solid #eee;
-        padding-top: 0.5em;
-        text-align: center;
-    }
-    
-    .timestamp {
-        font-size: 8pt;
-        color: #777;
-        font-style: italic;
-        margin: 0;
     }
 
     /* Print Optimizations */
@@ -594,7 +624,7 @@ def add_enhanced_styles(soup):
     """
     
     if not soup.find('style'):
-        soup.head.append(style_tag)
+        head.append(style_tag)
     else:
         soup.find('style').replace_with(style_tag)
     
@@ -671,7 +701,7 @@ def main():
     print("- Two-page layout with balanced line height")
     print("- Strategic bold text for improved readability")
     print("- Consistent text sizing in technical skills and work experience")
-    print("- First-line emphasis for achievement bullet points")
+    print("- Bold formatting for company names and achievement statements")
     print("- Ultra-compact skills matrix with properly formatted headers")
     print("- Proper orphans/widows handling to prevent awkward breaks")
     print("- Optimized spacing between elements")
