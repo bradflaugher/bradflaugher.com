@@ -121,7 +121,7 @@ def optimize_header(soup):
     return soup
 
 def optimize_skills_matrix(soup):
-    """Optimize the skills matrix to be more compact."""
+    """Optimize the skills matrix to be more compact with consistent text size."""
     # Find the skills matrix
     skills_matrix = soup.select_one('.skills-matrix')
     if not skills_matrix:
@@ -139,6 +139,19 @@ def optimize_skills_matrix(soup):
             # Add style to make content more compact
             h3['style'] = 'display: inline; margin-right: 5px;'
             p['style'] = 'display: inline; margin: 0;'
+            
+            # Wrap skill categories in bold
+            if p.string:
+                skills_text = p.string
+                categories = skills_text.split(',')
+                p.clear()
+                
+                for i, category in enumerate(categories):
+                    category = category.strip()
+                    # Add the skills
+                    if i > 0:
+                        p.append(', ')
+                    p.append(category)
     
     # Add a style attribute to the matrix itself
     skills_matrix['style'] = 'display: grid; grid-template-columns: 1fr; gap: 0.1em;'
@@ -178,6 +191,30 @@ def remove_emojis(soup):
     emoji_elements = soup.select('[class*="emoji"], [class*="icon"], .fa, .fab, .fas, .far, .fal')
     for element in emoji_elements:
         element.decompose()
+    
+    return soup
+
+def enhance_experience_items(soup):
+    """Add strategic bold text to experience items for better readability."""
+    # Find all experience items
+    for exp_item in soup.select('.experience-item'):
+        # Find all list items in responsibilities
+        for li in exp_item.select('.responsibilities li'):
+            # Add class for applying bold to key achievements
+            text_content = li.get_text()
+            
+            # Look for common achievement indicators
+            achievement_indicators = [
+                "increased", "decreased", "improved", "reduced", "developed",
+                "created", "launched", "implemented", "led", "managed",
+                "achieved", "exceeded", "generated", "secured", "won"
+            ]
+            
+            # Add class to items that likely contain achievements
+            for indicator in achievement_indicators:
+                if indicator.lower() in text_content.lower():
+                    li['class'] = 'achievement-item'
+                    break
     
     return soup
 
@@ -261,11 +298,11 @@ def add_meta_tags(soup):
     
     return soup
 
-def add_compact_styles(soup):
-    """Add compact styling to make resume fit on two pages."""
+def add_enhanced_styles(soup):
+    """Add enhanced styling with strategic bold text to improve readability."""
     style_tag = soup.find('style') or soup.new_tag('style')
     style_tag.string = """
-    /* Resume PDF Styles - Compact Version */
+    /* Resume PDF Styles - Enhanced Version with Strategic Bold Text */
     @page {
         size: letter;
         margin: 0.5in 0.5in 0.5in 0.5in; /* Balanced margins */
@@ -354,6 +391,7 @@ def add_compact_styles(soup):
         text-transform: uppercase;
         letter-spacing: 0.5px;
         line-height: 1.2;
+        font-weight: 700; /* Ensure section headers are bold */
     }
 
     /* Professional Summary */
@@ -363,6 +401,12 @@ def add_compact_styles(soup):
         line-height: 1.25;
     }
 
+    /* Highlight key terms in summary */
+    .professional-summary strong {
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
     /* Education Section */
     .education-item {
         margin-bottom: 0.5em;
@@ -370,9 +414,10 @@ def add_compact_styles(soup):
     }
 
     .institution {
-        font-weight: 600;
+        font-weight: 700; /* Increased from 600 to 700 for better emphasis */
         font-size: 11pt;
         line-height: 1.2;
+        color: #2c3e50;
     }
 
     .degree {
@@ -389,9 +434,10 @@ def add_compact_styles(soup):
     }
 
     .company {
-        font-weight: 600;
+        font-weight: 700; /* Increased from 600 to 700 for better emphasis */
         font-size: 11pt;
         line-height: 1.2;
+        color: #2c3e50;
     }
 
     .job-title {
@@ -400,6 +446,7 @@ def add_compact_styles(soup):
         margin-bottom: 0.2em;
         font-size: 10.5pt;
         line-height: 1.2;
+        color: #34495e;
     }
 
     .duration {
@@ -418,7 +465,16 @@ def add_compact_styles(soup):
         line-height: 1.2;
     }
 
-    /* Skills Matrix Styles - Ultra Compact */
+    /* Style for achievement-oriented bullet points */
+    .achievement-item {
+        font-weight: normal; /* Base weight */
+    }
+
+    .achievement-item::first-line {
+        font-weight: 600; /* Bold only the first line, which typically contains the achievement */
+    }
+
+    /* Skills Matrix Styles - Ultra Compact with consistent text size */
     .skills-matrix {
         display: grid;
         grid-template-columns: 1fr;
@@ -439,21 +495,22 @@ def add_compact_styles(soup):
     }
 
     .skill-area h3 {
-        font-size: 10pt !important;
-        font-weight: 600 !important;
+        font-size: 10.5pt !important; /* Match with experience text size */
+        font-weight: 700 !important; /* Make headers bold */
         margin: 0 4px 0 0 !important;
         padding: 0 !important;
         line-height: 1.1 !important;
-        color: #444;
+        color: #2c3e50;
         display: inline;
     }
 
     .skill-area p {
-        font-size: 9.5pt !important;
+        font-size: 10.5pt !important; /* Match with experience text size */
         margin: 0 !important;
         padding: 0 !important;
         line-height: 1.1 !important;
         display: inline;
+        color: #333;
     }
 
     /* Hide all icon and emoji elements */
@@ -550,6 +607,9 @@ def main():
     # Optimize the skills matrix
     soup = optimize_skills_matrix(soup)
     
+    # Add strategic bold text to experience items
+    soup = enhance_experience_items(soup)
+    
     # Make content more compact to fit on two pages
     soup = compact_content(soup)
     
@@ -557,8 +617,8 @@ def main():
     soup = optimize_for_pdf(soup)
     soup = add_meta_tags(soup)
     
-    # Add compact styles
-    soup = add_compact_styles(soup)
+    # Add enhanced styles with bold text
+    soup = add_enhanced_styles(soup)
     
     # Convert to PDF
     pdf_path = convert_to_pdf(soup, args.output, args.font_dir)
@@ -567,7 +627,10 @@ def main():
     print(f"PDF saved to: {os.path.abspath(pdf_path)}")
     print("\nBest practices implemented:")
     print("- Two-page layout with balanced line height")
-    print("- Ultra-compact skills matrix with inline h3/p elements")
+    print("- Strategic bold text for improved readability")
+    print("- Consistent text sizing in technical skills and work experience")
+    print("- First-line emphasis for achievement bullet points")
+    print("- Ultra-compact skills matrix with properly formatted headers")
     print("- Proper orphans/widows handling to prevent awkward breaks")
     print("- Optimized spacing between elements")
     print("- Clean header with preserved hyperlinks")
