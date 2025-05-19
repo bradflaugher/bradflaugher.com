@@ -138,113 +138,49 @@ def optimize_skills_matrix(soup):
         p = skill_div.select_one('p')
         
         if h3 and p:
-            # Add style to make content more compact and ensure h3 is bold
-            h3['style'] = 'display: inline; margin-right: 5px; font-weight: 900 !important; color: #2c3e50 !important;'
-            p['style'] = 'display: inline; margin: 0; font-size: 10.5pt !important;'
+            # Add style to make content more compact with moderate bold
+            h3['style'] = 'display: inline; margin-right: 5px; font-weight: 600;'
+            p['style'] = 'display: inline; margin: 0; font-size: 10.5pt;'
             
-            # Add span with bold-text class for redundancy
+            # Replace with simpler bold text
             if h3.string:
                 original_text = h3.string
                 h3.string = ''
                 
-                span = soup.new_tag('span')
-                span['class'] = 'bold-text'
-                span.string = original_text
-                h3.append(span)
+                strong = soup.new_tag('strong')
+                strong.string = original_text
+                h3.append(strong)
     
     # Add a style attribute to the matrix itself
-    skills_matrix['style'] = 'display: grid; grid-template-columns: 1fr; gap: 0.1em;'
+    skills_matrix['style'] = 'display: grid; grid-template-columns: 1fr; gap: 0.2em;'
     
     return soup
 
 def enhance_experience_items(soup):
-    """Add strategic bold text to experience items for better readability."""
+    """Format experience items with clean, consistent styling."""
     # Find all experience items
     for exp_item in soup.select('.experience-item'):
-        # Make company name bold
+        # Make company name bold (but not overly bold)
         company = exp_item.select_one('.company')
-        if company:
-            # Try wrapping in both strong and span with bold-text class for redundancy
-            if company.string:
-                strong = soup.new_tag('strong')
-                strong.string = company.string
-                
-                span = soup.new_tag('span')
-                span['class'] = 'bold-text'
-                span.append(strong)
-                
-                company.string = ''
-                company.append(span)
-                
-                # Also add style directly to the element for maximum compatibility
-                company['style'] = 'font-weight: 900 !important; color: #2c3e50 !important;'
-        
-        # Find all list items in responsibilities
-        for li in exp_item.select('.responsibilities li'):
-            # Look for achievement indicators
-            text_content = li.get_text()
-            achievement_indicators = [
-                "increased", "decreased", "improved", "reduced", "developed",
-                "created", "launched", "implemented", "led", "managed",
-                "achieved", "exceeded", "generated", "secured", "won",
-                "designed", "built", "maintained", "coordinated", "drove",
-                "directed", "produced", "delivered", "boosted", "expanded"
-            ]
+        if company and company.string:
+            strong = soup.new_tag('strong')
+            strong.string = company.string
+            company.string = ''
+            company.append(strong)
             
-            # Mark achievements by bolding first section
-            for indicator in achievement_indicators:
-                if indicator.lower() in text_content.lower():
-                    # Find a good breaking point
-                    end_pos = -1
-                    for punct in ['. ', ': ', ', ']:
-                        pos = text_content.find(punct)
-                        if pos > 0 and (end_pos == -1 or pos < end_pos):
-                            end_pos = pos + len(punct) - 1
-                    
-                    if end_pos > 0:
-                        # Split the text
-                        first_part = text_content[:end_pos+1]
-                        rest = text_content[end_pos+1:]
-                        
-                        # Clear li content
-                        li.clear()
-                        
-                        # Create and add bold part with multiple layers of bold
-                        span = soup.new_tag('span')
-                        span['class'] = 'bold-text'
-                        span['style'] = 'font-weight: 900 !important; color: #2c3e50 !important;'
-                        
-                        bold = soup.new_tag('strong')
-                        bold.string = first_part
-                        span.append(bold)
-                        
-                        li.append(span)
-                        
-                        # Add rest of text
-                        if rest:
-                            li.append(' ' + rest)
-                    break
-    
     # Make institution names bold in education section
     for institution in soup.select('.institution'):
         if institution.string:
-            # Use both span and strong for redundancy
-            span = soup.new_tag('span')
-            span['class'] = 'bold-text'
-            span['style'] = 'font-weight: 900 !important; color: #2c3e50 !important;'
-            
             strong = soup.new_tag('strong')
             strong.string = institution.string
-            span.append(strong)
-            
             institution.string = ''
-            institution.append(span)
+            institution.append(strong)
     
-    # Make section headings bold
+    # Make section headings bold with consistent styling
     for heading in soup.select('h2, h3'):
         if heading.string:
-            # Add direct styling
-            heading['style'] = 'font-weight: 900 !important; color: #2c3e50 !important;'
+            # Add direct styling with moderate bold
+            heading['style'] = 'font-weight: 600; color: #2c3e50;'
     
     return soup
 
@@ -317,37 +253,37 @@ def compact_content(soup):
     # Find all list items and reduce their margin
     for li in soup.select('li'):
         if 'style' not in li.attrs:
-            li['style'] = 'margin-bottom: 0.2em;'
+            li['style'] = 'margin-bottom: 0.3em;'
         else:
-            li['style'] += ' margin-bottom: 0.2em;'
+            li['style'] += ' margin-bottom: 0.3em;'
     
     # Find all paragraphs and reduce their margin (except in skills matrix)
     for p in soup.select('p:not(.skills-matrix p)'):
         if 'style' not in p.attrs:
-            p['style'] = 'margin: 0.3em 0;'
+            p['style'] = 'margin: 0.4em 0;'
         else:
-            p['style'] += ' margin: 0.3em 0;'
+            p['style'] += ' margin: 0.4em 0;'
     
     # Reduce spacing in sections
     for section in soup.select('.section'):
         if 'style' not in section.attrs:
-            section['style'] = 'margin-bottom: 0.7em;'
+            section['style'] = 'margin-bottom: 0.8em;'
         else:
-            section['style'] += ' margin-bottom: 0.7em;'
+            section['style'] += ' margin-bottom: 0.8em;'
     
     # Reduce spacing in experience items
     for exp_item in soup.select('.experience-item'):
         if 'style' not in exp_item.attrs:
-            exp_item['style'] = 'margin-bottom: 0.6em;'
+            exp_item['style'] = 'margin-bottom: 0.7em;'
         else:
-            exp_item['style'] += ' margin-bottom: 0.6em;'
+            exp_item['style'] += ' margin-bottom: 0.7em;'
     
     # Reduce spacing in education items
     for edu_item in soup.select('.education-item'):
         if 'style' not in edu_item.attrs:
-            edu_item['style'] = 'margin-bottom: 0.5em;'
+            edu_item['style'] = 'margin-bottom: 0.6em;'
         else:
-            edu_item['style'] += ' margin-bottom: 0.5em;'
+            edu_item['style'] += ' margin-bottom: 0.6em;'
     
     return soup
 
@@ -387,16 +323,16 @@ def add_meta_tags(soup):
     print_meta['content'] = 'yes'
     head.append(print_meta)
     
-    # Add font link tags for better font support
+    # Add font link tags for better font support - prioritize system fonts
     font_link = soup.new_tag('link')
     font_link['rel'] = 'stylesheet'
-    font_link['href'] = 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Georgia&display=swap'
+    font_link['href'] = 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans:wght@400;500;700&display=swap'
     head.append(font_link)
     
     return soup
 
-def add_enhanced_styles(soup):
-    """Add enhanced styling with strategic bold text to improve readability."""
+def add_improved_styles(soup):
+    """Add improved styling with balanced typography and consistent spacing."""
     head = soup.head
     if not head:
         head = soup.new_tag('head')
@@ -404,25 +340,26 @@ def add_enhanced_styles(soup):
     
     style_tag = soup.find('style') or soup.new_tag('style')
     style_tag.string = """
-    /* Resume PDF Styles - Enhanced Version with Strategic Bold Text */
+    /* Resume PDF Styles - Improved Typography Version */
     @page {
         size: letter;
-        margin: 0.5in 0.5in 0.5in 0.5in; /* Balanced margins */
+        margin: 0.6in 0.6in 0.6in 0.6in; /* Slightly increased margins for better readability */
         @bottom-right {
             content: "Page " counter(page) " of " counter(pages);
             font-size: 8pt;
             color: #777;
+            font-family: 'Roboto', 'Liberation Sans', Arial, sans-serif;
         }
     }
 
-    /* Global Styles */
+    /* Global Styles with improved font stack */
     body {
-        font-family: 'Georgia', 'Times New Roman', serif;
-        line-height: 1.2; /* More balanced line height */
+        font-family: 'Roboto', 'Liberation Sans', 'Noto Sans', Arial, sans-serif;
+        line-height: 1.3; /* Improved line height for readability */
         color: #333;
         margin: 0;
         padding: 0;
-        font-size: 10.5pt; /* Slightly larger for readability */
+        font-size: 10.5pt;
     }
 
     .container {
@@ -435,27 +372,28 @@ def add_enhanced_styles(soup):
     .professional-header {
         display: flex;
         flex-direction: column;
-        margin-bottom: 0.7em;
+        margin-bottom: 1em;
         border-bottom: 1px solid #2c3e50;
-        padding-bottom: 0.3em;
+        padding-bottom: 0.4em;
         page-break-inside: avoid;
     }
 
     .header-name {
-        margin-bottom: 0.3em;
+        margin-bottom: 0.4em;
     }
 
     .header-name h1 {
-        font-size: 20pt; /* Balanced header size */
-        font-weight: 900 !important; /* Extra bold to ensure it renders */
+        font-size: 18pt; /* Slightly smaller for better proportion */
+        font-weight: 700; /* Standard bold weight */
         color: #2c3e50;
         margin: 0;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         line-height: 1.1;
+        font-family: 'Roboto', 'Liberation Sans', 'Noto Sans', Arial, sans-serif;
     }
 
-    /* Simple contact row with minimal spacing */
+    /* Simple contact row with improved spacing */
     .header-contact {
         display: flex;
         justify-content: center;
@@ -463,7 +401,7 @@ def add_enhanced_styles(soup):
         flex-wrap: nowrap;
         font-size: 9.5pt;
         color: #34495e;
-        margin-top: 0.3em;
+        margin-top: 0.4em;
         gap: 0;
     }
 
@@ -474,51 +412,52 @@ def add_enhanced_styles(soup):
     }
 
     .contact-divider {
-        margin: 0 3px;
+        margin: 0 5px; /* Slightly more spacing */
         color: #7f8c8d;
     }
 
     /* Section Styles */
     .section {
-        margin-bottom: 0.7em;
+        margin-bottom: 0.9em;
         page-break-inside: avoid;
     }
 
     .section h2 {
         font-size: 13pt;
         color: #2c3e50;
-        margin: 0 0 0.3em;
+        margin: 0 0 0.4em;
         padding-bottom: 0.2em;
         border-bottom: 1px solid #eee;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         line-height: 1.2;
-        font-weight: 900 !important; /* Extra bold to ensure it renders */
+        font-weight: 600; /* More balanced bold */
+        font-family: 'Roboto', 'Liberation Sans', 'Noto Sans', Arial, sans-serif;
     }
 
     /* Professional Summary */
     .professional-summary p {
-        margin: 0.3em 0;
+        margin: 0.4em 0;
         text-align: justify;
-        line-height: 1.25;
+        line-height: 1.3;
     }
 
-    /* Highlight key terms in summary */
+    /* Highlight key terms in summary with moderate bold */
     .professional-summary strong {
-        font-weight: 900 !important; /* Extra bold */
+        font-weight: 600;
         color: #2c3e50;
     }
 
     /* Education Section */
     .education-item {
-        margin-bottom: 0.5em;
+        margin-bottom: 0.6em;
         page-break-inside: avoid;
     }
 
     .institution {
-        font-weight: 900 !important; /* Extra bold */
+        font-weight: 600; /* More balanced bold */
         font-size: 11pt;
-        line-height: 1.2;
+        line-height: 1.3;
         color: #2c3e50;
     }
 
@@ -526,28 +465,28 @@ def add_enhanced_styles(soup):
         font-style: italic;
         color: #555;
         font-size: 10.5pt;
-        line-height: 1.2;
+        line-height: 1.3;
     }
 
     /* Experience Section */
     .experience-item {
-        margin-bottom: 0.6em;
+        margin-bottom: 0.8em;
         page-break-inside: avoid;
     }
 
     .company {
-        font-weight: 900 !important; /* Extra bold */
+        font-weight: 600; /* More balanced bold */
         font-size: 11pt;
-        line-height: 1.2;
+        line-height: 1.3;
         color: #2c3e50;
     }
 
     .job-title {
         font-weight: normal;
         font-style: italic;
-        margin-bottom: 0.2em;
+        margin-bottom: 0.3em;
         font-size: 10.5pt;
-        line-height: 1.2;
+        line-height: 1.3;
         color: #34495e;
     }
 
@@ -557,40 +496,35 @@ def add_enhanced_styles(soup):
     }
 
     .responsibilities ul {
-        margin: 0.3em 0;
-        padding-left: 1.2em;
+        margin: 0.4em 0;
+        padding-left: 1.3em;
     }
 
     .responsibilities li {
-        margin-bottom: 0.2em;
+        margin-bottom: 0.3em;
         text-align: justify;
-        line-height: 1.2;
+        line-height: 1.3;
     }
 
-    /* Make bold text show properly */
+    /* Normal bold text with system fonts */
     strong, b {
-        font-weight: 900 !important; /* Extra bold to ensure it renders */
-        color: #2c3e50 !important;
+        font-weight: 600; /* More balanced bold */
+        color: #2c3e50;
+        font-family: inherit;
     }
 
-    /* Add bold class for alternate method */
-    .bold-text {
-        font-weight: 900 !important; /* Extra bold */
-        color: #2c3e50 !important;
-    }
-
-    /* Skills Matrix Styles - Ultra Compact with consistent text size */
+    /* Skills Matrix Styles - Clean with consistent text size */
     .skills-matrix {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 0.1em !important;
-        margin: 0.2em 0 0.4em 0;
+        gap: 0.2em;
+        margin: 0.3em 0 0.5em 0;
     }
 
     .skill-area {
-        margin: 0 !important;
-        padding: 0 !important;
-        line-height: 1.1 !important;
+        margin: 0;
+        padding: 0;
+        line-height: 1.3;
     }
 
     .skill-area.compact {
@@ -600,20 +534,21 @@ def add_enhanced_styles(soup):
     }
 
     .skill-area h3 {
-        font-size: 10.5pt !important; /* Match with experience text size */
-        font-weight: 900 !important; /* Extra bold */
-        margin: 0 4px 0 0 !important;
-        padding: 0 !important;
-        line-height: 1.1 !important;
+        font-size: 10.5pt;
+        font-weight: 600; /* More balanced bold */
+        margin: 0 5px 0 0;
+        padding: 0;
+        line-height: 1.3;
         color: #2c3e50;
         display: inline;
+        font-family: 'Roboto', 'Liberation Sans', 'Noto Sans', Arial, sans-serif;
     }
 
     .skill-area p {
-        font-size: 10.5pt !important; /* Match with experience text size */
-        margin: 0 !important;
-        padding: 0 !important;
-        line-height: 1.1 !important;
+        font-size: 10.5pt;
+        margin: 0;
+        padding: 0;
+        line-height: 1.3;
         display: inline;
         color: #333;
     }
@@ -634,10 +569,10 @@ def add_enhanced_styles(soup):
         padding-top: 5px;
     }
 
-    /* Compact Page Break Controls */
+    /* Page Break Controls with improved spacing */
     h2 {
         page-break-after: avoid;
-        margin-top: 0.6em;
+        margin-top: 0.8em;
     }
 
     .section:first-of-type h2 {
@@ -677,40 +612,38 @@ def add_enhanced_styles(soup):
     
     return soup
 
-def add_font_file(soup):
-    """Add an embedded font to ensure bold works everywhere."""
+def configure_fonts(soup):
+    """Configure fonts with prioritization for installed system fonts."""
     head = soup.head
     if not head:
         head = soup.new_tag('head')
         soup.html.insert(0, head)
     
-    # Add style tag with embedded font data
+    # Add style tag with font configuration
     font_style = soup.new_tag('style')
     font_style.string = """
-    /* Embed a basic font that supports bold */
-    @font-face {
-        font-family: 'EmbeddedFont';
-        font-style: normal;
-        font-weight: normal;
-        src: local('Arial'), local('Helvetica'), local('sans-serif');
+    /* System-first font configuration */
+    /* This ensures we use available system fonts first */
+    
+    /* Define font fallbacks that prioritize installed fonts */
+    body, p, div, span, li, td, a {
+        font-family: 'Roboto', 'Liberation Sans', 'Noto Sans', 'DejaVu Sans', Arial, Helvetica, sans-serif;
     }
     
-    @font-face {
-        font-family: 'EmbeddedFont';
-        font-style: normal;
-        font-weight: bold;
-        src: local('Arial Bold'), local('Helvetica Bold'), local('sans-serif');
+    h1, h2, h3, h4, h5, h6, .company, .institution, .header-name h1 {
+        font-family: 'Roboto', 'Liberation Sans', 'Noto Sans', 'DejaVu Sans', Arial, Helvetica, sans-serif;
     }
     
-    /* Apply embedded font to all elements */
-    body, p, h1, h2, h3, h4, h5, h6, li, span, div {
-        font-family: 'EmbeddedFont', 'Arial', 'Helvetica', sans-serif;
+    /* Ensure consistent bold weight */
+    strong, b, h1, h2, h3, h4, h5, h6 {
+        font-weight: 600;
     }
     
-    /* Ensure strong and bold elements are actually bold */
-    strong, b, .bold-text {
-        font-family: 'EmbeddedFont', 'Arial Bold', 'Helvetica Bold', sans-serif;
-        font-weight: bold !important;
+    /* Fix for font inconsistencies */
+    * {
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
     """
     
@@ -725,6 +658,10 @@ def convert_to_pdf(soup, output_path, font_dir):
     if font_dir and os.path.exists(font_dir):
         print(f"Using font directory: {font_dir}")
         os.environ['WEASYPRINT_FONTS'] = font_dir
+        
+        # For debugging: print available fonts
+        print("Available fonts in the system:")
+        os.system("fc-list | grep -i 'liberation\|roboto\|noto\|dejavu' | sort")
     
     # Create temporary HTML file with processed content
     temp_html_path = Path(output_path).with_suffix('.temp.html')
@@ -745,25 +682,27 @@ def convert_to_pdf(soup, output_path, font_dir):
         resume_css = CSS(string="""
         @page {
             size: letter;
-            margin: 0.5in 0.5in 0.5in 0.5in;
+            margin: 0.6in 0.6in 0.6in 0.6in;
             @bottom-right {
                 content: "Page " counter(page) " of " counter(pages);
                 font-size: 8pt;
                 color: #777;
+                font-family: 'Roboto', 'Liberation Sans', Arial, sans-serif;
             }
         }
         """)
         
         # Generate PDF - using both approaches for maximum compatibility
         try:
-            # First approach (from newer version)
-            html = HTML(filename=str(temp_html_path))
-            html.write_pdf(output_path, stylesheets=[resume_css])
+            # First approach - direct from temporary file
+            html = HTML(filename=str(temp_html_path), base_url=base_url)
+            html.write_pdf(output_path, stylesheets=[resume_css], font_config=font_config)
+            print("PDF generation successful using file-based approach")
         except Exception as e1:
             print(f"First PDF generation approach failed: {e1}")
             print("Trying alternative approach...")
             
-            # Second approach (from older version)
+            # Second approach - from string content
             with open(temp_html_path, 'r', encoding='utf-8') as f:
                 html_content = f.read()
             
@@ -771,6 +710,7 @@ def convert_to_pdf(soup, output_path, font_dir):
                 output_path, 
                 font_config=font_config
             )
+            print("PDF generation successful using string-based approach")
         
         print(f"PDF successfully created: {output_path}")
         return output_path
@@ -793,6 +733,8 @@ def main():
         print(f"Error: HTML file not found: {args.html}")
         sys.exit(1)
     
+    print(f"Processing HTML resume: {args.html}")
+    
     # Extract content
     soup = extract_resume_content(args.html)
     
@@ -805,7 +747,7 @@ def main():
     # Optimize the skills matrix
     soup = optimize_skills_matrix(soup)
     
-    # Add strategic bold text to experience items
+    # Enhance experience items (without bolding first parts)
     soup = enhance_experience_items(soup)
     
     # Make content more compact to fit on two pages
@@ -818,11 +760,11 @@ def main():
     # Add timestamp at the bottom
     soup = add_timestamp(soup)
     
-    # Add embedded font to ensure bold works
-    soup = add_font_file(soup)
+    # Configure fonts to use system fonts properly
+    soup = configure_fonts(soup)
     
-    # Add enhanced styles with bold text
-    soup = add_enhanced_styles(soup)
+    # Add improved styles with balanced typography
+    soup = add_improved_styles(soup)
     
     # Convert to PDF
     pdf_path = convert_to_pdf(soup, args.output, args.font_dir)
@@ -830,18 +772,15 @@ def main():
     print(f"\nResume conversion complete!")
     print(f"PDF saved to: {os.path.abspath(pdf_path)}")
     print("\nBest practices implemented:")
-    print("- Two-page layout with balanced line height")
-    print("- Strategic bold text for improved readability")
-    print("- Consistent text sizing in technical skills and work experience")
-    print("- Bold formatting for company names and achievement statements")
-    print("- Ultra-compact skills matrix with properly formatted headers")
-    print("- Proper orphans/widows handling to prevent awkward breaks")
-    print("- Optimized spacing between elements")
+    print("- Balanced typography with system font prioritization")
+    print("- Proper font weight consistency for headings and body text")
+    print("- Improved spacing between elements for better readability")
     print("- Clean header with preserved hyperlinks")
     print("- Removed all emojis and icons")
-    print("- Professional typography with optimal readability")
-    print("- Added timestamp showing last update date and time in Eastern time")
-    print("- Enhanced font-handling to ensure bold text works in all environments")
+    print("- Proper orphans/widows handling to prevent awkward breaks")
+    print("- Content optimization for professional two-page layout")
+    print("- Added timestamp showing last update date and time")
+    print("- Enhanced compatibility with installed system fonts")
 
 if __name__ == "__main__":
     main()
