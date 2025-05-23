@@ -107,6 +107,11 @@
             color: var(--accent-color);
             font-weight: bold;
         }
+        
+        .highlight a {
+            color: var(--accent-color); /* Make links within highlight match */
+            font-weight: bold;
+        }
 
         .warning {
             color: var(--warning-color);
@@ -125,39 +130,6 @@
             to {
                 visibility: hidden;
             }
-        }
-
-        .footnote {
-            cursor: pointer;
-            color: var(--accent-color);
-            border-bottom: 1px dashed var(--accent-color);
-        }
-        
-        .footnote-active {
-            background-color: rgba(88, 166, 255, 0.1);
-        }
-
-        .footnote-content {
-            display: none;
-            background-color: var(--code-bg);
-            padding: 15px;
-            border-radius: 4px;
-            margin: 10px 0;
-            border-left: 3px solid var(--accent-color);
-        }
-
-        .tree-view {
-            margin-left: 20px;
-        }
-
-        .tree-branch::before {
-            content: "├── ";
-            color: var(--comment-color);
-        }
-
-        .tree-branch:last-child::before {
-            content: "└── ";
-            color: var(--comment-color);
         }
 
         .expandable-header {
@@ -205,22 +177,21 @@
             color: var(--secondary-color);
         }
 
-        /* Script for expandable sections and footnotes should be placed at the end of the body */
         script {
-            display: none; /* This is a placeholder for the actual script tag */
+            display: none; 
         }
     </style>
 </head>
 <body>
     <header>
         <h1>$ Navigating the AI Agent Landscape</h1>
-        <p>An opinionated guide through the burgeoning world of AI agents, based on extensive (and expensive) hands-on testing. We'll explore different agent types, weigh their pros and cons, and emphasize the critical role of security and decoupling.</p>
+        <p>An opinionated guide through the burgeoning world of AI agents, based on extensive hands-on testing. We'll explore different agent types, weigh their pros and cons, and emphasize the critical role of security and decoupling in this rapidly evolving field.</p>
     </header>
 
     <div class="section">
-        <h2><span class="prompt">~/introduction</span> The Agent Gold Rush</h2>
-        <p>The promise of AI agents—autonomous systems that can understand goals and execute complex tasks—is intoxicating. I've dived headfirst, subscribing to nearly every major offering this month, racking up a significant bill. The goal? To cut through the hype and identify which approaches hold real promise and which harbor hidden risks.</p>
-        <p>This guide categorizes agents based on their primary operating environment, moving from research-focused tools to those interacting directly with our digital and local worlds, and finally, those operating in secure, sandboxed environments.</p>
+        <h2><span class="prompt">~/introduction</span> The Evolving Agent Frontier</h2>
+        <p>AI agents—autonomous systems capable of understanding goals and executing complex tasks—represent a significant leap in artificial intelligence. Their potential is immense, but their rapid evolution presents a challenge: How do we select the right tools while navigating concerns about efficiency, security, and long-term viability?</p>
+        <p>Having explored a wide array of options (and incurred the subscription costs to prove it), this guide offers a framework based on practical experience. We'll categorize agents by their operating environment and focus on identifying strategies that balance power with prudence.</p>
         <div class="code-block">
             <div class="tree-branch"><span class="highlight">AGENT_TYPES</span> = ["Deep Research", "Computer Use (GUI)", "AI Coding Tools", "Sandboxed Environment"]</div>
             <div class="tree-branch"><span class="highlight">KEY_CRITERIA</span> = ["Capability", "Efficiency", "Security", "Flexibility"]</div>
@@ -232,12 +203,12 @@
         <h2><span class="prompt">~/deep_research</span> Deep Research Agents</h2>
         <p>Many agents excel at "deep research." They promise to scour the web and synthesize information for you. However, their approach matters. Many popular tools <span class="comment"># (often built into search engines or major LLMs)</span> don't browse the *live* web in real-time.</p>
         <p>Instead, they query a <span class="highlight">pre-indexed cache</span> of the internet. This is fast and efficient, much like Google's own search index. For many general queries, this is perfectly adequate.</p>
-        <p>The limitation arises when you need *current*, *specific*, or *interactive* research. If you need an agent to click through a specific link you provide, navigate a non-indexed site, or find real-time product availability, these cache-based researchers often fall flat. They provide a semblance of browsing but lack true, live interaction. We'll revisit this when discussing agents like Manus, which take a different, more powerful approach.</p>
+        <p>The limitation arises when you need *current*, *specific*, or *interactive* research. If you need an agent to click through a specific link you provide, navigate a non-indexed site, or find real-time product availability, these cache-based researchers often fall flat. They provide a semblance of Browse but lack true, live interaction. We'll revisit this when discussing agents like Manus, which take a different, more powerful approach.</p>
     </div>
 
     <div class="section">
         <h2><span class="prompt">~/gui_agents</span> Computer Use Agents: A Flashy Detour?</h2>
-        <p>Next up are the GUI-based agents, often called "computer use" agents. Think <span class="highlight">Mariner</span> or <span class="highlight">OpenAI's Operator</span>. Watching these agents click around your screen, navigate menus, and interact with applications is undeniably impressive. They hold immense potential in specific niches:</p>
+        <p>Next up are the GUI-based agents, often called "computer use" agents. Think <span class="highlight">Google's Mariner</span>, <span class="highlight">OpenAI's Operator</span>, or <span class="highlight">Anthropic's Computer Use</span> capabilities. Watching these agents click around your screen, navigate menus, and interact with applications is undeniably impressive. They hold immense potential in specific niches:</p>
         <div class="code-block">
             <div class="tree-branch"><span class="highlight">USE_CASE_1</span> = "Software Playtesting & QA" <span class="comment"># Automating repetitive UI interactions</span></div>
             <div class="tree-branch"><span class="highlight">USE_CASE_2</span> = "Accessibility & UI Navigation" <span class="comment"># Assisting users with complex interfaces</span></div>
@@ -263,7 +234,7 @@
         <div class="expandable-content">
             <p>The ideal implementation for agentic coding tools is what GitHub is pursuing with <span class="highlight">Copilot Workspace</span>: the agent operates in an <span class="secondary-color">isolated, sandboxed environment</span>. It can write code, generate commits, and run tests, but it does so within a container, walled off from your host system. Once it's sandboxed, my security concerns largely evaporate.</p>
             <p>Other AI-powered tools, like the <span class="highlight">Cursor</span> IDE, also exist in this space. While it's an editor, not a terminal agent, it highlights another common issue: cost optimization vs. performance. Cursor often tries to select different models based on perceived task complexity. This can be frustrating when you *know* you need the most powerful model but the tool decides otherwise to save a few cents on API calls. Similarly, subscription models like Claude Code Max ($100/month) provide budget predictability but can feel limiting if you have a complex task and *want* to throw significant compute (and money) at it for a short burst.</p>
-            <p>My personal preference led me to build a simple CLI tool (`aifix`) that forces me to specify the file, write the "TODO," explicitly choose the model, and review the changes *before* execution. It's slower, but it gives me <span class="highlight">full control, guarantees the smartest model when I need it, and prevents runaway execution.</span></p>
+            <p>My personal preference led me to build a simple CLI tool, <span class="highlight"><a href="https://github.com/bradflaugher/aifixer" target="_blank" rel="noopener noreferrer">aifixer</a></span>, that forces me to specify the file, write the "TODO," explicitly choose the model, and review the changes *before* execution. It's slower, but it gives me <span class="highlight">full control, guarantees the smartest model when I need it, and prevents runaway execution.</span></p>
         </div>
          <h3 class="expandable-header">The Architect & The Intern: Model Limitations</h3>
         <div class="expandable-content">
@@ -302,23 +273,13 @@
         
         <div class="code-block">
             <div class="tree-branch"><span class="highlight">FOR_GUI_BOUND_USERS:</span> Computer Use agents are an option, but <span class="warning">slow & expensive.</span> Use if you *must*.</div>
-            <div class="tree-branch"><span class="highlight">FOR_DEVELOPERS:</span> Experiment with <span class="highlight">AI Coding Tools</span> (Claude Code, Cursor, etc.) but *strongly* prefer <span class="secondary-color">sandboxed environments</span> (GitHub Workspace) or use local tools with <span class="warning">extreme caution</span> and manual oversight. Consider building tools that give you *explicit* control.</div>
+            <div class="tree-branch"><span class="highlight">FOR_DEVELOPERS:</span> Experiment with <span class="highlight">AI Coding Tools</span> (Claude Code, Cursor, etc.) but *strongly* prefer <span class="secondary-color">sandboxed environments</span> (GitHub Workspace) or use local tools like <span class="highlight"><a href="https://github.com/bradflaugher/aifixer" target="_blank" rel="noopener noreferrer">aifixer</a></span> with <span class="warning">extreme caution</span> and manual oversight.</div>
             <div class="tree-branch"><span class="highlight">FOR_GENERAL_PURPOSE/RESEARCH:</span> Look towards <span class="highlight">Manus</span> and similar sandboxed agents. Their blend of <span class="secondary-color">security, capability (live web), and future potential</span> makes them a compelling choice.</div>
             <div class="tree-branch"><span class="highlight">FOR_ALL:</span> Prioritize <span class="warning">security through decoupling</span>. Don't let the "magic" blind you to the risks. Demand isolation.</div>
         </div>
         
         <p>The agentic future is exciting, but it must be built on a foundation of security and thoughtful architecture. Choose your tools wisely, understand their limitations and risks, and advocate for approaches that empower us without compromising our digital safety.</p>
     </div>
-    
-    <!--
-    <div class="section">
-        <h2><span class="prompt">~/footnotes</span> Extended Thoughts & References</h2>
-        <p id="footnote1-title"><span class="footnote" onclick="handleFootnoteClick('footnote1')">[1] AI Tool Selection Framework Dimensions</span></p>
-        <div id="footnote1" class="footnote-content">
-            <p>Content for footnote 1...</p>
-        </div>
-    </div>
-    -->
 
     <script>
         // JavaScript for Expandable Sections
@@ -338,36 +299,6 @@
                 });
             });
         });
-
-        // JavaScript for Footnotes (if you add them back)
-        // function handleFootnoteClick(footnoteId) {
-        //     const footnoteContent = document.getElementById(footnoteId);
-        //     const footnoteTitle = document.getElementById(footnoteId + '-title');
-            
-        //     if (footnoteContent.style.display === 'block') {
-        //         footnoteContent.style.display = 'none';
-        //         if (footnoteTitle) footnoteTitle.classList.remove('footnote-active');
-        //     } else {
-        //         // Close other footnotes before opening this one
-        //         document.querySelectorAll('.footnote-content').forEach(fc => {
-        //             if (fc.id !== footnoteId) {
-        //                 fc.style.display = 'none';
-        //             }
-        //         });
-        //          document.querySelectorAll('.footnote').forEach(ft => {
-        //              let currentElement = ft;
-        //              while(currentElement && currentElement.tagName !== 'P') {
-        //                  currentElement = currentElement.parentElement;
-        //              }
-        //              if (currentElement && currentElement.id !== footnoteId + '-title') {
-        //                 currentElement.classList.remove('footnote-active');
-        //              }
-        //         });
-
-        //         footnoteContent.style.display = 'block';
-        //         if (footnoteTitle) footnoteTitle.classList.add('footnote-active');
-        //     }
-        // }
     </script>
 </body>
 </html>
