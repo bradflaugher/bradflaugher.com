@@ -108,7 +108,7 @@
     }
     
     .highlight a {
-        color: var(--accent-color); /* Make links within highlight match */
+        color: var(--accent-color);
         font-weight: bold;
     }
 
@@ -185,120 +185,153 @@
 <body>
 <header>
 <h1>$ Navigating the AI Agent Landscape</h1>
-<p>An opinionated guide through the burgeoning world of AI agents, based on extensive hands-on testing. We'll explore different agent types, weigh their pros and cons, and emphasize the critical role of security and decoupling in this rapidly evolving field.</p>
+<p>A practical guide to choosing AI agents based on real-world testing. Let's cut through the hype and focus on what actually works.</p>
 </header>
+
 <div class="section">
-    <h2><span class="prompt">~/introduction</span> The Evolving Agent Frontier</h2>
-    <p>AI agents—autonomous systems capable of understanding goals and executing complex tasks—represent a significant leap in artificial intelligence. Their potential is immense, but their rapid evolution presents a challenge: How do we select the right tools while navigating concerns about efficiency, security, and long-term viability?</p>
-    <p>Having explored a wide array of options (and incurred the subscription costs to prove it), this guide offers a framework based on practical experience. We'll categorize agents by their operating environment and focus on identifying strategies that balance power with prudence.</p>
+    <h2><span class="prompt">~/overview</span> The Agent Landscape</h2>
+    <p>AI agents are evolving rapidly. After testing dozens of options, here's what actually matters:</p>
     <div class="code-block">
-        <div class="tree-branch"><span class="highlight">AGENT_TYPES</span> = ["Deep Research", "Computer Use (GUI)", "AI Coding Tools", "Sandboxed Environment", "Multi-Agent Systems"]</div>
-        <div class="tree-branch"><span class="highlight">KEY_CRITERIA</span> = ["Capability", "Efficiency", "Security", "Flexibility"]</div>
-        <div class="tree-branch"><span class="highlight">CORE_THEME</span> = "Security_via_Decoupling" <span class="comment"># Decentralization & Isolation are paramount</span></div>
+        <div class="tree-branch"><span class="highlight">SECURITY</span> = "Never run agents on your main system"</div>
+        <div class="tree-branch"><span class="highlight">CAPABILITY</span> = "Choose based on what they can actually do"</div>
+        <div class="tree-branch"><span class="highlight">EXTENSIBILITY</span> = "Look for agents that can connect to your tools"</div>
     </div>
 </div>
 
 <div class="section">
-    <h2><span class="prompt">~/deep_research</span> Deep Research Agents</h2>
-    <p>Many agents excel at "deep research." They promise to scour the web and synthesize information for you. However, their approach matters. Many popular tools <span class="comment"># (often built into search engines or major LLMs)</span> don't browse the *live* web in real-time.</p>
-    <p>Instead, they query a <span class="highlight">pre-indexed cache</span> of the internet. This is fast and efficient, much like Google's own search index. For many general queries, this is perfectly adequate.</p>
-    <p>The limitation arises when you need *current*, *specific*, or *interactive* research. If you need an agent to click through a specific link you provide, navigate a non-indexed site, or find real-time product availability, these cache-based researchers often fall flat. They provide a semblance of Browse but lack true, live interaction. We'll revisit this when discussing agents like Manus, which take a different, more powerful approach.</p>
+    <h2><span class="prompt">~/agent_types</span> Four Types of AI Agents</h2>
+    
+    <h3>1. Research Agents</h3>
+    <p>These agents search and synthesize information. <span class="warning">But most don't actually browse the web</span>—they query a pre-indexed cache. Fine for Wikipedia facts, useless for analyzing that article you just found.</p>
+
+    <h3>2. GUI/Computer Use Agents</h3>
+    <p>Agents like Google's Mariner or OpenAI's Operator click around your screen like a human. Impressive to watch, painful to use. They're slow, expensive, and usually the wrong tool for the job.</p>
+
+    <h3>3. Terminal & Execution Agents</h3>
+    <p>The powerhouses. These agents can write code, execute commands, browse the actual web, and get real work done. <span class="highlight">This is where the magic happens</span>—but also where security becomes critical. Examples: Claude Code, Manus, OpenHands.</p>
+
+    <h3>4. Multi-Agent Systems</h3>
+    <p>Tools like MetaGPT that simulate entire teams. One agent plays PM, another architect, another developer. Powerful for complex projects, overkill for most tasks.</p>
 </div>
 
 <div class="section">
-    <h2><span class="prompt">~/gui_agents</span> Computer Use Agents: A Flashy Detour?</h2>
-    <p>Next up are the GUI-based agents, often called "computer use" agents. Think <span class="highlight">Google's Mariner</span>, <span class="highlight">OpenAI's Operator</span>, or <span class="highlight">Anthropic's Computer Use</span> capabilities. Watching these agents click around your screen, navigate menus, and interact with applications is undeniably impressive. They hold immense potential in specific niches:</p>
+    <h2><span class="prompt">~/terminal_agents</span> Terminal & Execution Agents: The Real Deal</h2>
+    <p>These are the agents that actually get work done. They can execute commands, write code, and interact with systems. <span class="warning">But with great power comes great responsibility—always run them in isolated environments.</span></p>
+
+    <h3 class="expandable-header">Claude Code: Pure Terminal Power</h3>
+    <div class="expandable-content">
+        <p><span class="highlight">Claude Code</span> is a terminal-based agent that can build entire applications. It writes code, executes bash commands, and iterates on results. No GUI capabilities—just pure command-line power.</p>
+        <p><span class="warning">Security requirement:</span> Always run in isolation:</p>
+        <div class="code-block">
+            <div class="tree-branch">• <span class="highlight">Raspberry Pi</span> - Physical isolation on cheap hardware</div>
+            <div class="tree-branch">• <span class="highlight">Virtual Machine</span> - Easy to snapshot and restore</div>
+            <div class="tree-branch">• <span class="highlight">Docker Container</span> - Lightweight and disposable</div>
+        </div>
+        <p>When properly sandboxed, Claude Code is incredibly powerful for development tasks.</p>
+    </div>
+
+    <h3 class="expandable-header">Manus: Terminal + Live Web + Light GUI</h3>
+    <div class="expandable-content">
+        <p><span class="highlight">Manus</span> is the Swiss Army knife of agents. It combines:</p>
+        <p>• <span class="secondary-color">Terminal execution</span> - Run commands and code</p>
+        <p>• <span class="secondary-color">Live web browsing</span> - Actually visits pages, not cached data</p>
+        <p>• <span class="secondary-color">Light GUI capabilities</span> - Can interact with web interfaces when needed</p>
+        <p>• <span class="secondary-color">Built-in sandboxing</span> - Every task runs in its own VM</p>
+        <p>The built-in isolation makes it my go-to for complex tasks that need multiple capabilities.</p>
+    </div>
+
+    <h3 class="expandable-header">OpenHands: Open-Source Development Agent</h3>
+    <div class="expandable-content">
+        <p><span class="highlight">OpenHands</span> focuses on software development with security by default:</p>
+        <p>• <span class="secondary-color">Docker-first architecture</span> - All operations in containers</p>
+        <p>• <span class="secondary-color">Open source</span> - Inspect and modify everything</p>
+        <p>• <span class="secondary-color">LLM agnostic</span> - Use any model provider</p>
+        <p>• <span class="secondary-color">Terminal focused</span> - Built for developers</p>
+        <p>Perfect if you want full control and transparency.</p>
+    </div>
+</div>
+
+<div class="section">
+    <h2><span class="prompt">~/other_agents</span> The Rest of the Landscape</h2>
+    
+    <h3>Research Agents: Limited but Easy</h3>
+    <p>Most "AI search" tools query cached data. They're fast and cheap but can't:</p>
     <div class="code-block">
-        <div class="tree-branch"><span class="highlight">USE_CASE_1</span> = "Software Playtesting & QA" <span class="comment"># Automating repetitive UI interactions</span></div>
-        <div class="tree-branch"><span class="highlight">USE_CASE_2</span> = "Accessibility & UI Navigation" <span class="comment"># Assisting users with complex interfaces</span></div>
-        <div class="tree-branch"><span class="highlight">USE_CASE_3</span> = "Forcing API-like interaction" <span class="comment"># When no real API exists</span></div>
+        <div class="tree-branch">• Analyze specific links you provide</div>
+        <div class="tree-branch">• Access real-time information</div>
+        <div class="tree-branch">• Navigate non-indexed sites</div>
     </div>
-    <p>However, for core tasks like research or coding, I find their value limited. They essentially perform tasks like <span class="warning">manually scraping the web</span> or interacting with sites in a way that *should* be done via APIs. Using a GUI agent for these tasks is often a wildly inefficient workaround. It's like an expensive way to demand an API from a company.</p>
-    <p>While they have their place, particularly in QA, for most developers or power users, focusing on terminal-based or API-driven automation is a more efficient and scalable path. If a GUI is the *only* way, they're a last resort, but not my first choice for agentic work.</p>
+    <p><span class="comment"># Use Manus if you need actual web browsing</span></p>
+
+    <h3>GUI Agents: Niche Use Cases</h3>
+    <p>Computer use agents have their place, but it's small:</p>
+    <div class="code-block">
+        <div class="tree-branch"><span class="highlight">Good for:</span> QA testing, accessibility, legacy system interaction</div>
+        <div class="tree-branch"><span class="warning">Bad for:</span> General development, research, anything with an API</div>
+    </div>
+
+    <h3>Multi-Agent Systems: Enterprise Scale</h3>
+    <p><span class="highlight">MetaGPT</span> and similar tools orchestrate multiple specialized agents. Great for large projects where you need structured workflows and documentation. Overkill for individual developers.</p>
 </div>
 
 <div class="section">
-    <h2><span class="prompt">~/coding_tools</span> AI Coding Tools: Power & Peril</h2>
-    <p>This category is where things get truly powerful for developers, but also where security concerns become paramount. These tools directly interact with and modify your local codebase.</p>
-
-    <h3 class="expandable-header">Claude Code: The Double-Edged Sword</h3>
-    <div class="expandable-content">
-        <p>Anthropic's <span class="highlight">Claude Code</span> is, frankly, amazing. Its ability to ingest a project, refactor code, implement new features, and even build entire applications (like a game from scratch) is deeply impressive. It feels like a glimpse into the future of development, potentially turning a 1x developer into a 3x (or more) developer.</p>
-        <p>It often follows a Unix-like paradigm, which resonates with many developers. <span class="warning">But there's a critical flaw in its common implementation: running directly on your local machine.</span></p>
-        <p>Despite Anthropic's safety focus, allowing an AI to run in "full auto mode" with the ability to execute <span class="warning">arbitrary bash scripts</span> on your primary development machine is, in my view, terrifying. While there are some checks, the potential for a mistake, a hallucinated command, or a malicious instruction (however unlikely) to cause significant damage is too high.</p>
-        <p><span class="highlight">The power is real, but the risk profile of local, unrestricted execution is unacceptable for many.</span></p>
-        <p class="comment"># Note: You can mitigate this risk by running Claude Code on a dedicated virtual machine or a separate, isolated computer. This provides a sandbox for its operations, preventing unintended changes to your primary system.</p>
+    <h2><span class="prompt">~/extensions</span> Making Agents More Powerful: MCP</h2>
+    <p><span class="highlight">MCP (Model-Context Protocol)</span> is how agents connect to external tools and services. It's the difference between a general chatbot and a specialized assistant.</p>
+    
+    <h3>What MCP Enables</h3>
+    <div class="code-block">
+        <div class="tree-branch">• Connect to company databases and tools</div>
+        <div class="tree-branch">• Integrate with third-party APIs</div>
+        <div class="tree-branch">• Control IoT devices and hardware</div>
+        <div class="tree-branch">• Access specialized domain knowledge</div>
     </div>
 
-    <h3 class="expandable-header">The Sandboxed Ideal & Tooling Realities</h3>
-    <div class="expandable-content">
-        <p>The ideal implementation for agentic coding tools is what GitHub is pursuing with <span class="highlight">Copilot Workspace</span>: the agent operates in an <span class="secondary-color">isolated, sandboxed environment</span>. It can write code, generate commits, and run tests, but it does so within a container, walled off from your host system. Once it's sandboxed, my security concerns largely evaporate.</p>
-        <p>Other AI-powered tools, like the <span class="highlight">Cursor</span> IDE, also exist in this space. While it's an editor, not a terminal agent, it highlights another common issue: cost optimization vs. performance. Cursor often tries to select different models based on perceived task complexity. This can be frustrating when you *know* you need the most powerful model but the tool decides otherwise to save a few cents on API calls. Similarly, subscription models like Claude Code Max ($100/month) provide budget predictability but can feel limiting if you have a complex task and *want* to throw significant compute (and money) at it for a short burst.</p>
-        <p>My personal preference led me to build a simple CLI tool, <span class="highlight"><a href="[https://github.com/bradflaugher/aifixer](https://github.com/bradflaugher/aifixer)" target="_blank" rel="noopener noreferrer">aifixer</a></span>, that forces me to specify the file, write the "TODO," explicitly choose the model, and review the changes *before* execution. It's slower, but it gives me <span class="highlight">full control, guarantees the smartest model when I need it, and prevents runaway execution.</span></p>
-    </div>
-     <h3 class="expandable-header">The Architect & The Intern: Model Limitations</h3>
-    <div class="expandable-content">
-        <p>It's crucial to remember that current coding agents aren't architects. They excel at well-defined tasks and projects similar to those in their training data. Give them a "build a blog" task, and they'll likely succeed.</p>
-        <p>However, on bleeding-edge projects or tasks requiring novel architectural decisions, they often falter. They tend to choose the <span class="comment">most popular frameworks and patterns from their training data era</span>, not necessarily the *best* choices for the current problem. They can sometimes act like a "lazy" developer, taking shortcuts or making suboptimal choices if left entirely unsupervised. They need guidance, architectural rails, and human oversight – they are accelerators, not replacements for experienced developers.</p>
-    </div>
-</div>
-
-<div class="section">
-    <h2><span class="prompt">~/sandboxed_agents</span> Sandboxed Agents: The Secure Future</h2>
-    <p>This brings us to what I believe is the most promising and secure approach: agents that run in their own, isolated virtual environments, decoupled from your local machine.</p>
-
-    <h3 class="expandable-header">Manus: The Standout Example</h3>
-    <div class="expandable-content">
-        <p><span class="highlight">Manus</span> is my current favorite in this category. You interact with it via a clean interface, but when you give it a task, it spins up a <span class="secondary-color">dedicated virtual environment</span>. It can perform some GUI-like actions within that sandbox, but its real power lies in its terminal operations.</p>
-        <p>It beautifully addresses several key issues:</p>
-        <p><span class="highlight">Security:</span> Its core strength. By running in an isolated container, it poses no direct threat to your host system. <span class="secondary-color">This is decoupling done right.</span></p>
-        <p><span class="highlight">Live Web Research:</span> Unlike cache-based researchers, Manus can browse the *live* web. If you give it an article link and ask for analysis, it will actually visit and process that live page. This makes it far more powerful for real-world, up-to-the-minute research and tasks like finding actual product links.</p>
-        <p><span class="highlight">Transparency & Control:</span> It uses a credit system and offers different "effort modes," giving you some control over cost and performance, unlike black-box optimizers.</p>
-        <p><span class="highlight">Extensibility:</span> Its roadmap includes third-party integrations, promising future growth and customization.</p>
-        <p>While it still faces the challenge (common to many agents) of sometimes not using the *absolute* smartest model by default (likely for cost/speed reasons), its fundamental architecture – <span class="highlight">secure, sandboxed, and capable</span> – makes it a leader in my eyes.</p>
-    </div>
-
-    <h3 class="expandable-header">OpenHands: The Open-Source Sandboxed Developer</h3>
-    <div class="expandable-content">
-        <p><span class="highlight">OpenHands</span> (formerly OpenDevin) is an open-source platform designed to create AI agents that function like human software developers. Critically, OpenHands is built with a strong emphasis on <span class="secondary-color">sandboxed execution</span>. It typically leverages Docker containers to provide isolated environments where AI agents can safely modify code, run commands, browse the web, and call APIs without impacting the host system.</p>
-        <p>This commitment to sandboxing directly addresses the security concerns highlighted in the "Coding Tools" section. OpenHands aims to automate complex software engineering tasks—from bug fixes to building entire applications—within this controlled and secure environment. Its open-source nature fosters community development and allows for integration with various LLM providers.</p>
-        <p><span class="comment"># Key takeaway: An open-source, powerful software developer agent that prioritizes secure, sandboxed execution, aligning with the principles of decoupling.</span></p>
-    </div>
-</div>
-
-<div class="section">
-    <h2><span class="prompt">~/multi_agent_systems</span> Multi-Agent Systems: Beyond the Individual</h2>
-    <p>While many agents focus on a single, powerful AI tackling a task, multi-agent systems take a different approach: simulating a team of AI agents, each with a specialized role, collaborating to achieve a complex goal. This mirrors human team dynamics, with distinct roles like product manager, architect, engineer, and tester.</p>
-
-    <h3 class="expandable-header">MetaGPT: Orchestrated AI Software Development</h3>
-    <div class="expandable-content">
-        <p><span class="highlight">MetaGPT</span> is a prominent open-source framework that orchestrates multi-agent collaboration for software development. It assigns specialized roles to AI agents and provides them with Standardized Operating Procedures (SOPs) encoded as prompt sequences. This structured approach helps in breaking down complex projects into manageable subtasks, improving consistency and reliability of the output.</p>
-        <p>MetaGPT aims to simulate an entire software company, taking a one-line requirement and outputting user stories, competitive analysis, requirements, data structures, APIs, and even full code. Its core philosophy, "Code = SOP(Team)," emphasizes how human-like workflows and collaboration can be integrated into AI processes. While powerful for structured development tasks and capable of generating comprehensive documentation, its complexity might require a learning curve.</p>
-        <p><span class="comment"># Key takeaway: Simulates an entire development team for complex, structured projects, emphasizing orchestrated workflows and roles.</span></p>
-    </div>
+    <h3>Building Safely with MCP</h3>
+    <p>With MCP, agents can do almost anything—which is both powerful and dangerous. Always implement:</p>
+    <p>• <span class="warning">Confirmation prompts</span> for destructive actions</p>
+    <p>• <span class="warning">Rate limiting</span> to prevent runaway operations</p>
+    <p>• <span class="warning">Audit logging</span> for all agent actions</p>
+    <p>• <span class="warning">Minimal permissions</span> following principle of least privilege</p>
 </div>
 
 <div class="info-section">
-    <div class="info-header">The Security Imperative: Decentralization & Decoupling</div>
-    <p>The theme running through this analysis is the critical need for <span class="warning">security</span>. As agents become more capable, allowing them unfettered access to our local machines is a risk we shouldn't take lightly. The most promising path forward lies in:</p>
-    <p><span class="highlight">Decentralization:</span> Not relying on a single, monolithic AI or provider, but leveraging diverse tools.</p>
-    <p><span class="highlight">Decoupling:</span> Physically and logically separating the agent's execution environment from sensitive systems. This means <span class="secondary-color">sandboxes, containers, and dedicated virtual environments</span>.</p>
-    <p class="terminal-prompt">Trusting an AI with 'sudo' on your local machine is a bridge too far. The future must be built on secure, isolated execution models.</p>
+    <div class="info-header">The Golden Rule: Isolation Is Non-Negotiable</div>
+    <p><span class="warning">Never give an AI agent direct access to your main system.</span></p>
+    <p>Whether it's Claude Code on a Raspberry Pi, Manus in its VM, or OpenHands in Docker—isolation isn't optional. The most powerful agents are the ones that can execute code, which makes sandboxing essential.</p>
 </div>
 
 <div class="section">
-    <h2><span class="prompt">~/conclusion</span> Picking Your Lane</h2>
-    <p>AI agents are undeniably transformative, but there's no "one size fits all" solution. Your choice should depend on your needs, technical comfort, and, crucially, your risk tolerance.</p>
+    <h2><span class="prompt">~/recommendations</span> Practical Recommendations</h2>
     
     <div class="code-block">
-        <div class="tree-branch"><span class="highlight">FOR_GUI_BOUND_USERS:</span> Computer Use agents are an option, but <span class="warning">slow & expensive.</span> Use if you *must*.</div>
-        <div class="tree-branch"><span class="highlight">FOR_DEVELOPERS:</span> Experiment with <span class="highlight">AI Coding Tools</span> (Claude Code, Cursor, etc.), but *strongly* prefer <span class="secondary-color">sandboxed environments</span> (GitHub Workspace, <span class="highlight">OpenHands</span>, or running Claude Code on a dedicated VM). For local tools like <span class="highlight"><a href="[https://github.com/bradflaugher/aifixer](https://github.com/bradflaugher/aifixer)" target="_blank" rel="noopener noreferrer">aifixer</a></span>, use with <span class="warning">extreme caution</span> and manual oversight.</div>
-        <div class="tree-branch"><span class="highlight">FOR_GENERAL_PURPOSE/RESEARCH:</span> Look towards <span class="highlight">Manus</span> and similar sandboxed agents. Their blend of <span class="secondary-color">security, capability (live web), and future potential</span> makes them a compelling choice.</div>
-        <div class="tree-branch"><span class="highlight">FOR_COMPLEX_SOFTWARE_PROJECTS:</span> Consider <span class="highlight">MetaGPT</span> for its multi-agent, structured approach to software development, simulating an entire team.</div>
-        <div class="tree-branch"><span class="highlight">FOR_ALL:</span> Prioritize <span class="warning">security through decoupling</span>. Don't let the "magic" blind you to the risks. Demand isolation.</div>
+        <div class="tree-branch"><span class="highlight">For Development:</span></div>
+        <div class="tree-branch">  → <span class="secondary-color">Claude Code</span> (in VM/Docker) for pure coding tasks</div>
+        <div class="tree-branch">  → <span class="secondary-color">OpenHands</span> for open-source flexibility</div>
+        <div class="tree-branch"></div>
+        <div class="tree-branch"><span class="highlight">For Research + Development:</span></div>
+        <div class="tree-branch">  → <span class="secondary-color">Manus</span> for its combination of capabilities</div>
+        <div class="tree-branch"></div>
+        <div class="tree-branch"><span class="highlight">For Large Projects:</span></div>
+        <div class="tree-branch">  → <span class="secondary-color">MetaGPT</span> for multi-agent orchestration</div>
+        <div class="tree-branch"></div>
+        <div class="tree-branch"><span class="highlight">For GUI Automation:</span></div>
+        <div class="tree-branch">  → Computer use agents (only when necessary)</div>
+        <div class="tree-branch"></div>
+        <div class="tree-branch"><span class="highlight">Always Remember:</span></div>
+        <div class="tree-branch">  → <span class="warning">Sandbox everything that executes code</span></div>
+        <div class="tree-branch">  → Look for MCP support for extensibility</div>
+        <div class="tree-branch">  → Start small, expand gradually</div>
     </div>
-    
-    <p>The agentic future is exciting, but it must be built on a foundation of security and thoughtful architecture. Choose your tools wisely, understand their limitations and risks, and advocate for approaches that empower us without compromising our digital safety.</p>
+</div>
+
+<div class="section">
+    <h2><span class="prompt">~/conclusion</span> Choose Wisely, Sandbox Always</h2>
+    <p>The most capable agents are Terminal & Execution agents—they can actually do things, not just talk about them. But with that power comes risk.</p>
+    <p>Success with AI agents comes from:</p>
+    <p>1. <span class="highlight">Understanding capabilities</span> - Know what each type can actually do</p>
+    <p>2. <span class="highlight">Prioritizing security</span> - Always use isolated environments</p>
+    <p>3. <span class="highlight">Building incrementally</span> - Start simple, add extensions as needed</p>
+    <p>The future is bright for those who approach agents thoughtfully. Choose the right tool, sandbox religiously, and build step by step.</p>
 </div>
 
 <script>
