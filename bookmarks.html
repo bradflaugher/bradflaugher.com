@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <title>Bookmarks | Brad Flaugher</title>
-  <meta name="description" content="Curated collection of essential tools and platforms for productivity and AI development." />
+  <meta name="description" content="Curated collection of essential tools and platforms for productivity, privacy and AI development." />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- ────────────────  THEME  ──────────────── -->
   <style>
     :root{
       --bg-color:#0d1117;      --text-color:#e6edf3;
@@ -226,7 +227,7 @@
   <header>
     <a href="index.html" class="back-link">← Back to Home</a>
     <h1>🔖 Essential Bookmarks</h1>
-    <p class="subtitle">Curated collection of tools and platforms for productivity and AI development</p>
+    <p class="subtitle">Curated collection of tools and platforms for productivity • privacy • AI development</p>
   </header>
 
   <div class="search-container">
@@ -237,233 +238,174 @@
     <span id="bookmarkCount">15</span> bookmarks across <span id="categoryCount">4</span> categories
   </div>
 
+  <!-- ─────────── EMAIL & CALENDAR ─────────── -->
   <div class="category" data-category="email-calendar">
-    <h2>
-      <span class="category-emoji">📧</span>
-      Email & Calendar
-    </h2>
+    <h2><span class="category-emoji">📧</span>Email & Calendar</h2>
     <div class="bookmarks-grid">
-      <div class="bookmark-card" data-search="proton mail email secure privacy">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">🛡️</span>
-          Proton Mail
-        </div>
+
+      <!-- Proton Mail -->
+      <div class="bookmark-card" data-search="proton mail secure encrypted private swiss">
+        <div class="bookmark-title"><span class="bookmark-emoji">🛡️</span>Proton Mail</div>
         <div class="bookmark-description">
-          Secure, encrypted email service focused on privacy and security
+          Zero-access, end-to-end-encrypted email hosted in privacy-friendly Switzerland—nobody (not even Proton) can read your inbox.
         </div>
-        <a href="https://proton.me/mail" target="_blank" class="bookmark-link">
-          proton.me/mail
-        </a>
+        <a href="https://proton.me/mail" target="_blank" class="bookmark-link">proton.me/mail</a>
       </div>
 
-      <div class="bookmark-card" data-search="proton calendar scheduling secure privacy">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">🗓️</span>
-          Proton Calendar
-        </div>
+      <!-- Proton Calendar -->
+      <div class="bookmark-card" data-search="proton calendar encrypted private">
+        <div class="bookmark-title"><span class="bookmark-emoji">🗓️</span>Proton Calendar</div>
         <div class="bookmark-description">
-          Privacy-focused calendar with end-to-end encryption
+          Fully encrypted calendar that keeps event titles, invites, and notes private—pairs seamlessly with Proton Mail for an all-private workspace.
         </div>
-        <a href="https://proton.me/calendar" target="_blank" class="bookmark-link">
-          proton.me/calendar
-        </a>
+        <a href="https://proton.me/calendar" target="_blank" class="bookmark-link">proton.me/calendar</a>
       </div>
 
-      <div class="bookmark-card" data-search="google calendar scheduling events meetings">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">📅</span>
-          Google Calendar
-        </div>
+      <!-- Google Calendar -->
+      <div class="bookmark-card" data-search="google calendar assistant nest voice scheduling">
+        <div class="bookmark-title"><span class="bookmark-emoji">📅</span>Google Calendar</div>
         <div class="bookmark-description">
-          Comprehensive calendar service with powerful scheduling features
+          Feature-rich scheduling that works hands-free—say “Hey Google, schedule a meeting at 3” on any Nest display or Assistant device and it’s done.
         </div>
-        <a href="https://calendar.google.com/" target="_blank" class="bookmark-link">
-          calendar.google.com
-        </a>
+        <a href="https://calendar.google.com/" target="_blank" class="bookmark-link">calendar.google.com</a>
       </div>
 
-      <div class="bookmark-card" data-search="google tasks todo productivity gtd">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">✅</span>
-          Google Tasks
-        </div>
+      <!-- Google Tasks -->
+      <div class="bookmark-card" data-search="google tasks assistant nest voice todos">
+        <div class="bookmark-title"><span class="bookmark-emoji">✅</span>Google Tasks</div>
         <div class="bookmark-description">
-          Simple task management integrated with Google Workspace
+          Lightweight to-do lists you can add by voice (“Hey Google, remind me to send the invoice”) and view alongside Calendar on Nest hubs.
         </div>
-        <a href="https://tasks.google.com/" target="_blank" class="bookmark-link">
-          tasks.google.com
-        </a>
+        <a href="https://tasks.google.com/" target="_blank" class="bookmark-link">tasks.google.com</a>
       </div>
 
-      <div class="bookmark-card" data-search="apple reminders ios tasks todo productivity">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">🍎</span>
-          Apple Reminders
-        </div>
+      <!-- Apple Reminders -->
+      <div class="bookmark-card" data-search="apple reminders siri ios mac watch">
+        <div class="bookmark-title"><span class="bookmark-emoji">🍎</span>Apple Reminders</div>
         <div class="bookmark-description">
-          Native iOS/macOS reminder app with smart lists and location-based alerts
+          Deeply integrated with Siri—just say “Remind me when I get to the office” and it shows up across iPhone, iPad, Mac and Apple Watch.
         </div>
-        <a href="https://www.apple.com/ios/reminders/" target="_blank" class="bookmark-link">
-          apple.com/ios/reminders
-        </a>
+        <a href="https://www.apple.com/ios/reminders/" target="_blank" class="bookmark-link">apple.com/ios/reminders</a>
       </div>
+
     </div>
   </div>
 
+  <!-- ─────────── AI & LANGUAGE MODELS ─────────── -->
   <div class="category" data-category="ai-tools">
-    <h2>
-      <span class="category-emoji">🤖</span>
-      AI & Language Models
-    </h2>
+    <h2><span class="category-emoji">🤖</span>AI & Language Models</h2>
     <div class="bookmarks-grid">
-      <div class="bookmark-card" data-search="google gemini ai chatbot llm bard">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">💎</span>
-          Google Gemini
-        </div>
+
+      <!-- Google Gemini -->
+      <div class="bookmark-card" data-search="google gemini 1m context multimodal llm">
+        <div class="bookmark-title"><span class="bookmark-emoji">💎</span>Google Gemini 2.5 Pro</div>
         <div class="bookmark-description">
-          Google's advanced AI assistant with multimodal capabilities
+          Multimodal LLM with a 1-million-token (2 M preview) context window—ideal for whole-codebase reasoning, video analysis, or mega PDFs.
         </div>
-        <a href="https://gemini.google.com/" target="_blank" class="bookmark-link">
-          gemini.google.com
-        </a>
+        <a href="https://gemini.google.com/" target="_blank" class="bookmark-link">gemini.google.com</a>
       </div>
 
-      <div class="bookmark-card" data-search="chatgpt openai gpt ai assistant">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">💬</span>
-          ChatGPT
-        </div>
+      <!-- ChatGPT -->
+      <div class="bookmark-card" data-search="openai chatgpt gpt4o image editing multimodal siri shortcuts">
+        <div class="bookmark-title"><span class="bookmark-emoji">💬</span>ChatGPT (o3)</div>
         <div class="bookmark-description">
-          OpenAI's conversational AI assistant for various tasks and queries
+          Best-in-class at image generation & editing, voice and vision; integrates with iOS Shortcuts/Siri for true hands-free multimodal workflows.
         </div>
-        <a href="https://chat.openai.com/" target="_blank" class="bookmark-link">
-          chat.openai.com
-        </a>
+        <a href="https://chat.openai.com/" target="_blank" class="bookmark-link">chat.openai.com</a>
       </div>
 
-      <div class="bookmark-card" data-search="claude ai anthropic assistant constitutional">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">🎭</span>
-          Claude AI
-        </div>
+      <!-- Claude AI -->
+      <div class="bookmark-card" data-search="claude ai coding agentic claude code">
+        <div class="bookmark-title"><span class="bookmark-emoji">🎭</span>Claude AI</div>
         <div class="bookmark-description">
-          Anthropic's helpful, harmless, and honest AI assistant
+          Safety-first AI that tops coding leaderboards and powers the “Claude Code” CLI for agentic, long-context (~1 M tokens) development tasks.
         </div>
-        <a href="https://claude.ai/" target="_blank" class="bookmark-link">
-          claude.ai
-        </a>
+        <a href="https://claude.ai/" target="_blank" class="bookmark-link">claude.ai</a>
       </div>
 
-      <div class="bookmark-card" data-search="openrouter api llm models routing">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">🔀</span>
-          OpenRouter
-        </div>
+      <!-- OpenRouter -->
+      <div class="bookmark-card" data-search="openrouter unified api multi model llm">
+        <div class="bookmark-title"><span class="bookmark-emoji">🔀</span>OpenRouter</div>
         <div class="bookmark-description">
-          Unified API for accessing multiple AI models and providers
+          One API key to tap 300 + models (GPT-4o, Claude, Gemini, Llama 3 …)—perfect for benchmarking or swapping engines without code changes.
         </div>
-        <a href="https://openrouter.ai/" target="_blank" class="bookmark-link">
-          openrouter.ai
-        </a>
+        <a href="https://openrouter.ai/" target="_blank" class="bookmark-link">openrouter.ai</a>
       </div>
+
     </div>
   </div>
 
+  <!-- ─────────── AGENTS & CODING TOOLS ─────────── -->
   <div class="category" data-category="dev-tools">
-    <h2>
-      <span class="category-emoji">⚡</span>
-      Development & AI Tools
-    </h2>
+    <h2><span class="category-emoji">⚡</span>Agents & Coding Tools</h2>
     <div class="bookmarks-grid">
-      <div class="bookmark-card" data-search="manus ai writing assistant productivity">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">✍️</span>
-          Manus.im
-        </div>
+
+      <!-- Manus -->
+      <div class="bookmark-card" data-search="manus ai agent ios app web browsing tools">
+        <div class="bookmark-title"><span class="bookmark-emoji">✍️</span>Manus AI</div>
         <div class="bookmark-description">
-          AI-powered writing assistant for enhanced productivity
+          Full-stack iOS agent that can browse the web, read/write files, email, and orchestrate tasks—free daily credits and no wait-list.
         </div>
-        <a href="https://manus.im/" target="_blank" class="bookmark-link">
-          manus.im
-        </a>
+        <a href="https://manus.im/" target="_blank" class="bookmark-link">manus.im</a>
       </div>
 
-      <div class="bookmark-card" data-search="openhands ai agent development automation">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">🙌</span>
-          OpenHands
-        </div>
+      <!-- OpenHands -->
+      <div class="bookmark-card" data-search="openhands ai agent open source browser sandbox docker">
+        <div class="bookmark-title"><span class="bookmark-emoji">🙌</span>OpenHands</div>
         <div class="bookmark-description">
-          AI agent platform for automating software development tasks
+          Open-source agent that runs in your browser or a sandboxed Docker container; ships with dozens of built-in tools and is endlessly hackable.
         </div>
-        <a href="https://openhands.ai/" target="_blank" class="bookmark-link">
-          openhands.ai
-        </a>
+        <a href="https://openhands.ai/" target="_blank" class="bookmark-link">openhands.ai</a>
       </div>
 
-      <div class="bookmark-card" data-search="claude code agentic coding tool that lives in your terminal">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">🦾</span>
-          Claude Code
-        </div>
+      <!-- Claude Code -->
+      <div class="bookmark-card" data-search="claude code cli agentic terminal coding">
+        <div class="bookmark-title"><span class="bookmark-emoji">🦾</span>Claude Code CLI</div>
         <div class="bookmark-description">
-          Agentic AI coding tool that runs in your terminal
-	</div>
-        <a href="docs.anthropic.com" target="_blank" class="bookmark-link">
-          https://docs.anthropic.com/en/docs/claude-code/overview
-        </a>
+          Agentic coding sidekick that lives in your terminal—reads your repo, runs shell commands, edits files, and turns GitHub issues into PRs.
+        </div>
+        <a href="https://docs.anthropic.com/en/docs/claude-code/overview" target="_blank" class="bookmark-link">docs.anthropic.com</a>
       </div>
 
-      <div class="bookmark-card" data-search="aider ai coding assistant pair programming">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">🔧</span>
-          Aider
-        </div>
+      <!-- Aider -->
+      <div class="bookmark-card" data-search="aider foss pair programming local coding assistant">
+        <div class="bookmark-title"><span class="bookmark-emoji">🔧</span>Aider</div>
         <div class="bookmark-description">
-          FOSS AI pair programming tool for collaborative coding
+          FOSS pair-programming bot that tracks diffs, suggests commits, and keeps everything local—ideal when you want AI help without cloud uploads.
         </div>
-        <a href="https://aider.chat/" target="_blank" class="bookmark-link">
-          aider.chat
-        </a>
+        <a href="https://aider.chat/" target="_blank" class="bookmark-link">aider.chat</a>
       </div>
+
     </div>
   </div>
 
+  <!-- ─────────── CODE REPOSITORIES ─────────── -->
   <div class="category" data-category="code-repos">
-    <h2>
-      <span class="category-emoji">📦</span>
-      Code Repositories
-    </h2>
+    <h2><span class="category-emoji">📦</span>Code Repositories</h2>
     <div class="bookmarks-grid">
-      <div class="bookmark-card" data-search="github git repository code hosting microsoft">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">🐙</span>
-          GitHub
-        </div>
+
+      <!-- GitHub -->
+      <div class="bookmark-card" data-search="github code hosting actions copilot">
+        <div class="bookmark-title"><span class="bookmark-emoji">🐙</span>GitHub</div>
         <div class="bookmark-description">
-          World's largest code hosting platform with collaboration tools
+          World’s largest repo host with Actions CI/CD, Discussions, Copilot AI coding, and the planet’s biggest open-source community.
         </div>
-        <a href="https://github.com/" target="_blank" class="bookmark-link">
-          github.com
-        </a>
+        <a href="https://github.com/" target="_blank" class="bookmark-link">github.com</a>
       </div>
 
-      <div class="bookmark-card" data-search="codeberg git repository open source hosting">
-        <div class="bookmark-title">
-          <span class="bookmark-emoji">🏔️</span>
-          Codeberg
-        </div>
+      <!-- Codeberg -->
+      <div class="bookmark-card" data-search="codeberg forgejo git libre open source privacy">
+        <div class="bookmark-title"><span class="bookmark-emoji">🏔️</span>Codeberg</div>
         <div class="bookmark-description">
-          Open-source, privacy-focused Git hosting platform
+          Community-run Forgejo instance—EU-hosted, ad-free and privacy-respecting; perfect for libre projects that want GitHub-style workflows without tracking.
         </div>
-        <a href="https://codeberg.org/" target="_blank" class="bookmark-link">
-          codeberg.org
-        </a>
+        <a href="https://codeberg.org/" target="_blank" class="bookmark-link">codeberg.org</a>
       </div>
+
     </div>
   </div>
 
+  <!-- ────────────────  SEARCH & UX JS  ──────────────── -->
   <script>
     // Search functionality
     const searchBox = document.getElementById('searchBox');
@@ -515,15 +457,15 @@
     // Initialize
     updateStats();
 
-    // Add keyboard shortcut for search
+    // Keyboard shortcut (⌘/Ctrl + K) to focus search
     document.addEventListener('keydown', function(e) {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         searchBox.focus();
       }
     });
 
-    // Add some visual feedback for card interactions
+    // Card click opens link
     bookmarkCards.forEach(card => {
       card.addEventListener('click', function(e) {
         if (e.target.tagName !== 'A') {
