@@ -208,7 +208,7 @@
     <p>Agents like Google's Mariner or OpenAI's Operator click around your screen like a human. Impressive to watch, painful to use. They're slow, expensive, and usually the wrong tool for the job.</p>
 
     <h3>3. Terminal & Execution Agents</h3>
-    <p>The powerhouses. These agents can write code, execute commands, browse the actual web, and get real work done. <span class="highlight">This is where the magic happens</span>—but also where security becomes critical. Examples: Claude Code, Manus, OpenHands.</p>
+    <p>The powerhouses. These agents can write code, execute commands, browse the actual web, and get real work done. <span class="highlight">This is where the magic happens</span>—but also where security becomes critical. Examples: Claude Code, Aider, Manus, OpenHands.</p>
 
     <h3>4. Multi-Agent Systems</h3>
     <p>Tools like MetaGPT that simulate entire teams. One agent plays PM, another architect, another developer. Powerful for complex projects, overkill for most tasks.</p>
@@ -218,36 +218,48 @@
     <h2><span class="prompt">~/terminal_agents</span> Terminal & Execution Agents: The Real Deal</h2>
     <p>These are the agents that actually get work done. They can execute commands, write code, and interact with systems. <span class="warning">But with great power comes great responsibility—always run them in isolated environments.</span></p>
 
-    <h3 class="expandable-header">Claude Code: Pure Terminal Power</h3>
+    <h3 class="expandable-header">Claude Code & Aider: Closed vs Open Coding Agents</h3>
     <div class="expandable-content">
-        <p><span class="highlight">Claude Code</span> is a terminal-based agent that can build entire applications. It writes code, executes bash commands, and iterates on results. No GUI capabilities—just pure command-line power.</p>
-        <p><span class="warning">Security requirement:</span> Always run in isolation:</p>
+        <p><span class="highlight">Claude Code</span> and <span class="highlight">Aider</span> represent the closed/open source divide in terminal-based coding agents:</p>
+        
+        <p><strong>Claude Code (Closed Source):</strong></p>
+        <p>• <span class="secondary-color">Anthropic's offering</span> - Built directly by the Claude team</p>
+        <p>• <span class="secondary-color">Polished experience</span> - Seamless integration with Claude's capabilities</p>
+        <p>• <span class="secondary-color">Research preview</span> - Currently in limited availability</p>
+        <p>• <span class="secondary-color">Terminal focused</span> - Pure command-line power for development</p>
+        
+        <p><strong>Aider (Open Source):</strong></p>
+        <p>• <span class="secondary-color">Community driven</span> - Fully open source and extensible</p>
+        <p>• <span class="secondary-color">Model agnostic</span> - Works with Claude, GPT-4, and other LLMs</p>
+        <p>• <span class="secondary-color">Git integration</span> - Native version control workflows</p>
+        <p>• <span class="secondary-color">Available now</span> - Install and use immediately</p>
+        
+        <p><span class="warning">Security for both:</span> Always run in isolation:</p>
         <div class="code-block">
             <div class="tree-branch">• <span class="highlight">Raspberry Pi</span> - Physical isolation on cheap hardware</div>
             <div class="tree-branch">• <span class="highlight">Virtual Machine</span> - Easy to snapshot and restore</div>
             <div class="tree-branch">• <span class="highlight">Docker Container</span> - Lightweight and disposable</div>
         </div>
-        <p>When properly sandboxed, Claude Code is incredibly powerful for development tasks.</p>
+        <p>Both are incredibly powerful for development tasks when properly sandboxed.</p>
     </div>
 
-    <h3 class="expandable-header">Manus: Terminal + Live Web + Light GUI</h3>
+    <h3 class="expandable-header">Manus & OpenHands: Closed vs Open Multi-Modal Agents</h3>
     <div class="expandable-content">
-        <p><span class="highlight">Manus</span> is the Swiss Army knife of agents. It combines:</p>
-        <p>• <span class="secondary-color">Terminal execution</span> - Run commands and code</p>
-        <p>• <span class="secondary-color">Live web browsing</span> - Actually visits pages, not cached data</p>
-        <p>• <span class="secondary-color">Light GUI capabilities</span> - Can interact with web interfaces when needed</p>
+        <p><span class="highlight">Manus</span> and <span class="highlight">OpenHands</span> showcase the closed/open source approach to multi-capability agents:</p>
+        
+        <p><strong>Manus (Closed Source):</strong></p>
+        <p>• <span class="secondary-color">Swiss Army knife agent</span> - Terminal + web + light GUI</p>
         <p>• <span class="secondary-color">Built-in sandboxing</span> - Every task runs in its own VM</p>
-        <p>The built-in isolation makes it my go-to for complex tasks that need multiple capabilities.</p>
-    </div>
-
-    <h3 class="expandable-header">OpenHands: Open-Source Development Agent</h3>
-    <div class="expandable-content">
-        <p><span class="highlight">OpenHands</span> focuses on software development with security by default:</p>
-        <p>• <span class="secondary-color">Docker-first architecture</span> - All operations in containers</p>
-        <p>• <span class="secondary-color">Open source</span> - Inspect and modify everything</p>
-        <p>• <span class="secondary-color">LLM agnostic</span> - Use any model provider</p>
-        <p>• <span class="secondary-color">Terminal focused</span> - Built for developers</p>
-        <p>Perfect if you want full control and transparency.</p>
+        <p>• <span class="secondary-color">Live web browsing</span> - Actually visits pages, not cached data</p>
+        <p>• <span class="secondary-color">Polished UX</span> - Professional interface and workflows</p>
+        
+        <p><strong>OpenHands (Open Source):</strong></p>
+        <p>• <span class="secondary-color">Community alternative</span> - Fully transparent and modifiable</p>
+        <p>• <span class="secondary-color">Docker-first</span> - Security through containerization</p>
+        <p>• <span class="secondary-color">LLM agnostic</span> - Choose your preferred model provider</p>
+        <p>• <span class="secondary-color">Extensible</span> - Add your own capabilities and integrations</p>
+        
+        <p>Both offer powerful multi-modal capabilities with different trade-offs between polish and flexibility.</p>
     </div>
 </div>
 
@@ -297,19 +309,20 @@
 <div class="info-section">
     <div class="info-header">The Golden Rule: Isolation Is Non-Negotiable</div>
     <p><span class="warning">Never give an AI agent direct access to your main system.</span></p>
-    <p>Whether it's Claude Code on a Raspberry Pi, Manus in its VM, or OpenHands in Docker—isolation isn't optional. The most powerful agents are the ones that can execute code, which makes sandboxing essential.</p>
+    <p>Whether it's Claude Code on a Raspberry Pi, Aider in Docker, Manus in its VM, or OpenHands in containers—isolation isn't optional. The most powerful agents are the ones that can execute code, which makes sandboxing essential.</p>
 </div>
 
 <div class="section">
     <h2><span class="prompt">~/recommendations</span> Practical Recommendations</h2>
     
     <div class="code-block">
-        <div class="tree-branch"><span class="highlight">For Development:</span></div>
-        <div class="tree-branch">  → <span class="secondary-color">Claude Code</span> (in VM/Docker) for pure coding tasks</div>
-        <div class="tree-branch">  → <span class="secondary-color">OpenHands</span> for open-source flexibility</div>
+        <div class="tree-branch"><span class="highlight">For Pure Coding Tasks:</span></div>
+        <div class="tree-branch">  → <span class="secondary-color">Claude Code</span> (closed) - Polished Anthropic experience</div>
+        <div class="tree-branch">  → <span class="secondary-color">Aider</span> (open) - Flexible, git-integrated, available now</div>
         <div class="tree-branch"></div>
         <div class="tree-branch"><span class="highlight">For Research + Development:</span></div>
-        <div class="tree-branch">  → <span class="secondary-color">Manus</span> for its combination of capabilities</div>
+        <div class="tree-branch">  → <span class="secondary-color">Manus</span> (closed) - Best-in-class multi-modal capabilities</div>
+        <div class="tree-branch">  → <span class="secondary-color">OpenHands</span> (open) - Transparent and extensible alternative</div>
         <div class="tree-branch"></div>
         <div class="tree-branch"><span class="highlight">For Large Projects:</span></div>
         <div class="tree-branch">  → <span class="secondary-color">MetaGPT</span> for multi-agent orchestration</div>
@@ -331,6 +344,7 @@
     <p>1. <span class="highlight">Understanding capabilities</span> - Know what each type can actually do</p>
     <p>2. <span class="highlight">Prioritizing security</span> - Always use isolated environments</p>
     <p>3. <span class="highlight">Building incrementally</span> - Start simple, add extensions as needed</p>
+    <p>4. <span class="highlight">Choosing open vs closed</span> - Balance polish against flexibility for your needs</p>
     <p>The future is bright for those who approach agents thoughtfully. Choose the right tool, sandbox religiously, and build step by step.</p>
 </div>
 
