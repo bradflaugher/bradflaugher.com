@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bookmarks | Brad Flaugher</title>
+  <meta name="description" content="Curated collection of essential tools and platforms for productivity and AI development." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root{
+      --bg-color:#0d1117;      --text-color:#e6edf3;
+      --accent-color:#58a6ff;  --secondary-color:#7ee787;
+      --comment-color:#8b949e; --link-color:#58a6ff;
+      --section-bg:#161b22;    --code-bg:#1f2428;
+      --card-bg:#21262d;       --border-color:#30363d;
+    }
+    *{ box-sizing:border-box; margin:0; padding:0; }
+
+    body{
+      background:var(--bg-color); color:var(--text-color);
+      font-family:'Fira Code',monospace; line-height:1.6;
+      padding:20px; margin:0 auto; max-width:1200px; font-size:16px;
+    }
+    @media(max-width:600px){ body{ font-size:14px; padding:15px; } }
+
+    header{ 
+      margin-bottom:30px; 
+      text-align:center;
+      padding:20px 0;
+      border-bottom:2px solid var(--border-color);
+    }
+    h1,h2,h3,h4{ color:var(--secondary-color); }
+    h1{ 
+      font-size:2.5rem; 
+      margin-bottom:10px; 
+      background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    h2{ 
+      font-size:1.8rem; 
+      margin:30px 0 20px; 
+      padding:15px 0 10px;
+      border-bottom:2px solid var(--border-color);
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    h3{ font-size:1.25rem; margin:20px 0 10px; }
+    p{ margin-bottom:15px; }
+
+    .subtitle{
+      color:var(--comment-color);
+      font-size:1.1rem;
+      margin-bottom:20px;
+    }
+
+    .back-link{
+      display:inline-block;
+      margin-bottom:20px;
+      color:var(--accent-color);
+      text-decoration:none;
+      padding:8px 16px;
+      border:1px solid var(--accent-color);
+      border-radius:6px;
+      transition:all 0.3s ease;
+    }
+    .back-link:hover{
+      background:var(--accent-color);
+      color:var(--bg-color);
+      text-decoration:none;
+    }
+
+    .category{
+      margin-bottom:40px;
+    }
+
+    .category-emoji{
+      font-size:1.5rem;
+      margin-right:10px;
+    }
+
+    .bookmarks-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+      gap:20px;
+      margin-top:20px;
+    }
+
+    .bookmark-card{
+      background:var(--card-bg);
+      border:1px solid var(--border-color);
+      border-radius:8px;
+      padding:20px;
+      transition:all 0.3s ease;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .bookmark-card:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 25px rgba(88,166,255,0.15);
+      border-color:var(--accent-color);
+    }
+
+    .bookmark-card::before{
+      content:'';
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:3px;
+      background:linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+      opacity:0;
+      transition:opacity 0.3s ease;
+    }
+
+    .bookmark-card:hover::before{
+      opacity:1;
+    }
+
+    .bookmark-title{
+      font-size:1.2rem;
+      font-weight:bold;
+      margin-bottom:8px;
+      color:var(--secondary-color);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .bookmark-emoji{
+      font-size:1.3rem;
+    }
+
+    .bookmark-description{
+      color:var(--comment-color);
+      font-size:0.9rem;
+      margin-bottom:15px;
+      line-height:1.4;
+    }
+
+    .bookmark-link{
+      color:var(--accent-color);
+      text-decoration:none;
+      font-weight:500;
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      transition:all 0.3s ease;
+    }
+
+    .bookmark-link:hover{
+      color:var(--secondary-color);
+      text-decoration:none;
+    }
+
+    .bookmark-link::after{
+      content:'↗';
+      font-size:0.8rem;
+      opacity:0.7;
+    }
+
+    .search-container{
+      margin-bottom:30px;
+      text-align:center;
+    }
+
+    .search-box{
+      background:var(--section-bg);
+      border:1px solid var(--border-color);
+      border-radius:6px;
+      padding:12px 16px;
+      color:var(--text-color);
+      font-family:inherit;
+      font-size:1rem;
+      width:100%;
+      max-width:400px;
+      transition:border-color 0.3s ease;
+    }
+
+    .search-box:focus{
+      outline:none;
+      border-color:var(--accent-color);
+      box-shadow:0 0 0 2px rgba(88,166,255,0.2);
+    }
+
+    .search-box::placeholder{
+      color:var(--comment-color);
+    }
+
+    .hidden{
+      display:none;
+    }
+
+    @media(max-width:768px){
+      .bookmarks-grid{
+        grid-template-columns:1fr;
+        gap:15px;
+      }
+      
+      h1{
+        font-size:2rem;
+      }
+      
+      h2{
+        font-size:1.5rem;
+      }
+      
+      .bookmark-card{
+        padding:15px;
+      }
+    }
+
+    .stats{
+      text-align:center;
+      margin:20px 0;
+      color:var(--comment-color);
+      font-size:0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <a href="index.html" class="back-link">← Back to Home</a>
+    <h1>🔖 Essential Bookmarks</h1>
+    <p class="subtitle">Curated collection of tools and platforms for productivity and AI development</p>
+  </header>
+
+  <div class="search-container">
+    <input type="text" class="search-box" placeholder="🔍 Search bookmarks..." id="searchBox">
+  </div>
+
+  <div class="stats">
+    <span id="bookmarkCount">15</span> bookmarks across <span id="categoryCount">4</span> categories
+  </div>
+
+  <div class="category" data-category="email-calendar">
+    <h2>
+      <span class="category-emoji">📧</span>
+      Email & Calendar
+    </h2>
+    <div class="bookmarks-grid">
+      <div class="bookmark-card" data-search="proton mail email secure privacy">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">🛡️</span>
+          Proton Mail
+        </div>
+        <div class="bookmark-description">
+          Secure, encrypted email service focused on privacy and security
+        </div>
+        <a href="https://proton.me/mail" target="_blank" class="bookmark-link">
+          proton.me/mail
+        </a>
+      </div>
+
+      <div class="bookmark-card" data-search="proton calendar scheduling secure privacy">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">🗓️</span>
+          Proton Calendar
+        </div>
+        <div class="bookmark-description">
+          Privacy-focused calendar with end-to-end encryption
+        </div>
+        <a href="https://proton.me/calendar" target="_blank" class="bookmark-link">
+          proton.me/calendar
+        </a>
+      </div>
+
+      <div class="bookmark-card" data-search="google calendar scheduling events meetings">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">📅</span>
+          Google Calendar
+        </div>
+        <div class="bookmark-description">
+          Comprehensive calendar service with powerful scheduling features
+        </div>
+        <a href="https://calendar.google.com/" target="_blank" class="bookmark-link">
+          calendar.google.com
+        </a>
+      </div>
+
+      <div class="bookmark-card" data-search="google tasks todo productivity gtd">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">✅</span>
+          Google Tasks
+        </div>
+        <div class="bookmark-description">
+          Simple task management integrated with Google Workspace
+        </div>
+        <a href="https://tasks.google.com/" target="_blank" class="bookmark-link">
+          tasks.google.com
+        </a>
+      </div>
+
+      <div class="bookmark-card" data-search="apple reminders ios tasks todo productivity">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">🍎</span>
+          Apple Reminders
+        </div>
+        <div class="bookmark-description">
+          Native iOS/macOS reminder app with smart lists and location-based alerts
+        </div>
+        <a href="https://www.apple.com/ios/reminders/" target="_blank" class="bookmark-link">
+          apple.com/ios/reminders
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="category" data-category="ai-tools">
+    <h2>
+      <span class="category-emoji">🤖</span>
+      AI & Language Models
+    </h2>
+    <div class="bookmarks-grid">
+      <div class="bookmark-card" data-search="google gemini ai chatbot llm bard">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">💎</span>
+          Google Gemini
+        </div>
+        <div class="bookmark-description">
+          Google's advanced AI assistant with multimodal capabilities
+        </div>
+        <a href="https://gemini.google.com/" target="_blank" class="bookmark-link">
+          gemini.google.com
+        </a>
+      </div>
+
+      <div class="bookmark-card" data-search="chatgpt openai gpt ai assistant">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">💬</span>
+          ChatGPT
+        </div>
+        <div class="bookmark-description">
+          OpenAI's conversational AI assistant for various tasks and queries
+        </div>
+        <a href="https://chat.openai.com/" target="_blank" class="bookmark-link">
+          chat.openai.com
+        </a>
+      </div>
+
+      <div class="bookmark-card" data-search="claude ai anthropic assistant constitutional">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">🎭</span>
+          Claude AI
+        </div>
+        <div class="bookmark-description">
+          Anthropic's helpful, harmless, and honest AI assistant
+        </div>
+        <a href="https://claude.ai/" target="_blank" class="bookmark-link">
+          claude.ai
+        </a>
+      </div>
+
+      <div class="bookmark-card" data-search="openrouter api llm models routing">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">🔀</span>
+          OpenRouter
+        </div>
+        <div class="bookmark-description">
+          Unified API for accessing multiple AI models and providers
+        </div>
+        <a href="https://openrouter.ai/" target="_blank" class="bookmark-link">
+          openrouter.ai
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="category" data-category="dev-tools">
+    <h2>
+      <span class="category-emoji">⚡</span>
+      Development & AI Tools
+    </h2>
+    <div class="bookmarks-grid">
+      <div class="bookmark-card" data-search="manus ai writing assistant productivity">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">✍️</span>
+          Manus.im
+        </div>
+        <div class="bookmark-description">
+          AI-powered writing assistant for enhanced productivity
+        </div>
+        <a href="https://manus.im/" target="_blank" class="bookmark-link">
+          manus.im
+        </a>
+      </div>
+
+      <div class="bookmark-card" data-search="openhands ai agent development automation">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">🙌</span>
+          OpenHands
+        </div>
+        <div class="bookmark-description">
+          AI agent platform for automating software development tasks
+        </div>
+        <a href="https://openhands.ai/" target="_blank" class="bookmark-link">
+          openhands.ai
+        </a>
+      </div>
+
+      <div class="bookmark-card" data-search="aider ai coding assistant pair programming">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">🔧</span>
+          Aider
+        </div>
+        <div class="bookmark-description">
+          AI pair programming tool for collaborative coding
+        </div>
+        <a href="https://aider.chat/" target="_blank" class="bookmark-link">
+          aider.chat
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="category" data-category="code-repos">
+    <h2>
+      <span class="category-emoji">📦</span>
+      Code Repositories
+    </h2>
+    <div class="bookmarks-grid">
+      <div class="bookmark-card" data-search="github git repository code hosting microsoft">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">🐙</span>
+          GitHub
+        </div>
+        <div class="bookmark-description">
+          World's largest code hosting platform with collaboration tools
+        </div>
+        <a href="https://github.com/" target="_blank" class="bookmark-link">
+          github.com
+        </a>
+      </div>
+
+      <div class="bookmark-card" data-search="codeberg git repository open source hosting">
+        <div class="bookmark-title">
+          <span class="bookmark-emoji">🏔️</span>
+          Codeberg
+        </div>
+        <div class="bookmark-description">
+          Open-source, privacy-focused Git hosting platform
+        </div>
+        <a href="https://codeberg.org/" target="_blank" class="bookmark-link">
+          codeberg.org
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Search functionality
+    const searchBox = document.getElementById('searchBox');
+    const bookmarkCards = document.querySelectorAll('.bookmark-card');
+    const categories = document.querySelectorAll('.category');
+
+    searchBox.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase().trim();
+      
+      if (searchTerm === '') {
+        // Show all cards and categories
+        bookmarkCards.forEach(card => card.classList.remove('hidden'));
+        categories.forEach(category => category.classList.remove('hidden'));
+      } else {
+        // Filter cards
+        bookmarkCards.forEach(card => {
+          const searchData = card.getAttribute('data-search').toLowerCase();
+          const title = card.querySelector('.bookmark-title').textContent.toLowerCase();
+          const description = card.querySelector('.bookmark-description').textContent.toLowerCase();
+          
+          if (searchData.includes(searchTerm) || title.includes(searchTerm) || description.includes(searchTerm)) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        // Hide categories with no visible cards
+        categories.forEach(category => {
+          const visibleCards = category.querySelectorAll('.bookmark-card:not(.hidden)');
+          if (visibleCards.length === 0) {
+            category.classList.add('hidden');
+          } else {
+            category.classList.remove('hidden');
+          }
+        });
+      }
+    });
+
+    // Update stats
+    function updateStats() {
+      const totalBookmarks = bookmarkCards.length;
+      const totalCategories = categories.length;
+      
+      document.getElementById('bookmarkCount').textContent = totalBookmarks;
+      document.getElementById('categoryCount').textContent = totalCategories;
+    }
+
+    // Initialize
+    updateStats();
+
+    // Add keyboard shortcut for search
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchBox.focus();
+      }
+    });
+
+    // Add some visual feedback for card interactions
+    bookmarkCards.forEach(card => {
+      card.addEventListener('click', function(e) {
+        if (e.target.tagName !== 'A') {
+          const link = this.querySelector('.bookmark-link');
+          if (link) {
+            window.open(link.href, '_blank');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
