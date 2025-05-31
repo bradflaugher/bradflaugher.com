@@ -23,24 +23,24 @@
     }
     @media(max-width:600px){ body{ font-size:14px; padding:15px; } }
 
-    header{ 
-      margin-bottom:30px; 
+    header{
+      margin-bottom:30px;
       text-align:center;
       padding:20px 0;
       border-bottom:2px solid var(--border-color);
     }
     h1,h2,h3,h4{ color:var(--secondary-color); }
-    h1{ 
-      font-size:2.5rem; 
-      margin-bottom:10px; 
+    h1{
+      font-size:2.5rem;
+      margin-bottom:10px;
       background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    h2{ 
-      font-size:1.8rem; 
-      margin:30px 0 20px; 
+    h2{
+      font-size:1.8rem;
+      margin:30px 0 20px;
       padding:15px 0 10px;
       border-bottom:2px solid var(--border-color);
       display:flex;
@@ -199,15 +199,15 @@
         grid-template-columns:1fr;
         gap:15px;
       }
-      
+
       h1{
         font-size:2rem;
       }
-      
+
       h2{
         font-size:1.5rem;
       }
-      
+
       .bookmark-card{
         padding:15px;
       }
@@ -234,7 +234,38 @@
   </div>
 
   <div class="stats">
-    <span id="bookmarkCount">17</span> bookmarks across <span id="categoryCount">5</span> categories
+    <span id="bookmarkCount">20</span> bookmarks across <span id="categoryCount">5</span> categories
+  </div>
+
+  <div class="category" data-category="search-privacy">
+    <h2><span class="category-emoji">🔎</span>Search & Privacy Tools</h2>
+    <div class="bookmarks-grid">
+
+      <div class="bookmark-card" data-search="kagi search premium ad-free privacy customizable summarizer ai">
+        <div class="bookmark-title"><span class="bookmark-emoji">✨</span>Kagi Search</div>
+        <div class="bookmark-description">
+          Premium, ad-free search engine focused on user privacy, customizable results, and AI-powered summarization features.
+        </div>
+        <a href="https://kagi.com" target="_blank" class="bookmark-link">kagi.com</a>
+      </div>
+
+      <div class="bookmark-card" data-search="searxng metasearch open source privacy decentralized federated self-hostable">
+        <div class="bookmark-title"><span class="bookmark-emoji">🕵️</span>SearxNG</div>
+        <div class="bookmark-description">
+          A free, open-source metasearch engine that aggregates results from various sources, prioritizing user privacy. Can be self-hosted.
+        </div>
+        <a href="https://docs.searxng.org/" target="_blank" class="bookmark-link">docs.searxng.org</a>
+      </div>
+
+      <div class="bookmark-card" data-search="google maps navigation local business info reviews directions street view">
+      <div class="bookmark-title"><span class="bookmark-emoji">📍</span>Google Maps</div>
+      <div class="bookmark-description">
+        The go-to for navigation and local business information. Still has a lock on up-to-date business details and user reviews, making it essential for finding accurate info on local establishments.
+      </div>
+      <a href="https://maps.google.com/" target="_blank" class="bookmark-link">maps.google.com</a>
+    </div>
+
+    </div>
   </div>
 
   <div class="category" data-category="email-calendar">
@@ -312,36 +343,29 @@
         <a href="https://openrouter.ai/" target="_blank" class="bookmark-link">openrouter.ai</a>
       </div>
 
-    </div>
-  </div>
-
-  <div class="category" data-category="search-privacy">
-    <h2><span class="category-emoji">🔎</span>Search & Privacy Tools</h2>
-    <div class="bookmarks-grid">
-
-      <div class="bookmark-card" data-search="kagi search premium ad-free privacy customizable summarizer ai">
-        <div class="bookmark-title"><span class="bookmark-emoji">✨</span>Kagi Search</div>
+      <div class="bookmark-card" data-search="llm ranking leaderboard artificial analysis ai model comparison">
+        <div class="bookmark-title"><span class="bookmark-emoji">📊</span>Artificial Analysis</div>
         <div class="bookmark-description">
-          Premium, ad-free search engine focused on user privacy, customizable results, and AI-powered summarization features.
+          Provides comprehensive benchmarks and structured evaluations of various LLMs, offering insights into their performance across different tasks to help users compare models effectively.
         </div>
-        <a href="https://kagi.com" target="_blank" class="bookmark-link">kagi.com</a>
+        <a href="https://artificialanalysis.ai" target="_blank" class="bookmark-link">artificialanalysis.ai</a>
       </div>
 
-      <div class="bookmark-card" data-search="searxng metasearch open source privacy decentralized federated self-hostable">
-        <div class="bookmark-title"><span class="bookmark-emoji">🕵️</span>SearxNG</div>
+      <div class="bookmark-card" data-search="llm ranking leaderboard lmsys arena ai model comparison">
+        <div class="bookmark-title"><span class="bookmark-emoji">⚔️</span>LMSYS Chatbot Arena Leaderboard</div>
         <div class="bookmark-description">
-          A free, open-source metasearch engine that aggregates results from various sources, prioritizing user privacy. Can be self-hosted.
+          A dynamic, crowdsourced leaderboard where users anonymously compare LLMs by voting on responses, providing real-world performance rankings for a wide array of models.
         </div>
-        <a href="https://docs.searxng.org/" target="_blank" class="bookmark-link">docs.searxng.org</a>
+        <a href="https://lmarena.ai/leaderboard" target="_blank" class="bookmark-link">lmarena.ai/leaderboard</a>
       </div>
 
-      <div class="bookmark-card" data-search="google maps navigation local business info reviews directions street view">
-      <div class="bookmark-title"><span class="bookmark-emoji">📍</span>Google Maps</div>
-      <div class="bookmark-description">
-        The go-to for navigation and local business information. Still has a lock on up-to-date business details and user reviews, making it essential for finding accurate info on local establishments.
+      <div class="bookmark-card" data-search="swebench llm code generation benchmark software engineering">
+        <div class="bookmark-title"><span class="bookmark-emoji">💻</span>SWE-bench</div>
+        <div class="bookmark-description">
+          A challenging benchmark for evaluating LLMs on real-world software engineering tasks, requiring models to resolve GitHub issues by generating and applying code patches.
+        </div>
+        <a href="https://www.swebench.com" target="_blank" class="bookmark-link">swebench.com</a>
       </div>
-      <a href="https://maps.google.com/" target="_blank" class="bookmark-link">maps.google.com</a>
-    </div>
 
     </div>
   </div>
@@ -350,7 +374,7 @@
     <h2><span class="category-emoji">⚡</span>Agents & Coding Tools</h2>
     <div class="bookmarks-grid">
 
-      <div class="bookmark-card" data-search="manus ai agent ios app web browsing tools">
+      <div class="bookmark-card" data-search="manus ai agent ios app web Browse tools">
         <div class="bookmark-title"><span class="bookmark-emoji">✍️</span>Manus AI</div>
         <div class="bookmark-description">
           Full-stack agent that can browse the live web, read/write files, deploy simple webpages, and orchestrate tasks. Cames with free daily credits. Good for research that requires using a real web browser, and has a good mobile app.
@@ -365,7 +389,7 @@
         </div>
         <a href="https://app.all-hands.dev" target="_blank" class="bookmark-link">all-hands.dev</a>
       </div>
-      
+
       <div class="bookmark-card" data-search="aifixer bash cli ai code fix openrouter">
         <div class="bookmark-title">
           <span class="bookmark-emoji">🔨</span>
@@ -413,7 +437,7 @@
 
     searchBox.addEventListener('input', function() {
       const searchTerm = this.value.toLowerCase().trim();
-      
+
       if (searchTerm === '') {
         // Show all cards and categories
         bookmarkCards.forEach(card => card.classList.remove('hidden'));
@@ -424,7 +448,7 @@
           const searchData = card.getAttribute('data-search').toLowerCase();
           const title = card.querySelector('.bookmark-title').textContent.toLowerCase();
           const description = card.querySelector('.bookmark-description').textContent.toLowerCase();
-          
+
           if (searchData.includes(searchTerm) || title.includes(searchTerm) || description.includes(searchTerm)) {
             card.classList.remove('hidden');
           } else {
@@ -452,7 +476,7 @@
 
       const totalBookmarks = bookmarkCards.length;
       const totalCategories = categories.length;
-      
+
       const bookmarkCountEl = document.getElementById('bookmarkCount');
       const categoryCountEl = document.getElementById('categoryCount');
 
@@ -488,7 +512,7 @@
             }
             targetElement = targetElement.parentElement;
         }
-        
+
         // If the click was on the card itself (and not a link within it), then navigate
         const link = this.querySelector('.bookmark-link');
         if (link) {
