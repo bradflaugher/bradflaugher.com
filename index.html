@@ -77,9 +77,34 @@
       }
     }
 
+    /* Styling for the Dispatches & Toolkit section */
+    .dispatch-list-item {
+      margin-bottom: 10px; /* Spacing between items */
+      line-height: 1.5;   /* Adjust for readability if link wraps */
+    }
+
+    .dispatch-list-item a {
+      /* Link styling is inherited, but you could customize further if needed */
+      /* For example, to make it look more like a command or variable */
+      /* color: var(--secondary-color); */ /* Example: Green like H2 */
+    }
+
+    .dispatch-comment {
+      color: var(--comment-color);
+      font-style: italic;
+      font-size: 0.9em;
+      margin-left: 10px; /* Space it out from the link */
+      display: inline; /* Keeps it on the same line nicely */
+    }
+    
     /* mobile wrap fix */
     @media(max-width:600px){
       body,.section,.code-block{ overflow-wrap:anywhere; }
+      .dispatch-comment {
+          display: block; /* Stack comment below link on small screens if it's too crowded */
+          margin-left: 15px; /* Indent a bit */
+          margin-top: 3px;
+      }
     }
   </style>
 </head>
@@ -111,10 +136,16 @@
 
   <div class="section">
     <h2><span class="prompt">~/dispatch</span> <span class="nowrap">Dispatches & Toolkit</span></h2>
-    <ul>
-      <li><a href="https://raindrop.io/bradflaugher/public-55038479" target="_blank">Essential Reading</a> <em style="font-size: 0.9em; color: var(--comment-color);">(Articles I deem crucial for understanding our current context)</em></li>
-      <li><a href="bookmarks.html">My Digital Arsenal</a> <em style="font-size: 0.9em; color: var(--comment-color);">(Valued tools in my day-to-day operations)</em></li>
-    </ul>
+    
+    <div style="margin-top: 10px;"> <p class="dispatch-list-item">
+        <a href="https://raindrop.io/bradflaugher/public-55038479" target="_blank">Essential Reading</a>
+        <span class="dispatch-comment">// Articles I deem crucial for understanding our current context</span>
+      </p>
+      <p class="dispatch-list-item">
+        <a href="bookmarks.html" target="_blank">My Digital Arsenal</a>
+        <span class="dispatch-comment">// Valued tools in my day-to-day operations</span>
+      </p>
+    </div>
   </div>
 
   <div class="section">
