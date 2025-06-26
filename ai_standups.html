@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level Up Your Daily Flow With AI R&D in your Standup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #004FFF, #00A4FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .flow-step {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .flow-step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .arrow {
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="text-center py-12 md:py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-tight">
+                Level Up Your Daily <span class="gradient-text">Flow</span>
+            </h1>
+            <p class="mt-4 md:text-xl text-gray-600 max-w-3xl mx-auto">
+                An interactive guide to boosting team productivity and focus by posting asynchronous standups with AI-powered productivity experiments baked-in.
+            </p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="why" class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold">The "Why": Unlock Peak Performance</h2>
+                <p class="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">Adopting async standups offers compelling advantages for a dynamic hardware development team, transforming daily updates into a strategic asset.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 items-center">
+                <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                    <h3 class="text-2xl font-bold mb-4">Reclaim Your Focus Time</h3>
+                    <p class="text-gray-600 mb-6">Traditional standups interrupt deep work. By switching to an asynchronous model, teams can minimize disruptions, protect valuable "flow state," and see a significant productivity boost. This chart illustrates the potential shift in how a typical day is spent.</p>
+                    <div class="chart-container">
+                        <canvas id="benefitsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-lg p-6 flow-step">
+                        <div class="text-3xl mb-3">💡</div>
+                        <h4 class="font-bold text-lg">Clearer Communication</h4>
+                        <p class="text-gray-600 text-sm">Written updates are concise and create a documented history of progress, invaluable for complex projects.</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-6 flow-step">
+                        <div class="text-3xl mb-3">🤝</div>
+                        <h4 class="font-bold text-lg">Radical Accountability</h4>
+                        <p class="text-gray-600 text-sm">A public record fosters accountability and gives clear visibility into daily activities and roadblocks.</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-6 flow-step">
+                        <div class="text-3xl mb-3">⏰</div>
+                        <h4 class="font-bold text-lg">Ultimate Flexibility</h4>
+                        <p class="text-gray-600 text-sm">Team members can post updates on their own schedule, accommodating the unpredictable nature of R&D.</p>
+                    </div>
+                     <div class="bg-white rounded-xl shadow-lg p-6 flow-step">
+                        <div class="text-3xl mb-3">📈</div>
+                        <h4 class="font-bold text-lg">Increased Velocity</h4>
+                        <p class="text-gray-600 text-sm">Teams have reported up to a <a href="https://www.monitask.com/en/business-glossary/daily-standup" target="_blank" class="text-[#004FFF] font-bold underline">10% increase</a> in project velocity after making the switch.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="crafting" class="mb-20">
+             <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold">Crafting the Perfect Update</h2>
+                <p class="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">The quality of an update determines its value. The goal is clarity and actionability, not just activity logging. Vague updates become noise; specific updates drive progress.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-1 gap-8">
+                <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                     <h3 class="text-2xl font-bold mb-4">Update Quality: Good vs. Bad</h3>
+                     <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-50 border-b">
+                                <tr>
+                                    <th class="p-3 font-semibold">Category</th>
+                                    <th class="p-3 font-semibold text-red-600">❌ Bad Example</th>
+                                    <th class="p-3 font-semibold text-green-600">✅ Good Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="p-3 font-semibold">🗓️ Yesterday</td>
+                                    <td class="p-3 text-gray-500">"Worked on the project."</td>
+                                    <td class="p-3">"Flashed firmware onto 5 prototype units for Client XYZ, resolving the boot-up issue (see attached code)."</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-3 font-semibold">🚀 Today</td>
+                                    <td class="p-3 text-gray-500">"More design work."</td>
+                                    <td class="p-3">"Refining PCB layout for Project Z, focusing on thermal management."</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold">🚧 Blockers</td>
+                                    <td class="p-3 text-gray-500">"Dog ate homework"</td>
+                                    <td class="p-3">"No blockers." OR "Waiting on Part #XYZ. @here any alternative suppliers we can check?"</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="brad-ai-angle" class="text-center bg-white rounded-xl shadow-lg p-8 md:p-12 mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold">Brad's AI Angle</h2>
+            <p class="mt-3 text-lg text-gray-600 max-w-3xl mx-auto">Brad will lurk and try to see what "An idiot armed with AI" can do, and if you like it teach you how to do it yourself. I'm also of course happy to take questions or research and prototpye for you.</p>
+
+            <div class="mt-10 pt-8 border-t border-gray-200">
+                <div class="overflow-x-auto mx-auto max-w-3xl">
+                    <table class="w-full text-left text-base">
+                        <thead>
+                            <tr class="bg-gray-50 border-b">
+                                <th class="p-3 font-semibold w-1/3">Contribution Area</th>
+                                <th class="p-3 font-semibold w-2/3">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="p-3 font-semibold text-[#004FFF]">AI Tooling & Coaching</td>
+                                <td class="p-3 text-gray-700">Actively identifies and coaches the team on using AI tools for specific tasks.</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="p-3 font-semibold text-[#00A4FF]">Custom Prompt Library Development</td>
+                                <td class="p-3 text-gray-700">Harvests insights from daily standups to build a reusable library of AI prompts for repetitive tasks (e.g., writing tests, drafting customer proposals, STL or CAD generation).</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="p-3 font-semibold text-[#FFB800]">AI-Powered Solutions</td>
+                                <td class="p-3 text-gray-700">Assists in implementing AI for broader applications, including sales prospecting pipelines, website/landing page generation, and custom software coaching (e.g., using Claude Code or Gemini-CLI).</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-[#C82BFF]">Strategic Process Improvement</td>
+                                <td class="p-3 text-gray-700">Provides ongoing, actionable feedback to optimize workflows, ensuring the async standup experiment remains valuable and iterative.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="stop-conditions" class="text-center bg-gradient-to-br from-red-100 to-red-200 rounded-xl shadow-lg p-8 md:p-12 mb-20 mt-16">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gray-800">🛑 Our Agile "Stop" Conditions</h2>
+            <div class="mx-auto max-w-2xl">
+                <table class="w-full text-left text-base bg-white rounded-lg overflow-hidden shadow-md">
+                    <tbody>
+                        <tr class="border-b border-gray-200">
+                            <td class="p-4 text-center text-3xl font-bold w-1/6">🚨</td>
+                            <td class="p-4 text-gray-700 font-semibold leading-relaxed">
+                                Updates become repetitive "noise" or lack specificity.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 text-center text-3xl font-bold w-1/6">🚫</td>
+                            <td class="p-4 text-gray-700 font-semibold leading-relaxed">
+                                The feedback loop from Brad stops being useful.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                 <p class="mt-6 text-lg text-gray-700 font-medium">
+                    This ensures we're always focused on delivering tangible value and adapting our processes.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center py-10 mt-20">
+        <h3 class="text-2xl font-bold">Let's get into it!</h3>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const energeticPlayfulPalette = {
+                blue: '#004FFF',
+                lightBlue: '#00A4FF',
+                yellow: '#FFB800',
+                red: '#FF4738',
+                purple: '#C82BFF',
+                gray: '#cbd5e1'
+            };
+
+            const globalTooltipConfig = {
+                callbacks: {
+                    title: function(tooltipItems) {
+                        const item = tooltipItems[0];
+                        let label = item.chart.data.labels[item.dataIndex];
+                        if (Array.isArray(label)) {
+                            return label.join(' ');
+                        }
+                        return label;
+                    }
+                }
+            };
+            
+            function wrapLabel(str, maxWidth) {
+                if (str.length <= maxWidth) {
+                    return str;
+                }
+                let wrapped = [];
+                let words = str.split(' ');
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + word).length > maxWidth) {
+                        wrapped.push(currentLine.trim());
+                        currentLine = '';
+                    }
+                    currentLine += word + ' ';
+                });
+                wrapped.push(currentLine.trim());
+                return wrapped;
+            }
+
+            const benefitsCtx = document.getElementById('benefitsChart');
+            if(benefitsCtx) {
+                new Chart(benefitsCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Deep Work & Flow State', 'Meetings & Interruptions'],
+                        datasets: [{
+                            label: 'Time Allocation',
+                            data: [90, 10],
+                            backgroundColor: [
+                                energeticPlayfulPalette.blue,
+                                energeticPlayfulPalette.gray,
+                            ],
+                            borderColor: '#ffffff',
+                            borderWidth: 4,
+                            hoverOffset: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20
+                                }
+                            },
+                            tooltip: globalTooltipConfig
+                        }
+                    }
+                });
+            }
+            
+            // toolsChart and qualityChart removed as per user request
+            // Therefore, no corresponding Chart.js initialization for them.
+
+        });
+    </script>
+</body>
+</html>
