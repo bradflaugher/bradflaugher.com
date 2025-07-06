@@ -35,8 +35,33 @@ a:hover{background:var(--link);color:#fff}
   box-shadow:var(--shadow);
   margin:2rem 0
 }
-nav ul{list-style:none;margin:1rem 0;padding-left:0;display:flex;flex-wrap:wrap;gap:.5rem}
-nav a{border:none;font-weight:600}
+
+/* ── improved TOC pills ─────────────────────────────── */
+nav{margin:2rem 0}
+nav ul{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));
+  gap:.75rem;
+}
+nav a{
+  display:block;
+  padding:.65rem 1rem;
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  border:none;
+  font-size:.9rem;
+  font-weight:600;
+  text-align:center;
+}
+nav a:hover{
+  background:var(--link);
+  color:#fff;
+  border:none;
+}
 </style>
 </head>
 <body>
@@ -108,13 +133,13 @@ nav a{border:none;font-weight:600}
 <!-- 8 -->
 <section id="debate" class="card">
 <h2>8. Hype vs Reality</h2>
-<p>Skeptics push back: <a href="https://fly.io/blog/youre-all-nuts/" target="_blank">“You’re all nuts,”</a> say boosters, but history reminds us that <a href="https://www.wsj.com/opinion/the-war-with-tech-isnt-new-calculator-ti-ai-f27fbb94" target="_blank">technology wars repeat</a>. Benchmarks mislead (<a href="https://arxiv.org/html/2506.12286v1" target="_blank">SWE-Bench illusion</a>; <a href="https://arxiv.org/abs/2505.03335v2" target="_blank">Absolute Zero reasoning</a>) and pundits argue that <a href="https://www.wsj.com/tech/ai/artificial-superintelligence-overestimation-3f954065" target="_blank">super-intelligence isn’t imminent</a> and <a href="https://www.wsj.com/opinion/no-ai-robots-wont-take-all-our-jobs-employment-productivity-innovation-41068792" target="_blank">robots won’t take every job</a>.</p>
+<p>Skeptics push back: <a href="https://fly.io/blog/youre-all-nuts/" target="_blank">“You’re all nuts,”</a> say boosters, but history reminds us that <a href="https://www.wsj.com/opinion/the-war-with-tech-isnt-new-calculator-ti-ai-f27fbb94" target="_blank">technology wars repeat</a>. Benchmarks mislead (<a href="https://arxiv.org/html/2506.12286v1" target="_blank">SWE-Bench illusion</a>; Absolute Zero reasoning) and pundits argue that <a href="https://www.wsj.com/tech/ai/artificial-superintelligence-overestimation-3f954065" target="_blank">super-intelligence isn’t imminent</a> and <a href="https://www.wsj.com/opinion/no-ai-robots-wont-take-all-our-jobs-employment-productivity-innovation-41068792" target="_blank">robots won’t take every job</a>.</p>
 </section>
 
 <!-- 9 -->
 <section id="prepare" class="card">
 <h2>9. How to Prepare</h2>
-<p>If you are late to the party, start with <a href="http://www.wsj.com/articles/WP-WSJ-0002613578" target="_blank">the late-adopter’s guide</a>, keep <a href="https://eugeneyan.com/writing/news-agents/" target="_blank">news agents</a> on standby, and remember that <a href="https://economist.com/business/2025/05/12/the-myths-of-corporate-innovation" target="_blank">corporate innovation myths</a> plus <a href="https://economist.com/business/2025/05/01/your-ai-meeting-notes-are-ready" target="_blank">bad project hygiene</a> doom many rollouts. The smartest model today? The Economist offers a scoreboard in <a href="https://economist.com/science-and-technology/2025/06/18/how-to-find-the-smartest-ai" target="_blank">“How to find the smartest AI.”</a></p>
+<p>If you’re late to the party, start with <a href="http://www.wsj.com/articles/WP-WSJ-0002613578" target="_blank">the late-adopter’s guide</a>, keep news agents on standby, and remember that <a href="https://economist.com/business/2025/05/12/the-myths-of-corporate-innovation" target="_blank">corporate innovation myths</a> plus <a href="https://economist.com/business/2025/05/01/your-ai-meeting-notes-are-ready" target="_blank">bad project hygiene</a> doom many rollouts. The smartest model today? The Economist offers a scoreboard in <a href="https://economist.com/science-and-technology/2025/06/18/how-to-find-the-smartest-ai" target="_blank">“How to find the smartest AI.”</a></p>
 <p>In short: learn fast, stay skeptical, and keep humans in the loop. Because whether you’re <a href="https://youtube.com/watch?v=LCEmiRjPEtQ" target="_blank">rewriting software again</a> or wondering <a href="https://youtube.com/watch?v=1qVLMRRjMR4" target="_blank">if every startup is doomed</a>, the machines are already part of the team.</p>
 </section>
 
