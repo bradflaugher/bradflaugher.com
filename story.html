@@ -35,33 +35,17 @@ a:hover{background:var(--link);color:#fff}
   box-shadow:var(--shadow);
   margin:2rem 0
 }
-
-/* ── improved TOC pills ─────────────────────────────── */
-nav{margin:2rem 0}
+nav{margin:2rem 0;}
 nav ul{
-  list-style:none;
-  padding:0;
-  margin:0;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));
-  gap:.75rem;
+  list-style:disc;      /* default bullets */
+  padding-left:1.25rem; /* indent for bullets */
 }
+nav li{margin:.5rem 0;}  /* breathing room */
 nav a{
-  display:block;
-  padding:.65rem 1rem;
-  background:var(--card);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  border:none;
-  font-size:.9rem;
-  font-weight:600;
-  text-align:center;
+  color:var(--link);     /* use your existing link color token */
+  text-decoration:none;
 }
-nav a:hover{
-  background:var(--link);
-  color:#fff;
-  border:none;
-}
+nav a:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
