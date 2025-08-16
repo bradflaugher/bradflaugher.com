@@ -74,19 +74,6 @@
       color: var(--secondary-color);
     }
     
-    .header-command::after {
-      content: '_';
-      animation: blink 1s steps(2, start) infinite;
-      font-weight: normal;
-      color: var(--text-color);
-    }
-
-    @keyframes blink {
-      to {
-        visibility: hidden;
-      }
-    }
-    
     .profile-image {
       border: 3px solid var(--secondary-color);
       box-shadow: 0 0 15px rgba(126, 231, 135, 0.3), 0 4px 8px rgba(0,0,0,0.3);
@@ -389,12 +376,6 @@
           headerElement.textContent += fullCommand.charAt(i);
           i++;
           setTimeout(typeCommand, 90); // Adjust typing speed here
-        } else {
-          // Add blinking cursor class once typing is done
-          // Ensure parentElement is not null before accessing classList
-          if (headerElement.parentElement) {
-            headerElement.parentElement.classList.add('header-command');
-          }
         }
       }
       
