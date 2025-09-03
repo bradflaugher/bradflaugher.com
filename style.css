@@ -13,13 +13,13 @@
 :root {
   --bg-color: #1a0a2e; /* Deep, dark desaturated purple */
   --text-color: #00ffc6; /* Bright cyan */
-  --accent-color: #ff00ff; /* Bright magenta */
-  --secondary-color: #f9f871; /* Bright yellow */
+  --accent-color: #00ff9c; /* Bright green */
+  --secondary-color: #98ffdc; /* Light green */
   --comment-color: #8b949e;
-  --link-color: #ff00ff;
+  --link-color: var(--accent-color);
   --section-bg: rgba(12, 5, 22, 0.8); /* Even darker, slightly transparent purple */
   --code-bg: #0c0516;
-  --border-color: rgba(255, 0, 255, 0.3); /* Magenta border */
+  --border-color: rgba(0, 255, 156, 0.3); /* Green border */
 }
 
 /* BASE STYLES */
@@ -141,6 +141,9 @@ a:hover {
   color: var(--secondary-color);
   text-shadow: 0 0 5px var(--secondary-color);
 }
+a:visited {
+  color: var(--link-color);
+}
 
 .main-container {
   max-width: 60rem;
@@ -178,14 +181,6 @@ section::after {
   right: -2px;
   border-bottom: 2px solid var(--accent-color);
   border-right: 2px solid var(--accent-color);
-}
-section:hover::before {
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
-}
-section:hover::after {
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
 }
 
 section h2 {
@@ -237,6 +232,7 @@ section h2 {
   color: var(--secondary-color);
   font-style: italic;
   text-shadow: 0 0 3px var(--secondary-color);
+  font-size: 1.2rem;
 }
 
 /* CONNECT SECTION */
