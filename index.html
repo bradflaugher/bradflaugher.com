@@ -21,13 +21,14 @@
 :root {
   --bg-color: #1a0a2e; /* Deep, dark desaturated purple */
   --text-color: #00ffc6; /* Bright cyan */
-  --accent-color: #00ff9c; /* Bright green */
-  --secondary-color: #98ffdc; /* Light green */
+  --accent-color: #ff00ff; /* Vibrant Pink/Magenta */
+  --secondary-color: #ff79c6; /* Lighter Pink */
+  --highlight-yellow: #f3ff58; /* Vibrant Yellow */
   --comment-color: #8b949e;
   --link-color: var(--accent-color);
   --section-bg: rgba(12, 5, 22, 0.8); /* Even darker, slightly transparent purple */
   --code-bg: #0c0516;
-  --border-color: rgba(0, 255, 156, 0.3); /* Green border */
+  --border-color: rgba(255, 0, 255, 0.3); /* Pink border */
 }
 
 /* BASE STYLES */
@@ -124,7 +125,7 @@ body::before {
   font-weight: 700;
   text-transform: uppercase;
   animation: glitch 1s cubic-bezier(.25, .46, .45, .94) both infinite;
-  text-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-color);
+  text-shadow: 0 0 2px var(--accent-color);
 }
 .command-text {
   color: var(--accent-color);
@@ -145,11 +146,11 @@ a {
   color: var(--link-color);
   text-decoration: none;
   transition: all 0.2s ease-in-out;
-  text-shadow: 0 0 3px var(--link-color);
+  text-shadow: 0 0 2px var(--link-color);
 }
 a:hover {
   color: var(--secondary-color);
-  text-shadow: 0 0 5px var(--secondary-color);
+  text-shadow: 0 0 3px var(--secondary-color);
 }
 a:visited {
   color: var(--link-color);
@@ -199,7 +200,7 @@ section h2 {
   font-weight: 700;
   margin-bottom: 1.5rem;
   color: var(--accent-color);
-  text-shadow: 0 0 3px var(--accent-color);
+  text-shadow: 0 0 2px var(--accent-color);
 }
 
 /* PROFILE SECTION */
@@ -240,9 +241,9 @@ section h2 {
   font-size: 1.1rem;
 }
 #hello .highlight-text {
-  color: var(--secondary-color);
+  color: var(--highlight-yellow);
   font-style: italic;
-  text-shadow: 0 0 3px var(--secondary-color);
+  text-shadow: 0 0 3px var(--highlight-yellow);
   font-size: 1.1rem;
 }
 
