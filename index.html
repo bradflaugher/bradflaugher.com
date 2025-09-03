@@ -34,11 +34,12 @@
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
-  font-family: 'VT323', monospace;
-  line-height: 1.7;
+  font-family: "SF Mono", "Consolas", "Courier New", monospace;
+  font-size: 16px;
+  line-height: 1.6;
   min-height: 100vh;
   padding: 1rem;
-  text-shadow: 0 0 2px var(--text-color); /* Subtle text glow */
+  text-shadow: 0 0 1px var(--text-color); /* More subtle text glow */
   overflow-x: hidden; /* Prevent horizontal scroll from glitch effect */
 }
 
@@ -70,8 +71,8 @@ body::before {
       transparent 1px,
       transparent 3px
     );
-  opacity: 0.5;
-  animation: flicker 0.1s infinite;
+  opacity: 0.2; /* Reduced intensity */
+  animation: flicker 0.15s infinite; /* Slower, less intense flicker */
 }
 
 /* CUSTOM SCROLLBAR */
@@ -108,16 +109,17 @@ body::before {
 }
 
 @keyframes flicker {
-    0% { opacity: 0.3; }
-    20% { opacity: 0.7; }
-    40% { opacity: 0.2; }
-    60% { opacity: 0.9; }
-    80% { opacity: 0.4; }
-    100% { opacity: 0.6; }
+    0% { opacity: 0.2; }
+    20% { opacity: 0.5; }
+    40% { opacity: 0.1; }
+    60% { opacity: 0.4; }
+    80% { opacity: 0.3; }
+    100% { opacity: 0.5; }
 }
 
 /* HEADER & GLITCH TEXT */
 #main-header {
+  font-family: 'VT323', monospace;
   font-size: 2.5rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -167,7 +169,7 @@ section {
   margin-bottom: 2rem;
   border: 1px solid var(--border-color);
   position: relative;
-  backdrop-filter: blur(2px); /* Frosted glass effect */
+  backdrop-filter: blur(1px); /* Reduced blur effect */
 }
 
 /* Cyberpunk corner brackets */
@@ -192,6 +194,7 @@ section::after {
 }
 
 section h2 {
+  font-family: 'VT323', monospace;
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
@@ -234,13 +237,13 @@ section h2 {
 
 #hello .profile-text p {
   margin-bottom: 1rem;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 #hello .highlight-text {
   color: var(--secondary-color);
   font-style: italic;
   text-shadow: 0 0 3px var(--secondary-color);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 /* CONNECT SECTION */
@@ -292,7 +295,7 @@ footer {
   text-align: center;
   margin-top: 3rem;
   padding: 1rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--comment-color);
   border-top: 1px solid var(--border-color);
 }
