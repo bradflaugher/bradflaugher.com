@@ -73,7 +73,6 @@ body::before {
       transparent 3px
     );
   opacity: 0.2; /* Reduced intensity */
-  animation: flicker 0.15s infinite; /* Slower, less intense flicker */
 }
 
 /* CUSTOM SCROLLBAR */
@@ -103,10 +102,10 @@ body::before {
 /* GLITCH ANIMATION */
 @keyframes glitch {
   0%, 100% { transform: translate(0); }
-  20% { transform: translate(-3px, 3px); }
-  40% { transform: translate(-3px, -3px); }
-  60% { transform: translate(3px, 3px); }
-  80% { transform: translate(3px, -3px); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(-1px, -1px); }
+  60% { transform: translate(1px, 1px); }
+  80% { transform: translate(1px, -1px); }
 }
 
 @keyframes flicker {
