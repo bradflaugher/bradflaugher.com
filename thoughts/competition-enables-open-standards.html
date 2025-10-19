@@ -467,6 +467,42 @@ footer {
 
         <p>Jobs' original vision for iPhone web apps would have fit perfectly into this ecosystem. The App Store's success came at the cost of platform lock-in—exactly what web standards were designed to prevent.</p>
 
+        <h2>Containers: Docker, OCI, and Podman</h2>
+
+        <h3>How Docker's Dominance Led to Open Standards</h3>
+
+        <p>The container ecosystem provides another perfect example of how competition creates open standards. When Docker launched in 2013, it revolutionized application deployment with a simple, elegant container runtime. By 2015, Docker had become so dominant that it risked creating a proprietary lock-in situation.</p>
+
+        <p>But then something interesting happened: <strong>competition emerged, and Docker helped create an open standard to prevent fragmentation.</strong></p>
+
+        <p>In June 2015, Docker, CoreOS, and other container industry leaders founded the <strong>Open Container Initiative (OCI)</strong> under the Linux Foundation. Docker donated its runtime (runc) and image format as the basis for open specifications. This wasn't altruism—it was strategic recognition that:</p>
+
+        <ul>
+          <li><strong>Multiple container runtimes were emerging</strong> (rkt from CoreOS, LXC, others)</li>
+          <li><strong>Kubernetes was gaining traction</strong> and needed runtime-agnostic standards</li>
+          <li><strong>Enterprise customers wanted portability</strong> across different implementations</li>
+          <li><strong>A standards war would hurt everyone</strong> in the ecosystem</li>
+        </ul>
+
+        <h3>What OCI Enabled</h3>
+
+        <p>The OCI specifications (runtime, image, and distribution) created a level playing field:</p>
+
+        <ul>
+          <li><strong>Podman emerged as a Docker alternative.</strong> Red Hat developed Podman as a daemonless, rootless container engine that's fully OCI-compliant. You can run Docker containers with Podman without modification.</li>
+          <li><strong>Kubernetes became runtime-agnostic.</strong> Any OCI-compliant runtime works with Kubernetes (containerd, CRI-O, etc.).</li>
+          <li><strong>Container images became portable.</strong> Build with Docker, run with Podman, deploy to Kubernetes—all using the same OCI image format.</li>
+          <li><strong>Innovation accelerated.</strong> New runtimes like gVisor and Kata Containers could compete on features while maintaining compatibility.</li>
+        </ul>
+
+        <h3>The Counterintuitive Result</h3>
+
+        <p>If everyone had consolidated on Docker as "the standard," we'd be locked into Docker's implementation. Instead, <strong>competition between Docker and alternatives like Podman maintains pressure to improve the OCI standard itself.</strong></p>
+
+        <p>Today, many developers and organizations are switching to Podman for its security benefits (no daemon, rootless containers) while still using Docker images and Dockerfiles. This is only possible because of OCI standards.</p>
+
+        <p>The pattern holds: <strong>competition between implementations (Docker, Podman, containerd) around an open standard (OCI) benefits everyone</strong> more than consolidation on a single "best" implementation would.</p>
+
         <h2>AI Agents: The Newest Example</h2>
 
         <h3>The MCP Revolution</h3>
