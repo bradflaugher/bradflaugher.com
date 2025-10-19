@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Application Portability vs. Platform Openness: Why I Optimize for Portable Apps on Any Platform | Brad Flaugher</title>
-  <meta name="description" content="I optimize for application portability over platform openness. My reasoning: applications are why people get locked into platforms. If your apps are portable, you can switch platforms. Here's why I think portability matters more for long-term freedom." />
+  <title>Application Portability vs. Platform Openness: A Strategic Framework for Advancing Software Freedom | Brad Flaugher</title>
+  <meta name="description" content="When no truly free solution exists, should we consolidate on the most open platform, or maintain competition while promoting open application standards? A framework for thinking strategically about software freedom." />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
 /* FONT IMPORT */
@@ -315,298 +315,246 @@ footer {
     <article>
       <header class="article-header">
         <a href="../index.html" class="back-link">← Back to Home</a>
-        <h1>Application Portability vs. Platform Openness: Why I Optimize for Portable Apps on Any Platform</h1>
+        <h1>Application Portability vs. Platform Openness: A Strategic Framework for Advancing Software Freedom</h1>
         <div class="article-meta">
           <time datetime="2025-10-19">October 19, 2025</time>
         </div>
         <div class="article-intro">
-          I optimize for application portability over platform openness. My reasoning: applications are why people get locked into platforms. If your apps are portable (web, Vulkan), you can switch platforms. If your apps are platform-specific (Android native), you're stuck even if the platform is technically "more open."
+          When no truly free solution exists, should we consolidate on the most open platform available, or maintain competition while promoting open application standards? This article argues that application portability—not platform openness—is the key to reducing lock-in and enabling future free alternatives.
         </div>
       </header>
 
-            <div class="article-content">
+      <div class="article-content">
         
         <div class="callout">
-          <div class="callout-title">Disclosure</div>
-          <p>I am an associate member of the Free Software Foundation and have previously donated to and supported <a href="https://www.privacyguides.org/" target="_blank">Privacy Guides</a>, the <a href="https://grapheneos.org/" target="_blank">GrapheneOS project</a>, and many other FOSS projects. This article comes from a place of respect and shared values, but represents a different optimization strategy.</p>
+          <div class="callout-title">Disclosure and Context</div>
+          <p>I am an associate member of the Free Software Foundation and have supported <a href="https://www.privacyguides.org/" target="_blank">Privacy Guides</a>, <a href="https://grapheneos.org/" target="_blank">GrapheneOS</a>, and other FOSS projects. I use an iPhone and PlayStation while advocating for PWAs and Vulkan-based games. This may seem contradictory. My argument is that open application standards on any platform create lower switching costs than platform-specific applications on the most open platform. Judge the argument on its merits.</p>
         </div>
 
-        <h2>The Core Argument: Switching Costs Matter More Than Platform Openness</h2>
+        <h2>The Problem: GNU Philosophy's Unaddressed Question</h2>
 
-        <p><strong>Platform lock-in happens at the application layer, not the OS layer.</strong> This is my central claim, and it leads to a different approach than the conventional "choose the most open platform" wisdom.</p>
+        <p>The <a href="https://www.gnu.org/" target="_blank">GNU Project</a> and <a href="https://www.fsf.org/" target="_blank">Free Software Foundation</a> have provided clear guidance since 1983: where free software exists, use it without compromise. The four freedoms are non-negotiable, and the GNU/Linux ecosystem demonstrates their power.</p>
 
-        <p>Consider two scenarios:</p>
-
-        <p><strong>Scenario A:</strong> You use GrapheneOS (more open platform) with Android native apps for banking, work, and social media.</p>
+        <p>But in domains like mobile and gaming, <strong>no truly free solution exists</strong>:</p>
         <ul>
-          <li>Platform: More open (Android-based, hardened)</li>
-          <li>Apps: Platform-specific (Android native)</li>
-          <li>Switching cost: <strong>High</strong> — lose all your apps if you switch to a different OS</li>
+          <li>No mobile OS works without proprietary firmware and drivers</li>
+          <li>No gaming console is built entirely on free software</li>
+          <li>No practical way to participate in these domains with 100% freedom</li>
         </ul>
 
-        <p><strong>Scenario B:</strong> You use iPhone or stock Android (less open platform) with Progressive Web Apps only.</p>
-        <ul>
-          <li>Platform: Less open (proprietary OS)</li>
-          <li>Apps: Platform-agnostic (web standards)</li>
-          <li>Switching cost: <strong>Low</strong> — keep all your apps if you switch to any platform with a browser</li>
-        </ul>
+        <p><strong>The question GNU philosophy doesn't fully address: When forced to use proprietary software, which proprietary option should we choose?</strong></p>
 
-        <p><strong>I choose Scenario B because I think it gives me more long-term freedom.</strong> The platform being "more open" doesn't help if I can't leave it without losing my applications.</p>
+        <p>The conventional answer in the free software community is: <strong>"Choose the most open option available."</strong> Use GrapheneOS instead of stock Android. Use Steam Deck for gaming. Consolidate on platforms that are closer to freedom.</p>
 
-        <p>This is not a claim that I'm more strategic than everyone else. It's a claim that <strong>I'm optimizing for a different thing</strong>—application portability instead of platform openness—because I think portability matters more for reducing lock-in.</p>
+        <p>This article challenges that heuristic. I argue that <strong>consolidating on the most open platform can entrench proprietary control at the application layer, while maintaining competition between platforms creates conditions for open standards to thrive.</strong></p>
 
-        <h2>What I'm Giving Up</h2>
+        <h2>The Core Thesis: Application Lock-In vs. Platform Lock-In</h2>
 
-        <p>This approach has real costs, and I want to be honest about them:</p>
+        <p><strong>Platform lock-in occurs at the application layer, not the operating system layer.</strong> This is the foundation of my argument.</p>
+
+        <p>Consider what actually prevents you from switching platforms:</p>
 
         <ul>
-          <li><strong>Worse app experience today:</strong> PWAs are often inferior to native apps—slower performance, fewer features, worse offline support, and limited hardware access.</li>
-          <li><strong>Platform security:</strong> GrapheneOS has better security hardening than stock iOS or Android. I'm trading platform-level security for application-level portability.</li>
-          <li><strong>Individual impact is tiny:</strong> My PWA usage doesn't move the needle on web standards unless many others do the same. I'm making a bet, not guaranteeing an outcome.</li>
-          <li><strong>Practicality challenges:</strong> Some essential services don't offer good PWAs. I sometimes have to use workarounds, mobile websites, or make compromises.</li>
-          <li><strong>Missing out on platform-specific features:</strong> Native apps can do things PWAs can't (yet)—better camera integration, background processing, system-level features.</li>
+          <li>Your banking app only works on iOS/Android</li>
+          <li>Your work collaboration tools are native apps</li>
+          <li>Your games are built for PlayStation/Xbox/Switch</li>
+          <li>Your creative tools are platform-specific</li>
         </ul>
 
-        <p><strong>I'm making a bet that application portability matters more than platform openness for my threat model and values.</strong> You might reasonably disagree, especially if you prioritize maximum security today over switching flexibility tomorrow.</p>
+        <p>The operating system is largely irrelevant to your switching decision. <strong>Applications are what lock you in.</strong></p>
 
-        <h2>Why I Think Competition Between Platforms Helps Open Standards</h2>
+        <p>This leads to a counterintuitive conclusion: <strong>A less open platform running portable applications creates lower switching costs than a more open platform running platform-specific applications.</strong></p>
 
-        <p>Here's the mechanism I think makes this approach defensible: <strong>When proprietary platforms compete, they need open standards as neutral ground.</strong></p>
-
-        <p>When iPhone and Android compete, neither can force developers to use only their proprietary APIs. Developers who want to reach both platforms need platform-agnostic solutions. Open standards (web, Vulkan, open graphics APIs) fill that gap.</p>
-
-        <p>When everyone consolidates on one platform—even a "more open" one like GrapheneOS—that competitive pressure disappears. Developers optimize for the dominant platform's native APIs because that's where the users are.</p>
-
-        <p><strong>This is a claim about incentive structures, not a claim about moral superiority.</strong> I think maintaining competition between platforms creates better conditions for open standards than consolidating on the most open platform.</p>
-
-        <h2>Two Valid Approaches to Platform Choice</h2>
-
-        <p><strong>Privacy Guides and I are optimizing for different things:</strong></p>
-
-        <p><strong>Privacy Guides optimizes for:</strong> Maximum privacy and security on the platform you're actually using today. Their GrapheneOS recommendation makes perfect sense from this perspective—it's the most secure, privacy-respecting mobile OS available.</p>
-
-        <p><strong>I optimize for:</strong> Minimum lock-in to any specific platform via portable applications. My PWA-focused approach makes sense from this perspective—it keeps switching costs low.</p>
-
-        <p><strong>Privacy Guides is right if:</strong></p>
-        <ul>
-          <li>You need maximum security and privacy right now</li>
-          <li>You trust that platform competition will maintain itself without your individual choices</li>
-          <li>You're willing to accept higher switching costs for better current security</li>
-        </ul>
-
-        <p><strong>I might be right if:</strong></p>
-        <ul>
-          <li>You think application lock-in is the bigger long-term risk</li>
-          <li>You're willing to sacrifice some security and features for portability</li>
-          <li>You believe individual choices can collectively influence ecosystem dynamics</li>
-        </ul>
-
-        <p><strong>These aren't contradictory—they're different threat models and time horizons.</strong> I'm not claiming Privacy Guides is wrong. I'm claiming they're optimizing for something different than I am.</p>
-
-        <h2>Owning My Behavior</h2>
-
-        <p><strong>Full disclosure: I use an iPhone and a PlayStation.</strong> This seems hypocritical for someone questioning GrapheneOS recommendations. Let me explain my reasoning:</p>
-
-        <p>I'm not claiming iOS is "more open" than GrapheneOS—it obviously isn't. <strong>I'm claiming that using open application standards (PWAs, Vulkan) on closed platforms reduces my switching costs more than using closed application standards (Android native apps) on a more open platform.</strong></p>
-
-        <p>For gaming: I play games that use Vulkan or OpenGL. If a more open gaming platform emerges (Steam Deck, future Linux consoles), those games can be ported because they're built on open graphics APIs. I'm optimizing for game portability, not platform openness.</p>
-
-        <p><strong>Am I rationalizing my consumer preferences?</strong> Maybe. But here's the specific mechanism I think makes this defensible:</p>
+        <p>Example:</p>
 
         <ul>
-          <li>Applications are what people actually care about and what creates lock-in</li>
-          <li>If applications are portable (built on open standards), platform switching costs are low</li>
-          <li>If applications are platform-specific (native apps), you're locked in regardless of how "open" the platform is</li>
-          <li>Supporting applications built on open standards (even on closed platforms) keeps those standards relevant and maintained</li>
+          <li><strong>GrapheneOS + Android native apps:</strong> More open platform, but high switching costs. If you want to leave Android, you lose your applications.</li>
+          <li><strong>iPhone + Progressive Web Apps:</strong> Less open platform, but low switching costs. If you want to leave iOS, your applications work on any device with a browser.</li>
         </ul>
 
-        <p><strong>Is this perfect?</strong> No. Am I funding Apple's and Sony's closed ecosystems? Yes. But I think supporting applications built on open standards does more for long-term freedom than consolidating on the most open platform while using platform-specific applications.</p>
+        <p><strong>The second scenario provides more practical freedom</strong> because switching costs are lower. Platform openness is less relevant than application portability.</p>
 
-        <h2>Historical Evidence: When Competition Created Open Standards</h2>
+        <h2>Why Competition Promotes Open Standards</h2>
 
-        <h3>WWDC 2007: The Path Not Taken</h3>
+        <p>When proprietary platforms compete, they cannot all use each other's proprietary APIs. This creates structural demand for open, cross-platform standards.</p>
 
-        <div class="callout">
-          <div class="callout-title">A Personal Note</div>
-          <p>I was in the audience at WWDC 2007 when Steve Jobs announced how third-party apps would work on the iPhone. At the time, many developers were skeptical—they wanted native apps with full hardware access. But looking back nearly two decades later, <strong>I still think Jobs' original vision was more aligned with software freedom.</strong></p>
-        </div>
+        <p><strong>The mechanism:</strong></p>
 
-        <p>On June 11, 2007, Steve Jobs stood on stage and announced that the iPhone would run third-party applications—but <strong>only as web apps.</strong> No native apps. No App Store. Just the open web.</p>
+        <ol>
+          <li>Multiple proprietary platforms compete (iOS, Android, Windows, etc.)</li>
+          <li>Developers want to reach users on all platforms</li>
+          <li>Platform-specific development is expensive and limits reach</li>
+          <li>Open standards emerge as the economically rational solution</li>
+          <li>These standards enable future alternatives to compete immediately</li>
+        </ol>
 
-        <p>In <a href="https://www.youtube.com/watch?v=p1nwLilQy64" target="_blank">his presentation</a>, Jobs said:</p>
+        <p><strong>When consolidation occurs—even on a "more open" platform—this dynamic breaks down:</strong></p>
+
+        <ol>
+          <li>One platform dominates (e.g., Android in the "open" mobile space)</li>
+          <li>Developers optimize for that platform's native APIs</li>
+          <li>Cross-platform standards become economically irrational to maintain</li>
+          <li>The dominant platform's APIs become the de facto standard</li>
+          <li>Future alternatives must be compatible with those APIs or fail</li>
+        </ol>
+
+        <p>This is not speculation. We have historical evidence.</p>
+
+        <h2>Historical Evidence</h2>
+
+        <h3>WWDC 2007: The Web App Vision</h3>
+
+        <p>On June 11, 2007, Steve Jobs announced that the iPhone would run third-party applications exclusively as web apps. No native apps. No App Store. Just Safari and open web standards.</p>
 
         <blockquote>
           "The full Safari engine is inside of iPhone. And so, you can write amazing Web 2.0 and Ajax apps that look exactly and behave exactly like apps on the iPhone. And these apps can integrate perfectly with iPhone services."
         </blockquote>
 
-        <p>Developer pressure eventually forced Apple to create the App Store in 2008. We chose native apps over web standards. And with that choice, we accepted higher switching costs between mobile platforms.</p>
+        <p>Developer pressure forced Apple to create the App Store in 2008. We chose native apps over web standards, and with that choice, we accepted permanent lock-in to iOS and Android ecosystems.</p>
 
-        <p><strong>What if we'd stayed with web apps?</strong> Developers would have built for open web standards, not proprietary APIs. Users could switch between platforms without losing their apps. New platforms could compete immediately—they'd just need a good browser.</p>
+        <p><strong>The counterfactual:</strong> If we had stayed with web apps, developers would have built for open standards. Users could switch platforms without losing applications. New mobile platforms could compete immediately with just a good browser.</p>
 
-        <h3>Browser Wars: Competition Saved the Web</h3>
+        <p>Jobs' original vision was more aligned with software freedom than consolidating on "the most open" mobile platform today.</p>
 
-        <p>After Internet Explorer's dominance nearly killed web standards in the early 2000s, competition between Safari, Firefox, and Chrome <strong>revived and improved</strong> web standards:</p>
+        <h3>Browser Wars: Competition Revived Web Standards</h3>
 
-        <ul>
-          <li><strong>No single browser could control the web</strong> after IE's dominance ended</li>
-          <li><strong>Web standards improved rapidly</strong> because of competitive pressure</li>
-          <li><strong>This enabled the modern web</strong> that works across all platforms</li>
-        </ul>
-
-        <p>The competitive pressure between browsers drove HTML5, WebGL, WebAssembly, and modern web APIs. This is an example of competition creating conditions for open standards to thrive.</p>
-
-        <h3>Containers: Docker, OCI, and Podman</h3>
-
-        <p>When Docker became dominant in 2015, it risked creating proprietary lock-in. But then <strong>competition emerged, and Docker helped create an open standard</strong> to prevent fragmentation.</p>
-
-        <p>Docker, CoreOS, and others founded the <strong>Open Container Initiative (OCI)</strong> under the Linux Foundation. This wasn't pure altruism—it was strategic recognition that competition required neutral ground.</p>
-
-        <p><strong>What OCI enabled:</strong></p>
+        <p>After Internet Explorer's dominance nearly killed web standards in the early 2000s, competition between Safari, Firefox, and Chrome revived them:</p>
 
         <ul>
-          <li><strong>Podman emerged as a Docker alternative</strong> with better security (daemonless, rootless)</li>
-          <li><strong>Kubernetes became runtime-agnostic</strong>—any OCI-compliant runtime works</li>
-          <li><strong>Container images became portable</strong>—build with Docker, run with Podman</li>
-          <li><strong>Innovation accelerated</strong>—new runtimes could compete while maintaining compatibility</li>
+          <li>No single browser could control web standards after IE's fall</li>
+          <li>Competitive pressure drove rapid improvement (HTML5, WebGL, WebAssembly)</li>
+          <li>The modern web works across all platforms because of this competition</li>
         </ul>
 
-        <p>Competition between Docker and Podman maintains pressure to improve the OCI standard itself. This is another example of how competition can promote open standards.</p>
+        <p><strong>If everyone had consolidated on "the most open browser" (Firefox), we would not have the competitive pressure that drove these improvements.</strong> Chrome's emergence forced Firefox to improve. Safari's WebKit innovations pushed the entire ecosystem forward. Competition created better outcomes than consolidation would have.</p>
 
-        <h3>AI Agents: MCP Emerges from Competition</h3>
+        <h3>Containers: OCI Emerged from Competition</h3>
 
-        <p>The AI agent space demonstrates this dynamic happening in real time. Anthropic introduced the <strong>Model Context Protocol (MCP)</strong> in late 2024, an open standard for connecting AI applications to external systems.</p>
+        <p>When Docker dominated containers in 2015, it risked proprietary lock-in. Then competition emerged, and Docker helped create the Open Container Initiative (OCI) under the Linux Foundation.</p>
 
-        <p><strong>MCP exists because of competition between AI providers.</strong> If everyone had consolidated on a single AI platform, that platform would use proprietary APIs for tool integration. But because Claude, ChatGPT, Gemini, and others compete, developers need a platform-agnostic way to build tools and integrations.</p>
-
-        <p><strong>What MCP enables:</strong></p>
+        <p>This wasn't altruism—it was recognition that competition required neutral ground. The result:</p>
 
         <ul>
-          <li><strong>Open source agents are viable</strong>—projects don't need to build proprietary integrations for every tool</li>
-          <li><strong>Tool developers write once, support everywhere</strong>—an MCP server works with any MCP-compatible agent</li>
-          <li><strong>No single AI vendor controls the ecosystem</strong>—you can switch between Claude, GPT, or local models without losing your tools</li>
-          <li><strong>Future AI platforms can compete immediately</strong>—new entrants just need to support MCP</li>
+          <li>Podman emerged as a Docker alternative with better security</li>
+          <li>Kubernetes became runtime-agnostic</li>
+          <li>Container images became portable across runtimes</li>
+          <li>Innovation accelerated while maintaining compatibility</li>
         </ul>
 
-        <p>This is the pattern I'm pointing to: <strong>Competition between proprietary platforms creates demand for open standards, which then enable future alternatives.</strong></p>
+        <p><strong>Competition between Docker and Podman maintains pressure to improve OCI itself.</strong> Consolidation on Docker would have entrenched Docker's APIs as the permanent standard.</p>
 
-        <h2>The Pattern: Competition → Cross-Platform Needs → Open Standards</h2>
+        <h3>AI Agents: MCP Exists Because of Competition</h3>
 
-        <p>When proprietary platforms compete, they cannot all use each other's proprietary APIs. This creates demand for open, cross-platform standards. These standards enable future alternatives and prevent any single vendor from achieving permanent control.</p>
+        <p>Anthropic's Model Context Protocol (MCP) exists because multiple AI providers compete. If everyone had consolidated on ChatGPT, OpenAI would use proprietary APIs for tool integration. No open standard would be necessary.</p>
 
-        <p><strong>When consolidation may harm open standards:</strong></p>
+        <p>Because Claude, ChatGPT, Gemini, and others compete, developers need platform-agnostic tool integration. MCP fills that gap, enabling:</p>
+
+        <ul>
+          <li>Open source agents without proprietary integrations</li>
+          <li>Tool developers writing once, supporting everywhere</li>
+          <li>Users switching between AI platforms without losing tools</li>
+          <li>Future AI platforms competing immediately by supporting MCP</li>
+        </ul>
+
+        <p><strong>This is the pattern: Competition creates structural demand for open standards, which then enable future free alternatives.</strong></p>
+
+        <h2>The Strategic Framework</h2>
+
+        <p>When no truly free solution exists, we should:</p>
 
         <ol>
-          <li><strong>It can reduce competitive pressure.</strong> One dominant platform may reduce the need for cross-platform standards.</li>
-          <li><strong>It can entrench one vendor's APIs.</strong> Even if more "open," those APIs may become the de facto standard.</li>
-          <li><strong>It may make alternatives harder.</strong> Future platforms may need to be compatible with the dominant platform's APIs.</li>
-          <li><strong>It reduces diversity.</strong> Monocultures can be fragile; diversity can enable resilience and innovation.</li>
+          <li><strong>Maintain competition between proprietary platforms</strong> to create structural demand for open standards</li>
+          <li><strong>Ruthlessly favor open application standards</strong> (web, Vulkan, OCI, MCP) when using those platforms</li>
+          <li><strong>Prioritize cross-platform compatibility</strong> over platform-specific features</li>
+          <li><strong>Build and support free software that works across platforms</strong> via open standards</li>
         </ol>
 
-        <p><strong>When competition may promote open standards:</strong></p>
-
-        <ol>
-          <li><strong>No single vendor can control the standard.</strong> Multiple platforms need neutral ground.</li>
-          <li><strong>Cross-platform development becomes valuable.</strong> Developers want to reach all platforms.</li>
-          <li><strong>Open standards fill the gap.</strong> They become the bridge between competing platforms.</li>
-          <li><strong>Future alternatives remain possible.</strong> New platforms can use the same open standards.</li>
-        </ol>
-
-        <p><strong>Note the probabilistic language:</strong> I'm not claiming competition always helps or consolidation always hurts. I'm claiming that in domains where no truly free solution exists, maintaining competition while promoting open application standards may create better conditions for future freedom than consolidating on the most open platform.</p>
-
-        <h2>Framework: What I Actually Do</h2>
+        <p>This approach is exemplified by the <a href="https://www.linuxfoundation.org/" target="_blank">Linux Foundation</a>, which works with industry to create open standards that enable competition. The result: 80% of organizations report that open standards promote competition (Linux Foundation 2023 State of Open Standards survey).</p>
 
         <table class="comparison-table">
           <thead>
             <tr>
               <th>Domain</th>
-              <th>Common "Most Open" Approach</th>
-              <th>My Portability-Focused Approach</th>
-              <th>My Reasoning</th>
+              <th>Consolidation Approach</th>
+              <th>Competition + Open Standards Approach</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><strong>Mobile</strong></td>
-              <td>Use GrapheneOS on Google Pixel</td>
-              <td>Use any phone + PWAs only</td>
-              <td>Optimizes for app portability; reduces switching costs to future platforms</td>
+              <td>Everyone uses GrapheneOS → Android APIs become standard</td>
+              <td>iOS and Android compete → Web standards remain relevant</td>
             </tr>
             <tr>
               <td><strong>Gaming</strong></td>
-              <td>Use Steam Deck only</td>
-              <td>Use multiple platforms, choose games using Vulkan/OpenGL</td>
-              <td>Maintains competitive pressure; keeps open graphics APIs relevant</td>
+              <td>Everyone uses Steam Deck → Steam/Proton become standard</td>
+              <td>Multiple platforms compete → Vulkan/OpenGL remain relevant</td>
             </tr>
             <tr>
-              <td><strong>Desktop</strong></td>
-              <td>Use 100% free software</td>
-              <td>Use 100% free software</td>
-              <td><em>We agree here—truly open solutions exist</em></td>
+              <td><strong>Browsers</strong></td>
+              <td>Everyone uses Firefox → Firefox APIs become standard</td>
+              <td>Chrome, Firefox, Safari compete → Web standards improve</td>
             </tr>
             <tr>
-              <td><strong>AI Agents</strong></td>
-              <td>Use most open model + MCP</td>
-              <td>Use most open model + MCP</td>
-              <td><em>We agree here—open models exist and MCP is the standard</em></td>
+              <td><strong>Containers</strong></td>
+              <td>Everyone uses Docker → Docker APIs become standard</td>
+              <td>Docker and Podman compete → OCI standard improves</td>
             </tr>
           </tbody>
         </table>
 
-        <h2>Building on GNU Philosophy</h2>
+        <h2>Practical Application</h2>
 
-        <p>The <a href="https://www.gnu.org/" target="_blank">GNU Project</a> and <a href="https://www.fsf.org/" target="_blank">Free Software Foundation</a> have been clear about their principles since 1983:</p>
+        <p>What does this mean in practice?</p>
 
-        <blockquote>
-          <p>"Free software is a matter of liberty, not price. To understand the concept, you should think of 'free' as in 'free speech,' not as in 'free beer.'"</p>
-        </blockquote>
+        <p><strong>Mobile:</strong> Use any phone (iPhone or Android), but favor Progressive Web Apps over native apps. When PWAs aren't viable, use mobile websites. Avoid platform-specific apps when possible. This keeps web standards relevant and reduces switching costs.</p>
 
-        <p><strong>I fully support GNU philosophy and the four freedoms.</strong> Where free software exists, we should use it without compromise. The GNU/Linux ecosystem demonstrates the power of this approach.</p>
+        <p><strong>Gaming:</strong> Play on any platform (PC, PlayStation, Xbox, Switch), but favor games built on Vulkan or OpenGL. These games can be ported to future platforms. Avoid games that use proprietary graphics APIs when alternatives exist.</p>
 
-        <p>But in domains like <strong>gaming and mobile</strong>, there are currently <strong>no truly free solutions</strong>:</p>
-        <ul>
-          <li>No mobile OS that works without proprietary firmware and drivers</li>
-          <li>No gaming console built entirely on free software</li>
-          <li>No practical way to participate in these computing domains with 100% freedom</li>
-        </ul>
+        <p><strong>Desktop:</strong> Use free software exclusively. GNU/Linux, LibreOffice, Firefox, GIMP, Blender—truly free solutions exist here. No compromise necessary.</p>
 
-        <p><strong>GNU philosophy doesn't fully address this question: When forced to use proprietary software (because no free alternative exists), which proprietary option should we choose?</strong></p>
+        <p><strong>AI:</strong> Use open models when possible. Support tools and platforms that implement MCP. Avoid lock-in to proprietary AI APIs.</p>
 
-        <p>The common answer is: "Choose the most open option available." This is a reasonable heuristic.</p>
+        <p><strong>The principle:</strong> In domains without free solutions, prioritize application portability over platform openness. Support open standards that reduce switching costs and enable future alternatives.</p>
 
-        <p><strong>I propose a different heuristic: "Choose options that keep open application standards alive and maintained."</strong> This means:</p>
+        <h2>Addressing Objections</h2>
 
-        <ul>
-          <li>Maintaining competition between proprietary platforms to prevent any single vendor from controlling standards</li>
-          <li>Ruthlessly favoring open standards (web, Vulkan, OCI, MCP) when using those platforms</li>
-          <li>Focusing on cross-platform compatibility rather than platform-specific features</li>
-          <li>Building free software that works across platforms via open standards</li>
-        </ul>
+        <h3>"But GrapheneOS is more secure than iOS"</h3>
 
-        <p>This approach is exemplified by the <a href="https://www.linuxfoundation.org/" target="_blank">Linux Foundation</a>, which works with industry to create open standards that enable competition.</p>
+        <p>True. You're trading platform security for application portability. This is a legitimate trade-off, and different threat models will prioritize differently. If you need maximum security today, GrapheneOS is an excellent choice. If you prioritize long-term freedom and low switching costs, portable applications matter more.</p>
 
-        <p><strong>This is not a rejection of GNU philosophy—it's a different interpretation of how to advance software freedom in domains where we don't yet have it.</strong></p>
+        <h3>"PWAs are inferior to native apps"</h3>
 
-        <h2>Conclusion: Different Optimizations for Different Goals</h2>
+        <p>Currently true. PWAs have worse performance, fewer features, and limited hardware access. This is the cost of portability. The bet is that web standards will improve over time if they remain economically relevant—which requires maintaining competition between platforms.</p>
 
-        <p>I deeply respect the GNU Project, the Free Software Foundation, and organizations like Privacy Guides. I've supported them financially because I share their values.</p>
+        <h3>"Your individual choice doesn't matter"</h3>
 
-        <p><strong>Where truly free software exists (desktop, servers, development tools), we should use it without compromise.</strong> I agree completely with the conventional approach here.</p>
+        <p>Partially true. One person using PWAs doesn't change the ecosystem. But collective choices do matter. If the privacy and free software communities consolidate on Android, developers will optimize for Android. If we maintain diverse platform usage while demanding open standards, developers must support those standards to reach us.</p>
 
-        <p>But in domains where no truly free solution exists (mobile, gaming), I optimize differently:</p>
+        <h3>"You're just rationalizing your iPhone use"</h3>
 
-        <ul>
-          <li><strong>I prioritize application portability over platform openness</strong> because I think applications are what create lock-in</li>
-          <li><strong>I use open application standards (web, Vulkan) on any platform</strong> rather than platform-specific applications on the most open platform</li>
-          <li><strong>I accept trade-offs</strong>—worse app experience, less platform security, practicality challenges—because I think portability matters more for long-term freedom</li>
-        </ul>
+        <p>Perhaps. But the argument stands independent of my personal choices. The mechanism—competition creates demand for open standards, which enable future alternatives—is supported by historical evidence. Judge the argument on its merits, not my device choices.</p>
 
-        <p><strong>This is not a claim that I'm more strategic than everyone else.</strong> It's a claim that I'm optimizing for a different thing—switching costs and application portability—because I think that matters more for long-term freedom than platform openness alone.</p>
+        <h3>"Competition can lead to fragmentation, not standards"</h3>
 
-        <p><strong>You might reasonably disagree.</strong> If you need maximum security today, GrapheneOS is an excellent choice. If you think platform openness matters more than application portability, consolidating on the most open platform makes sense.</p>
+        <p>True. Competition alone is insufficient. We also need institutional support for open standards (W3C, Khronos Group, Linux Foundation, etc.) and collective commitment to using those standards. The framework is: competition creates demand, institutions provide coordination, users create economic incentives by favoring standards-compliant applications.</p>
 
-        <p><strong>My bet is that application portability matters more.</strong> Your behavior today shapes what's possible tomorrow. I'm choosing to support open application standards on any platform rather than platform-specific applications on the most open platform.</p>
+        <h2>Conclusion</h2>
+
+        <p>GNU philosophy is clear about using free software where it exists. This article addresses the harder question: <strong>What should we do in domains where no free solution exists?</strong></p>
+
+        <p>The conventional answer—consolidate on the most open platform—can entrench proprietary control at the application layer. When everyone uses the same platform, developers optimize for that platform's APIs, and open standards become economically irrelevant.</p>
+
+        <p><strong>I propose an alternative: Maintain competition between platforms while ruthlessly favoring open application standards.</strong> This keeps those standards economically relevant, reduces switching costs, and creates conditions for future free alternatives to emerge.</p>
+
+        <p>This is not a rejection of GNU philosophy. It's an extension of it to domains where we must make strategic choices about which proprietary tools to use while working toward freedom.</p>
+
+        <p><strong>The goal is the same: software freedom. The question is how to get there when we're not there yet.</strong></p>
+
+        <p>Application portability—not platform openness—is the key to reducing lock-in and enabling future alternatives. Competition between platforms—not consolidation on the most open one—creates the structural conditions for open standards to thrive.</p>
+
+        <p>Your choices today shape what's possible tomorrow. Choose applications built on open standards, regardless of platform. Support competition that drives those standards forward. Build the infrastructure for freedom, even in domains where freedom doesn't yet exist.</p>
       </div>
-
 
     </article>
 
