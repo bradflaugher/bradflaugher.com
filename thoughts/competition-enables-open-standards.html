@@ -369,7 +369,7 @@ footer {
 
         <ul>
           <li><strong>GrapheneOS requires Google Pixel hardware.</strong> The privacy community is literally buying Google's phones, funding Google's hardware division.</li>
-          <li><strong>~90% of GrapheneOS users install Google Play Services anyway.</strong> Banking apps, work apps, and transportation apps don't work without it. The "degoogled" phone isn't actually degoogled.</li>
+          <li><strong>Most GrapheneOS users install Google Play Services anyway.</strong> This is my experience as a GrapheneOS user myself and from speaking with others—banking apps, work apps, and transportation apps don't work without it. The "degoogled" phone isn't actually degoogled.</li>
           <li><strong>It entrenches Android as "the" open mobile platform.</strong> When the entire privacy-conscious community uses Android (even hardened Android), developers have zero incentive to support anything else.</li>
           <li><strong>Progressive Web Apps become irrelevant.</strong> Why would developers invest in web standards when everyone in the "open" community is using Android native apps?</li>
           <li><strong>Google wins forever.</strong> Even in the privacy and free software world, Google's APIs become the permanent standard. Future alternatives must be Android-compatible or they're DOA.</li>
@@ -423,7 +423,7 @@ footer {
           <li>No practical way to participate in these computing domains with 100% freedom</li>
         </ul>
 
-        <p>The common answer is: <strong>"Choose the most open option available."</strong> Use GrapheneOS instead of stock Android. Use Steam Deck instead of PlayStation. This seems logical.</p>
+        <p>The common answer is: <strong>"Choose the most open option available."</strong> Use GrapheneOS instead of stock Android. Use Steam Deck for all gaming. This seems logical.</p>
 
         <p>But I believe this strategy, while well-intentioned, <strong>actually works against the long-term goal of software freedom</strong> by entrenching proprietary APIs and killing the open standards we need for future free alternatives.</p>
 
@@ -494,6 +494,27 @@ footer {
 
         <p>If everyone had consolidated on Docker as "the standard," we'd be locked in. Instead, <strong>competition between Docker and Podman maintains pressure to improve the OCI standard itself.</strong></p>
 
+        <h3>AI Agents: MCP Emerges from Competition</h3>
+
+        <p>The AI agent space demonstrates this dynamic happening in real time. Anthropic introduced the <strong>Model Context Protocol (MCP)</strong> in late 2024, an open standard for connecting AI applications to external systems. Think of it as "USB-C for AI agents."</p>
+
+        <p>Here's what's fascinating: <strong>MCP exists because of competition between AI providers.</strong> If everyone had consolidated on a single AI platform (say, OpenAI's ChatGPT), that platform would use proprietary APIs for tool integration. There would be no need for an open standard.</p>
+
+        <p>But because Claude, ChatGPT, Gemini, and others compete, developers need a platform-agnostic way to build tools and integrations. MCP fills that gap.</p>
+
+        <p><strong>What MCP enables:</strong></p>
+
+        <ul>
+          <li><strong>Open source agents are viable.</strong> Projects don't need to build proprietary integrations for every tool.</li>
+          <li><strong>Tool developers write once, support everywhere.</strong> An MCP server works with any MCP-compatible agent.</li>
+          <li><strong>No single AI vendor controls the ecosystem.</strong> You can switch between Claude, GPT, or local models without losing your tools.</li>
+          <li><strong>Future AI platforms can compete immediately.</strong> New entrants just need to support MCP to access the entire ecosystem.</li>
+        </ul>
+
+        <p>If the AI community had consolidated on "the most open option" (perhaps a single open source model), we likely wouldn't have MCP. The competitive pressure between proprietary AI providers created the need for an open standard, which now benefits everyone—including open source projects.</p>
+
+        <p><strong>This is exactly the pattern:</strong> Competition between proprietary platforms creates demand for open standards, which then enable future free alternatives.</p>
+
         <h2>The General Principle</h2>
 
         <div class="callout">
@@ -543,9 +564,9 @@ footer {
             </tr>
             <tr>
               <td><strong>Gaming</strong></td>
-              <td>Use Steam Deck (Linux gaming)</td>
-              <td>Use Linux + PlayStation/Xbox</td>
-              <td>Maintains competitive pressure for Vulkan/OpenGL</td>
+              <td>Use Steam Deck only</td>
+              <td>Support multiple platforms and games using open graphics APIs</td>
+              <td>Prevents consolidation; maintains competitive pressure for Vulkan/OpenGL</td>
             </tr>
             <tr>
               <td><strong>Desktop</strong></td>
@@ -555,9 +576,9 @@ footer {
             </tr>
             <tr>
               <td><strong>AI Agents</strong></td>
-              <td>Use most open AI model</td>
-              <td>Support MCP across all providers</td>
-              <td>Prevents any single AI vendor from controlling ecosystem</td>
+              <td>Use most open model + MCP</td>
+              <td>Use most open model + MCP</td>
+              <td><em>We agree here—open models exist and MCP is the standard</em></td>
             </tr>
           </tbody>
         </table>
@@ -571,8 +592,8 @@ footer {
         <ul>
           <li><strong>GrapheneOS</strong> is a tactical improvement (better privacy today) but a strategic failure (entrenches Android forever, kills web standards)</li>
           <li><strong>Using PWAs on iPhone</strong> is a tactical compromise (proprietary OS) but a strategic success (promotes open standards, enables future free phones)</li>
-          <li><strong>Steam Deck</strong> is a tactical improvement (Linux gaming) but a strategic risk (could entrench DirectX via Proton, kill Vulkan)</li>
-          <li><strong>Using PlayStation alongside Linux gaming</strong> is a tactical compromise (proprietary console) but a strategic success (maintains open graphics APIs)</li>
+          <li><strong>Consolidating on Steam Deck</strong> is a tactical improvement (Linux gaming) but a strategic risk (single-platform dominance could entrench proprietary gaming standards)</li>
+          <li><strong>Supporting multiple platforms and games using open graphics APIs</strong> is a tactical compromise but a strategic success (maintains competitive pressure for Vulkan/OpenGL)</li>
         </ul>
 
         <p>When truly open solutions don't exist, <strong>strategic direction matters more than tactical purity.</strong> GNU philosophy demands we advance software freedom, not just use "more open" software. Your choices today determine what's possible tomorrow.</p>
