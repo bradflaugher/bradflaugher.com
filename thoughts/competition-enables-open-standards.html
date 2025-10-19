@@ -350,7 +350,7 @@ footer {
 
         <h2>The Core Thesis: Application Lock-In vs. Platform Lock-In</h2>
 
-        <p><strong>Platform lock-in occurs at the application layer, not the operating system layer.</strong> This is the foundation of my argument.</p>
+        <p><strong>Switching costs—the practical barriers to moving between platforms—are determined primarily by the application layer, not the operating system layer.</strong> This is the foundation of my argument.</p>
 
         <p>Consider what actually prevents you from switching platforms:</p>
 
@@ -373,6 +373,11 @@ footer {
         </ul>
 
         <p><strong>The second scenario provides more practical freedom</strong> because switching costs are lower. Platform openness is less relevant than application portability.</p>
+
+        <div class="callout">
+          <div class="callout-title">Important Scope Limitation</div>
+          <p>This strategic framework applies <strong>only</strong> to domains where no truly free solution exists. On the desktop, where GNU/Linux provides complete freedom through the four freedoms, there is no strategic reason to use proprietary platforms. Use free software exclusively. But in mobile, gaming, and other domains where all options involve proprietary components, we must think strategically about which proprietary compromises create the least long-term lock-in and the best conditions for future free alternatives to emerge.</p>
+        </div>
 
         <h2>Why Competition Promotes Open Standards</h2>
 
@@ -414,7 +419,7 @@ footer {
 
         <p><strong>The counterfactual:</strong> If we had stayed with web apps, developers would have built for open standards. Users could switch platforms without losing applications. New mobile platforms could compete immediately with just a good browser.</p>
 
-        <p>Jobs' original vision was more aligned with software freedom than consolidating on "the most open" mobile platform today.</p>
+        <p>Jobs' original vision was more aligned with software freedom than consolidating on "the most open" mobile platform today. This choice—native apps over web standards—is precisely the kind of application-layer lock-in that consolidating on a single platform would have made worse. Had everyone moved to Android (the "more open" platform), developers would have optimized for Android's native APIs even more aggressively, making web standards even less viable.</p>
 
         <h3>Browser Wars: Competition Revived Web Standards</h3>
 
@@ -442,6 +447,12 @@ footer {
         </ul>
 
         <p><strong>Competition between Docker and Podman maintains pressure to improve OCI itself.</strong> Consolidation on Docker would have entrenched Docker's APIs as the permanent standard.</p>
+
+        <h3>Steam Deck and the Translation Layer Trap</h3>
+
+        <p>The Steam Deck presents a subtle but important case study. Built on Linux and using Proton to translate DirectX calls to Vulkan, it appears to advance open standards. However, by making DirectX games work seamlessly on Linux, it removes the primary incentive for developers to write native Vulkan games. If the Steam Deck became the dominant gaming platform, developers would continue writing for DirectX—knowing it works everywhere via translation—and DirectX would remain the de facto standard. The platform would be open, but the application layer would be locked to Microsoft's proprietary API. This illustrates how platform openness without application portability can entrench proprietary control.</p>
+
+        <p><strong>The Translation Layer Dilemma:</strong> Translation layers like Proton and Wine serve an important role—they allow users to run proprietary software on free platforms, reducing the immediate need to use proprietary operating systems. This is valuable. However, when translation becomes seamless, it removes the structural pressure for developers to adopt open standards natively. If DirectX games work perfectly on Linux via Proton, why would a developer invest in native Vulkan support? The result is that we gain platform freedom in the short term but entrench application-layer lock-in in the long term. This is the trade-off we must consider strategically.</p>
 
         <h3>AI Agents: MCP Exists Because of Competition</h3>
 
@@ -482,7 +493,7 @@ footer {
           <tbody>
             <tr>
               <td><strong>Mobile</strong></td>
-              <td>Use GrapheneOS → Android APIs become standard</td>
+              <td>Use GrapheneOS → Developers continue targeting Google Play Services APIs (not AOSP)</td>
               <td>iOS and Android compete → Web standards remain relevant</td>
             </tr>
             <tr>
@@ -520,7 +531,7 @@ footer {
 
         <p><strong>The goal is the same: software freedom. The question is how to get there when we're not there yet.</strong></p>
 
-        <p>To reduce long-term lock-in, our focus should be on ensuring applications are portable across platforms, rather than simply choosing the 'most open' platform available. For instance, if all privacy-conscious users migrated to GrapheneOS, developers would be incentivized to build for its specific (and still Google-controlled) APIs, inadvertently strengthening Google's ecosystem. Similarly, a mass shift to the relatively open Steam Deck could solidify Microsoft's DirectX as the dominant graphics API. A more effective strategy is to encourage competition between platforms (like iOS vs. Android, or PlayStation vs. Xbox) while using applications that adhere to open standards (like PWAs or games using Vulkan). This competitive pressure is what drives the adoption of truly open standards, ultimately giving us more freedom.</p>
+        <p>To reduce long-term lock-in, prioritize application portability over platform openness. If all privacy-conscious users migrated to GrapheneOS, developers would continue targeting Google Play Services—the proprietary layer that most Android apps depend on—rather than pure AOSP, inadvertently strengthening Google's ecosystem. Similarly, the Steam Deck's seamless DirectX-to-Vulkan translation removes developers' incentive to write native Vulkan games, entrenching DirectX as the standard even on an open platform. The more effective strategy is to maintain platform competition while ruthlessly favoring applications built on open standards—this competitive pressure drives genuine adoption of those standards and creates the conditions for future free alternatives to emerge.</p>
 
         <p>Your choices today shape what's possible tomorrow. Choose applications built on open standards, regardless of platform. Support competition that drives those standards forward. Build the infrastructure for freedom, even in domains where freedom doesn't yet exist.</p>
       </div>
