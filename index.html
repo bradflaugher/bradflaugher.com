@@ -49,28 +49,6 @@ body {
   text-align: center;
 }
 
-#glitch {
-  font-size: 3rem;
-  font-weight: bold;
-  color: #fff;
-  text-shadow:
-    0 0 5px #fff,
-    0 0 10px #fff,
-    0 0 20px #fff,
-    0 0 40px #fff;
-  animation: glitch 0.3s infinite;
-  letter-spacing: 0.5rem;
-  margin-bottom: 3rem;
-}
-
-@keyframes glitch {
-  0% { transform: translate(0); text-shadow: 0 0 5px #fff, 0 0 10px #fff, 2px 2px #666, -2px -2px #999; }
-  25% { transform: translate(-2px, 1px); text-shadow: 0 0 5px #fff, 0 0 10px #fff, -2px 2px #666, 2px -2px #999; }
-  50% { transform: translate(1px, -1px); text-shadow: 0 0 5px #fff, 0 0 10px #fff, 2px -2px #666, -2px 2px #999; }
-  75% { transform: translate(-1px, 2px); text-shadow: 0 0 5px #fff, 0 0 10px #fff, -2px -2px #666, 2px 2px #999; }
-  100% { transform: translate(0); text-shadow: 0 0 5px #fff, 0 0 10px #fff, 2px 2px #666, -2px -2px #999; }
-}
-
 #enter {
   display: inline-block;
   padding: 1rem 2rem;
@@ -114,29 +92,7 @@ body {
   50% { opacity: 0.1; }
 }
 
-#skull {
-  font-size: 0.5rem;
-  line-height: 1;
-  white-space: pre;
-  color: #222;
-  margin-bottom: 2rem;
-  animation: skulldrift 4s infinite;
-}
-
-@keyframes skulldrift {
-  0%, 100% { opacity: 0.2; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(1.02); }
-}
-
 @media (max-width: 600px) {
-  #skull {
-    display: none;
-  }
-  #glitch {
-    font-size: 1.5rem;
-    letter-spacing: 0.2rem;
-    margin-bottom: 2rem;
-  }
   #enter {
     padding: 0.8rem 1.2rem;
     font-size: 0.7rem;
@@ -155,27 +111,7 @@ body {
 <div id="storm"></div>
 
 <div id="center">
-  <div id="skull">
-                      ██████████
-                  ████░░░░░░░░░░████
-                ██░░░░░░░░░░░░░░░░░░██
-              ██░░░░░░░░░░░░░░░░░░░░░░██
-            ██░░░░░░░░░░░░░░░░░░░░░░░░░░██
-            ██░░░░░░░░░░░░░░░░░░░░░░░░░░██
-          ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░██
-          ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░██
-          ██░░░░████░░░░░░░░░░░░████░░░░░░██
-          ██░░░░████░░░░░░░░░░░░████░░░░░░██
-          ██░░░░░░░░░░░░██░░░░░░░░░░░░░░░░██
-            ██░░░░░░░░░░░░░░░░░░░░░░░░░░██
-            ██░░██░░░░░░░░░░░░░░░░░░██░░██
-              ██░░██████████████████░░██
-                ██░░░░░░░░░░░░░░░░░░██
-                  ████░░░░░░░░░░████
-                      ██████████
-  </div>
-  <div id="glitch">BRAD FLAUGHER</div>
-  <a href="/calendar" id="enter">[ THE ABYSS STARES BACK ]</a>
+  <a href="/calendar" id="enter">BOOK</a>
 </div>
 
 <div id="warning">// THOSE WHO WANDER ARE NOT ALWAYS LOST //</div>
@@ -289,22 +225,6 @@ window.addEventListener('resize', () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 });
-
-// Random glitch effect on name
-const glitch = document.getElementById('glitch');
-const originalText = 'BRAD FLAUGHER';
-const glitchChars = '!@#$%^&*()_+-=[]{}|;:<>?█▓▒░';
-
-setInterval(() => {
-  if (Math.random() > 0.9) {
-    let glitched = '';
-    for (let i = 0; i < originalText.length; i++) {
-      glitched += Math.random() > 0.7 ? glitchChars[Math.floor(Math.random() * glitchChars.length)] : originalText[i];
-    }
-    glitch.textContent = glitched;
-    setTimeout(() => { glitch.textContent = originalText; }, 100);
-  }
-}, 200);
 
 // Console message
 console.log('%c◈ VOID ◈', 'color: white; font-size: 40px; font-weight: bold;');
