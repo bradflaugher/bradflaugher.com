@@ -20,16 +20,6 @@ body {
   cursor: crosshair;
 }
 
-#matrix {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  opacity: 0.3;
-}
-
 #storm {
   position: fixed;
   top: 0;
@@ -85,7 +75,6 @@ body {
   </style>
 </head>
 <body>
-<canvas id="matrix"></canvas>
 <div id="storm"></div>
 
 <div id="center">
@@ -93,119 +82,284 @@ body {
 </div>
 
 <script>
-// Matrix rain
-const canvas = document.getElementById('matrix');
-const ctx = canvas.getContext('2d');
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const chars = '0123456789ABCDEF!@#$%^&*(){}[]|;:<>?/\\~`░▒▓█▀▄▌▐■□▢▣▤▥▦▧▨▩';
-const charArray = chars.split('');
-const fontSize = 14;
-const columns = canvas.width / fontSize;
-const drops = [];
-
-for (let i = 0; i < columns; i++) {
-  drops[i] = Math.random() * -100;
-}
-
-function drawMatrix() {
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = '#fff';
-  ctx.font = fontSize + 'px monospace';
-
-  for (let i = 0; i < drops.length; i++) {
-    const text = charArray[Math.floor(Math.random() * charArray.length)];
-    ctx.fillStyle = Math.random() > 0.98 ? '#fff' : '#888';
-    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-      drops[i] = 0;
-    }
-    drops[i]++;
-  }
-}
-
-setInterval(drawMatrix, 50);
-
-// Wind-blown text particles
-const windChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/\\~`░▒▓█▀▄01';
+// Chaotic wind storm with multiple vortices
+const windChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/\\~`░▒▓█▀▄▌▐■□▢▣▤▥▦▧▨▩01ABCDEFxyz';
 const storm = document.getElementById('storm');
 const particles = [];
+const vortices = [];
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const MAX_PARTICLES = isMobile ? 150 : 300;
+const MIN_PARTICLES = isMobile ? 100 : 200;
 
-class WindParticle {
+// Vortex class - wandering centers of chaos
+class Vortex {
   constructor() {
-    this.x = Math.random() * window.innerWidth;
-    this.y = Math.random() * window.innerHeight;
-    this.vx = (Math.random() - 0.5) * 4;
-    this.vy = (Math.random() - 0.5) * 4;
-    this.char = windChars[Math.floor(Math.random() * windChars.length)];
-    this.opacity = Math.random() * 0.3 + 0.1;
-    this.rotation = Math.random() * 360;
-    this.rotationSpeed = (Math.random() - 0.5) * 2;
+    this.reset();
   }
 
-  update(windX, windY) {
-    this.vx += windX * 0.1;
-    this.vy += windY * 0.1;
-    this.vx *= 0.99;
-    this.vy *= 0.99;
+  reset() {
+    this.x = Math.random() * window.innerWidth;
+    this.y = Math.random() * window.innerHeight;
+    this.vx = (Math.random() - 0.5) * 3;
+    this.vy = (Math.random() - 0.5) * 3;
+    this.strength = Math.random() * 8 + 4;
+    this.radius = Math.random() * 200 + 100;
+    this.spin = Math.random() > 0.5 ? 1 : -1;
+    this.life = Math.random() * 500 + 200;
+    this.maxLife = this.life;
+    this.erratic = Math.random() * 2;
+  }
+
+  update() {
+    // Erratic movement
+    this.vx += (Math.random() - 0.5) * this.erratic;
+    this.vy += (Math.random() - 0.5) * this.erratic;
+    this.vx *= 0.98;
+    this.vy *= 0.98;
+
+    this.x += this.vx;
+    this.y += this.vy;
+
+    // Bounce off edges chaotically
+    if (this.x < 0 || this.x > window.innerWidth) {
+      this.vx *= -1;
+      this.vx += (Math.random() - 0.5) * 4;
+    }
+    if (this.y < 0 || this.y > window.innerHeight) {
+      this.vy *= -1;
+      this.vy += (Math.random() - 0.5) * 4;
+    }
+
+    this.life--;
+    if (this.life <= 0) this.reset();
+  }
+}
+
+// Particle class with violent behavior
+class WindParticle {
+  constructor(x, y) {
+    this.x = x !== undefined ? x : Math.random() * window.innerWidth;
+    this.y = y !== undefined ? y : Math.random() * window.innerHeight;
+    this.vx = (Math.random() - 0.5) * 10;
+    this.vy = (Math.random() - 0.5) * 10;
+    this.char = windChars[Math.floor(Math.random() * windChars.length)];
+    this.opacity = Math.random() * 0.6 + 0.2;
+    this.rotation = Math.random() * 360;
+    this.rotationSpeed = (Math.random() - 0.5) * 20;
+    this.size = Math.random() * 16 + 8;
+    this.life = Math.random() * 300 + 100;
+    this.maxLife = this.life;
+    this.flickerRate = Math.random() * 0.3;
+  }
+
+  update(globalWindX, globalWindY, vortices) {
+    // Apply global wind chaos
+    this.vx += globalWindX * 0.15;
+    this.vy += globalWindY * 0.15;
+
+    // Apply vortex forces
+    for (const v of vortices) {
+      const dx = this.x - v.x;
+      const dy = this.y - v.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < v.radius && dist > 10) {
+        const force = (v.strength * (1 - dist / v.radius)) / dist;
+        // Tangential force (spin)
+        this.vx += -dy * force * v.spin * 0.1;
+        this.vy += dx * force * v.spin * 0.1;
+        // Radial force (pull/push)
+        const radialForce = force * 0.3 * (Math.random() > 0.5 ? 1 : -1);
+        this.vx += dx * radialForce * 0.05;
+        this.vy += dy * radialForce * 0.05;
+        // Extra chaos near vortex center
+        if (dist < v.radius * 0.3) {
+          this.rotationSpeed += (Math.random() - 0.5) * 10;
+          if (Math.random() < 0.1) {
+            this.char = windChars[Math.floor(Math.random() * windChars.length)];
+          }
+        }
+      }
+    }
+
+    // Random violent bursts
+    if (Math.random() < 0.02) {
+      this.vx += (Math.random() - 0.5) * 15;
+      this.vy += (Math.random() - 0.5) * 15;
+      this.rotationSpeed = (Math.random() - 0.5) * 30;
+    }
+
+    // Random character changes
+    if (Math.random() < 0.05) {
+      this.char = windChars[Math.floor(Math.random() * windChars.length)];
+    }
+
+    // Friction (but not too much - keep it wild)
+    this.vx *= 0.97;
+    this.vy *= 0.97;
+
+    // Clamp max velocity but keep it high
+    const maxVel = 20;
+    const vel = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+    if (vel > maxVel) {
+      this.vx = (this.vx / vel) * maxVel;
+      this.vy = (this.vy / vel) * maxVel;
+    }
 
     this.x += this.vx;
     this.y += this.vy;
     this.rotation += this.rotationSpeed;
+    this.rotationSpeed *= 0.98;
 
-    if (this.x < -50) this.x = window.innerWidth + 50;
-    if (this.x > window.innerWidth + 50) this.x = -50;
-    if (this.y < -50) this.y = window.innerHeight + 50;
-    if (this.y > window.innerHeight + 50) this.y = -50;
+    // Opacity flicker
+    this.opacity = (Math.random() * this.flickerRate) + 0.2 + (0.4 * (this.life / this.maxLife));
+
+    // Wrap around screen
+    if (this.x < -100) this.x = window.innerWidth + 100;
+    if (this.x > window.innerWidth + 100) this.x = -100;
+    if (this.y < -100) this.y = window.innerHeight + 100;
+    if (this.y > window.innerHeight + 100) this.y = -100;
+
+    this.life--;
+  }
+
+  isDead() {
+    return this.life <= 0;
   }
 }
 
-for (let i = 0; i < 150; i++) {
+// Create initial vortices
+for (let i = 0; i < 5; i++) {
+  vortices.push(new Vortex());
+}
+
+// Create initial particles
+for (let i = 0; i < MAX_PARTICLES; i++) {
   particles.push(new WindParticle());
 }
 
 let windTime = 0;
-function animateWind() {
-  windTime += 0.01;
-  const windX = Math.sin(windTime * 0.7) * Math.cos(windTime * 0.3) * 2;
-  const windY = Math.cos(windTime * 0.5) * Math.sin(windTime * 0.4) * 2;
+let burstTimer = 0;
 
+function animateWind() {
+  windTime += 0.02 + Math.random() * 0.02;
+  burstTimer++;
+
+  // Chaotic global wind with multiple overlapping waves
+  const windX = Math.sin(windTime * 1.3) * Math.cos(windTime * 0.7) * 4
+              + Math.sin(windTime * 2.1) * 2
+              + Math.cos(windTime * 0.4) * Math.sin(windTime * 1.8) * 3;
+  const windY = Math.cos(windTime * 0.9) * Math.sin(windTime * 1.1) * 4
+              + Math.cos(windTime * 1.7) * 2
+              + Math.sin(windTime * 0.6) * Math.cos(windTime * 2.3) * 3;
+
+  // Occasional massive wind bursts
+  let burstX = 0, burstY = 0;
+  if (Math.random() < 0.01) {
+    burstX = (Math.random() - 0.5) * 30;
+    burstY = (Math.random() - 0.5) * 30;
+  }
+
+  // Update vortices
+  for (const v of vortices) {
+    v.update();
+  }
+
+  // Randomly spawn new vortex during chaos
+  if (Math.random() < 0.005 && vortices.length < 8) {
+    vortices.push(new Vortex());
+  }
+
+  // Remove old vortices occasionally
+  if (vortices.length > 5 && Math.random() < 0.002) {
+    vortices.splice(Math.floor(Math.random() * vortices.length), 1);
+  }
+
+  // Violent particle spawning bursts
+  if (Math.random() < 0.03 && particles.length < MAX_PARTICLES + 50) {
+    const burstCount = Math.floor(Math.random() * 20) + 5;
+    const burstX = Math.random() * window.innerWidth;
+    const burstY = Math.random() * window.innerHeight;
+    for (let i = 0; i < burstCount; i++) {
+      particles.push(new WindParticle(
+        burstX + (Math.random() - 0.5) * 100,
+        burstY + (Math.random() - 0.5) * 100
+      ));
+    }
+  }
+
+  // Update and cull particles
+  for (let i = particles.length - 1; i >= 0; i--) {
+    particles[i].update(windX + burstX, windY + burstY, vortices);
+
+    // Random violent death
+    if (particles[i].isDead() || (Math.random() < 0.003)) {
+      particles.splice(i, 1);
+    }
+  }
+
+  // Maintain minimum particle count
+  while (particles.length < MIN_PARTICLES) {
+    particles.push(new WindParticle());
+  }
+
+  // Render
   storm.innerHTML = '';
-  particles.forEach(p => {
-    p.update(windX, windY);
+  for (const p of particles) {
     const span = document.createElement('span');
     span.textContent = p.char;
-    span.style.position = 'absolute';
-    span.style.left = p.x + 'px';
-    span.style.top = p.y + 'px';
-    span.style.color = '#fff';
-    span.style.opacity = p.opacity;
-    span.style.fontSize = '14px';
-    span.style.transform = `rotate(${p.rotation}deg)`;
-    span.style.pointerEvents = 'none';
+    span.style.cssText = `
+      position: absolute;
+      left: ${p.x}px;
+      top: ${p.y}px;
+      color: #fff;
+      opacity: ${p.opacity};
+      font-size: ${p.size}px;
+      transform: rotate(${p.rotation}deg);
+      pointer-events: none;
+      text-shadow: 0 0 ${Math.random() * 5}px rgba(255,255,255,${Math.random() * 0.5});
+    `;
     storm.appendChild(span);
-  });
+  }
 
   requestAnimationFrame(animateWind);
 }
 
 animateWind();
 
-// Resize handler
-window.addEventListener('resize', () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+// Handle resize and orientation changes
+let resizeTimeout;
+function handleResize() {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    // Reposition vortices within new bounds
+    for (const v of vortices) {
+      if (v.x > w) v.x = Math.random() * w;
+      if (v.y > h) v.y = Math.random() * h;
+    }
+
+    // Reposition particles within new bounds
+    for (const p of particles) {
+      if (p.x > w + 100) p.x = Math.random() * w;
+      if (p.y > h + 100) p.y = Math.random() * h;
+      if (p.x < -100) p.x = Math.random() * w;
+      if (p.y < -100) p.y = Math.random() * h;
+    }
+  }, 100);
+}
+
+window.addEventListener('resize', handleResize);
+window.addEventListener('orientationchange', () => {
+  setTimeout(handleResize, 200);
 });
 
 // Console message
-console.log('%c◈ VOID ◈', 'color: white; font-size: 40px; font-weight: bold;');
-console.log('%cThe wind carries whispers of code long forgotten.', 'color: #888; font-size: 16px;');
-console.log('%cSome doors are meant to remain closed.', 'color: #666; font-size: 12px;');
+console.log('%c◈ CHAOS ◈', 'color: white; font-size: 40px; font-weight: bold;');
+console.log('%cThe storm consumes all in its path.', 'color: #888; font-size: 16px;');
+console.log('%cThere is no calm at the center.', 'color: #666; font-size: 12px;');
 </script>
 </body>
 </html>
