@@ -13,7 +13,7 @@
 
 body {
   background: #000;
-  color: #0f0;
+  color: #fff;
   font-family: monospace;
   min-height: 100vh;
   overflow: hidden;
@@ -38,12 +38,6 @@ body {
   height: 100%;
   z-index: 2;
   pointer-events: none;
-  font-size: 10px;
-  line-height: 1;
-  white-space: pre;
-  overflow: hidden;
-  color: #0a0;
-  opacity: 0.15;
 }
 
 #center {
@@ -55,33 +49,11 @@ body {
   text-align: center;
 }
 
-#glitch {
-  font-size: 3rem;
-  font-weight: bold;
-  color: #0f0;
-  text-shadow:
-    0 0 5px #0f0,
-    0 0 10px #0f0,
-    0 0 20px #0f0,
-    0 0 40px #0f0;
-  animation: glitch 0.3s infinite;
-  letter-spacing: 0.5rem;
-  margin-bottom: 3rem;
-}
-
-@keyframes glitch {
-  0% { transform: translate(0); text-shadow: 0 0 5px #0f0, 0 0 10px #0f0, 2px 2px #f00, -2px -2px #00f; }
-  25% { transform: translate(-2px, 1px); text-shadow: 0 0 5px #0f0, 0 0 10px #0f0, -2px 2px #f00, 2px -2px #00f; }
-  50% { transform: translate(1px, -1px); text-shadow: 0 0 5px #0f0, 0 0 10px #0f0, 2px -2px #f00, -2px 2px #00f; }
-  75% { transform: translate(-1px, 2px); text-shadow: 0 0 5px #0f0, 0 0 10px #0f0, -2px -2px #f00, 2px 2px #00f; }
-  100% { transform: translate(0); text-shadow: 0 0 5px #0f0, 0 0 10px #0f0, 2px 2px #f00, -2px -2px #00f; }
-}
-
 #enter {
   display: inline-block;
   padding: 1rem 2rem;
-  border: 1px solid #0f0;
-  color: #0f0;
+  border: 1px solid #fff;
+  color: #fff;
   text-decoration: none;
   font-size: 0.9rem;
   letter-spacing: 0.3rem;
@@ -92,66 +64,22 @@ body {
 }
 
 #enter:hover {
-  background: #0f0;
+  background: #fff;
   color: #000;
-  box-shadow: 0 0 30px #0f0, 0 0 60px #0f0;
+  box-shadow: 0 0 30px #fff, 0 0 60px #fff;
   text-shadow: none;
 }
 
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 0 5px #0f0; }
-  50% { box-shadow: 0 0 20px #0f0, 0 0 30px #0f0; }
-}
-
-#warning {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  font-size: 0.6rem;
-  color: #030;
-  letter-spacing: 0.2rem;
-  animation: flicker 0.5s infinite;
-}
-
-@keyframes flicker {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.1; }
-}
-
-#skull {
-  font-size: 0.5rem;
-  line-height: 1;
-  white-space: pre;
-  color: #020;
-  margin-bottom: 2rem;
-  animation: skulldrift 4s infinite;
-}
-
-@keyframes skulldrift {
-  0%, 100% { opacity: 0.2; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(1.02); }
+  0%, 100% { box-shadow: 0 0 5px #fff; }
+  50% { box-shadow: 0 0 20px #fff, 0 0 30px #fff; }
 }
 
 @media (max-width: 600px) {
-  #skull {
-    display: none;
-  }
-  #glitch {
-    font-size: 1.5rem;
-    letter-spacing: 0.2rem;
-    margin-bottom: 2rem;
-  }
   #enter {
     padding: 0.8rem 1.2rem;
     font-size: 0.7rem;
     letter-spacing: 0.15rem;
-  }
-  #warning {
-    font-size: 0.5rem;
-    letter-spacing: 0.1rem;
-    bottom: 1rem;
   }
 }
   </style>
@@ -161,30 +89,8 @@ body {
 <div id="storm"></div>
 
 <div id="center">
-  <div id="skull">
-                      ██████████
-                  ████░░░░░░░░░░████
-                ██░░░░░░░░░░░░░░░░░░██
-              ██░░░░░░░░░░░░░░░░░░░░░░██
-            ██░░░░░░░░░░░░░░░░░░░░░░░░░░██
-            ██░░░░░░░░░░░░░░░░░░░░░░░░░░██
-          ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░██
-          ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░██
-          ██░░░░████░░░░░░░░░░░░████░░░░░░██
-          ██░░░░████░░░░░░░░░░░░████░░░░░░██
-          ██░░░░░░░░░░░░██░░░░░░░░░░░░░░░░██
-            ██░░░░░░░░░░░░░░░░░░░░░░░░░░██
-            ██░░██░░░░░░░░░░░░░░░░░░██░░██
-              ██░░██████████████████░░██
-                ██░░░░░░░░░░░░░░░░░░██
-                  ████░░░░░░░░░░████
-                      ██████████
-  </div>
-  <div id="glitch">BRAD FLAUGHER</div>
-  <a href="/calendar" id="enter">[ if you know, you know ]</a>
+  <a href="/calendar" id="enter">BOOK</a>
 </div>
-
-<div id="warning">// UNAUTHORIZED ACCESS WILL BE LOGGED //</div>
 
 <script>
 // Matrix rain
@@ -194,7 +100,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF!@#$%^&*(){}[]|;:<>?/\\~`░▒▓█▀▄▌▐■□▢▣▤▥▦▧▨▩';
+const chars = '0123456789ABCDEF!@#$%^&*(){}[]|;:<>?/\\~`░▒▓█▀▄▌▐■□▢▣▤▥▦▧▨▩';
 const charArray = chars.split('');
 const fontSize = 14;
 const columns = canvas.width / fontSize;
@@ -208,12 +114,12 @@ function drawMatrix() {
   ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = '#0f0';
+  ctx.fillStyle = '#fff';
   ctx.font = fontSize + 'px monospace';
 
   for (let i = 0; i < drops.length; i++) {
     const text = charArray[Math.floor(Math.random() * charArray.length)];
-    ctx.fillStyle = Math.random() > 0.98 ? '#fff' : '#0f0';
+    ctx.fillStyle = Math.random() > 0.98 ? '#fff' : '#888';
     ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
     if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
@@ -225,25 +131,70 @@ function drawMatrix() {
 
 setInterval(drawMatrix, 50);
 
-// ASCII storm
-const stormChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/\\~`░▒▓█▀▄01';
+// Wind-blown text particles
+const windChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/\\~`░▒▓█▀▄01';
 const storm = document.getElementById('storm');
+const particles = [];
 
-function generateStorm() {
-  let text = '';
-  const lines = Math.floor(window.innerHeight / 10);
-  const cols = Math.floor(window.innerWidth / 6);
-
-  for (let i = 0; i < lines; i++) {
-    for (let j = 0; j < cols; j++) {
-      text += Math.random() > 0.7 ? stormChars[Math.floor(Math.random() * stormChars.length)] : ' ';
-    }
-    text += '\n';
+class WindParticle {
+  constructor() {
+    this.x = Math.random() * window.innerWidth;
+    this.y = Math.random() * window.innerHeight;
+    this.vx = (Math.random() - 0.5) * 4;
+    this.vy = (Math.random() - 0.5) * 4;
+    this.char = windChars[Math.floor(Math.random() * windChars.length)];
+    this.opacity = Math.random() * 0.3 + 0.1;
+    this.rotation = Math.random() * 360;
+    this.rotationSpeed = (Math.random() - 0.5) * 2;
   }
-  storm.textContent = text;
+
+  update(windX, windY) {
+    this.vx += windX * 0.1;
+    this.vy += windY * 0.1;
+    this.vx *= 0.99;
+    this.vy *= 0.99;
+
+    this.x += this.vx;
+    this.y += this.vy;
+    this.rotation += this.rotationSpeed;
+
+    if (this.x < -50) this.x = window.innerWidth + 50;
+    if (this.x > window.innerWidth + 50) this.x = -50;
+    if (this.y < -50) this.y = window.innerHeight + 50;
+    if (this.y > window.innerHeight + 50) this.y = -50;
+  }
 }
 
-setInterval(generateStorm, 100);
+for (let i = 0; i < 150; i++) {
+  particles.push(new WindParticle());
+}
+
+let windTime = 0;
+function animateWind() {
+  windTime += 0.01;
+  const windX = Math.sin(windTime * 0.7) * Math.cos(windTime * 0.3) * 2;
+  const windY = Math.cos(windTime * 0.5) * Math.sin(windTime * 0.4) * 2;
+
+  storm.innerHTML = '';
+  particles.forEach(p => {
+    p.update(windX, windY);
+    const span = document.createElement('span');
+    span.textContent = p.char;
+    span.style.position = 'absolute';
+    span.style.left = p.x + 'px';
+    span.style.top = p.y + 'px';
+    span.style.color = '#fff';
+    span.style.opacity = p.opacity;
+    span.style.fontSize = '14px';
+    span.style.transform = `rotate(${p.rotation}deg)`;
+    span.style.pointerEvents = 'none';
+    storm.appendChild(span);
+  });
+
+  requestAnimationFrame(animateWind);
+}
+
+animateWind();
 
 // Resize handler
 window.addEventListener('resize', () => {
@@ -251,26 +202,10 @@ window.addEventListener('resize', () => {
   canvas.height = window.innerHeight;
 });
 
-// Random glitch effect on name
-const glitch = document.getElementById('glitch');
-const originalText = 'BRAD FLAUGHER';
-const glitchChars = '!@#$%^&*()_+-=[]{}|;:<>?█▓▒░';
-
-setInterval(() => {
-  if (Math.random() > 0.9) {
-    let glitched = '';
-    for (let i = 0; i < originalText.length; i++) {
-      glitched += Math.random() > 0.7 ? glitchChars[Math.floor(Math.random() * glitchChars.length)] : originalText[i];
-    }
-    glitch.textContent = glitched;
-    setTimeout(() => { glitch.textContent = originalText; }, 100);
-  }
-}, 200);
-
-// Console warning
-console.log('%c⚠ WARNING ⚠', 'color: red; font-size: 40px; font-weight: bold;');
-console.log('%cIf someone told you to paste something here, they are trying to hack you.', 'color: red; font-size: 16px;');
-console.log('%c...just kidding. But seriously, why are you here?', 'color: green; font-size: 12px;');
+// Console message
+console.log('%c◈ VOID ◈', 'color: white; font-size: 40px; font-weight: bold;');
+console.log('%cThe wind carries whispers of code long forgotten.', 'color: #888; font-size: 16px;');
+console.log('%cSome doors are meant to remain closed.', 'color: #666; font-size: 12px;');
 </script>
 </body>
 </html>
