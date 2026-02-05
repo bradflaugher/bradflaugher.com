@@ -25,7 +25,18 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      background: linear-gradient(135deg, #1a0a05 0%, #2d1810 50%, #1a0a05 100%);
+      background:
+        linear-gradient(90deg,
+          rgba(15,5,2,1) 0%,
+          rgba(45,20,12,1) 12%,
+          rgba(30,12,6,1) 25%,
+          rgba(50,22,14,1) 38%,
+          rgba(25,10,5,1) 50%,
+          rgba(48,20,12,1) 62%,
+          rgba(32,14,8,1) 75%,
+          rgba(42,18,10,1) 88%,
+          rgba(15,5,2,1) 100%
+        );
       background-color: #1a0a05;
     }
 
@@ -33,27 +44,33 @@
       width: 94vw;
       max-width: 580px;
       aspect-ratio: 1.75 / 1;
+      /* Bone color - warm ivory with slight yellow undertone */
       background: linear-gradient(
-        160deg,
-        #f0ebe3 0%,
-        #f4efe7 40%,
-        #f2ede5 60%,
-        #efe9e1 100%
+        145deg,
+        #e8e0d4 0%,
+        #f0e8dc 20%,
+        #ede5d9 50%,
+        #f0e8dc 80%,
+        #e8e0d4 100%
       );
-      padding: 24px 28px;
+      padding: 24px 32px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       box-shadow:
-        0 1px 3px rgba(0,0,0,0.2),
-        0 6px 20px rgba(0,0,0,0.3);
+        0 2px 4px rgba(0,0,0,0.2),
+        0 8px 16px rgba(0,0,0,0.25),
+        0 16px 32px rgba(0,0,0,0.2),
+        0 32px 64px rgba(0,0,0,0.15);
     }
 
-    /* Embossed text effect - letterpress style */
+    /* Embossed text effect - deeper letterpress style */
     .embossed {
       text-shadow:
-        0 1px 0 rgba(255,255,255,0.7),
-        0 -0.5px 0 rgba(0,0,0,0.15);
+        0 1px 1px rgba(255,255,255,0.9),
+        0 -1px 1px rgba(0,0,0,0.2),
+        1px 0 1px rgba(255,255,255,0.3),
+        -1px 0 1px rgba(0,0,0,0.05);
     }
 
     .top-row {
@@ -64,7 +81,7 @@
 
     .signal {
       color: #1a1a1a;
-      font-size: 13px;
+      font-size: 15px;
       font-weight: 600;
       letter-spacing: 0.02em;
     }
@@ -82,14 +99,14 @@
     }
 
     .company {
-      text-align: right;
+      text-align: center;
       color: #1a1a1a;
     }
 
     .company-name {
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 700;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
     }
 
@@ -106,10 +123,10 @@
     }
 
     .company-tagline {
-      font-size: 9px;
-      letter-spacing: 0.22em;
+      font-size: 10px;
+      letter-spacing: 0.25em;
       text-transform: uppercase;
-      margin-top: 2px;
+      margin-top: 3px;
       font-weight: 500;
     }
 
@@ -119,10 +136,10 @@
 
     .name {
       color: #1a1a1a;
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 500;
       letter-spacing: 0.03em;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .name-last {
@@ -133,22 +150,22 @@
 
     .title {
       color: #1a1a1a;
-      font-size: 11px;
+      font-size: 13px;
       text-transform: uppercase;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.2em;
       font-weight: 600;
     }
 
     .bottom-row {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       color: #1a1a1a;
-      font-size: 9px;
+      font-size: 10px;
       letter-spacing: 0.04em;
       text-transform: uppercase;
       font-weight: 600;
-      white-space: nowrap;
+      width: 100%;
     }
 
     .bottom-row a {
@@ -162,55 +179,69 @@
       opacity: 0.6;
     }
 
+    .bottom-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bottom-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .separator {
-      margin: 0 8px;
       opacity: 0.4;
     }
 
     @media (max-width: 520px) {
       .card {
-        padding: 18px 20px;
+        padding: 18px 22px;
       }
 
       .signal {
-        font-size: 10px;
+        font-size: 12px;
       }
 
       .company-name {
-        font-size: 11px;
+        font-size: 13px;
       }
 
       .company-tagline {
-        font-size: 7px;
+        font-size: 8px;
       }
 
       .name {
-        font-size: 20px;
+        font-size: 22px;
       }
 
       .title {
-        font-size: 9px;
+        font-size: 11px;
       }
 
       .bottom-row {
-        font-size: 7px;
+        font-size: 8px;
       }
 
-      .separator {
-        margin: 0 5px;
+      .bottom-left, .bottom-right {
+        gap: 4px;
       }
     }
 
-    @media (max-width: 380px) {
+    @media (max-width: 400px) {
       .card {
-        padding: 14px 16px;
+        padding: 14px 18px;
       }
 
       .bottom-row {
-        flex-wrap: wrap;
-        white-space: normal;
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+      }
+
+      .bottom-left, .bottom-right {
         justify-content: center;
-        line-height: 2;
       }
     }
   </style>
@@ -233,15 +264,18 @@
     </div>
 
     <div class="bottom-row embossed">
-      <span>2212 Walnut St, Philadelphia 19103</span>
-      <span class="separator">|</span>
-      <a href="mailto:brad@bradflaugher.com">email</a>
-      <span class="separator">|</span>
-      <a href="https://x.com/BradFlaugher" target="_blank" rel="noopener">X</a>
-      <span class="separator">|</span>
-      <a href="https://github.com/bradflaugher" target="_blank" rel="noopener">github</a>
-      <span class="separator">|</span>
-      <a href="/calendar">calendar</a>
+      <div class="bottom-left">
+        <span>2212 Walnut St, Philadelphia 19103</span>
+        <span class="separator">|</span>
+        <a href="mailto:brad@bradflaugher.com">email</a>
+      </div>
+      <div class="bottom-right">
+        <a href="https://x.com/BradFlaugher" target="_blank" rel="noopener">X</a>
+        <span class="separator">|</span>
+        <a href="https://github.com/bradflaugher" target="_blank" rel="noopener">github</a>
+        <span class="separator">|</span>
+        <a href="/calendar">calendar</a>
+      </div>
     </div>
   </div>
 </body>
