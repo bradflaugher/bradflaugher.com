@@ -158,14 +158,16 @@
 
     .bottom-row {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
+      gap: 6px;
       color: #1a1a1a;
       font-size: 10px;
       letter-spacing: 0.04em;
       text-transform: uppercase;
       font-weight: 600;
       width: 100%;
+      flex-wrap: wrap;
     }
 
     .bottom-row a {
@@ -177,18 +179,6 @@
 
     .bottom-row a:hover {
       opacity: 0.6;
-    }
-
-    .bottom-left {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .bottom-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .separator {
@@ -222,9 +212,6 @@
 
       .bottom-row {
         font-size: 8px;
-      }
-
-      .bottom-left, .bottom-right {
         gap: 4px;
       }
     }
@@ -235,13 +222,7 @@
       }
 
       .bottom-row {
-        flex-direction: column;
-        gap: 6px;
-        text-align: center;
-      }
-
-      .bottom-left, .bottom-right {
-        justify-content: center;
+        gap: 4px;
       }
     }
   </style>
@@ -264,20 +245,17 @@
     </div>
 
     <div class="bottom-row embossed">
-      <div class="bottom-left">
-        <span>2212 Walnut St, Philadelphia</span>
-        <span class="separator">|</span>
-        <a href="mailto:brad@bradflaugher.com">email</a>
-      </div>
-      <div class="bottom-right">
-        <a href="https://www.amazon.com/stores/Brad-Flaugher/author/B0CHDH848W" target="_blank" rel="noopener">ai harmony</a>
-        <span class="separator">|</span>
-        <a href="https://x.com/BradFlaugher" target="_blank" rel="noopener">X</a>
-        <span class="separator">|</span>
-        <a href="https://github.com/bradflaugher" target="_blank" rel="noopener">github</a>
-        <span class="separator">|</span>
-        <a href="/calendar">calendar</a>
-      </div>
+      <span>2212 Walnut St, Philadelphia</span>
+      <span class="separator">|</span>
+      <a href="mailto:brad@bradflaugher.com">email</a>
+      <span class="separator">|</span>
+      <a href="https://www.amazon.com/stores/Brad-Flaugher/author/B0CHDH848W" target="_blank" rel="noopener">ai harmony</a>
+      <span class="separator">|</span>
+      <a href="https://x.com/BradFlaugher" target="_blank" rel="noopener">X</a>
+      <span class="separator">|</span>
+      <a href="https://github.com/bradflaugher" target="_blank" rel="noopener">github</a>
+      <span class="separator">|</span>
+      <a href="/calendar">calendar</a>
     </div>
   </div>
 </body>
