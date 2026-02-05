@@ -1,365 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>???</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>Brad Flaugher</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Brad Flaugher - Chief Technology Officer">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background: #000;
-  color: #fff;
-  font-family: monospace;
-  min-height: 100vh;
-  overflow: hidden;
-  cursor: crosshair;
-}
-
-#storm {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  pointer-events: none;
-}
-
-#center {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  text-align: center;
-}
-
-#enter {
-  display: inline-block;
-  padding: 1rem 2rem;
-  border: 1px solid #fff;
-  color: #fff;
-  text-decoration: none;
-  font-size: 0.9rem;
-  letter-spacing: 0.3rem;
-  text-transform: uppercase;
-  transition: all 0.3s;
-  background: transparent;
-  animation: pulse 2s infinite;
-}
-
-#enter:hover {
-  background: #fff;
-  color: #000;
-  box-shadow: 0 0 30px #fff, 0 0 60px #fff;
-  text-shadow: none;
-}
-
-@keyframes pulse {
-  0%, 100% { box-shadow: 0 0 5px #fff; }
-  50% { box-shadow: 0 0 20px #fff, 0 0 30px #fff; }
-}
-
-@media (max-width: 600px) {
-  #enter {
-    padding: 0.8rem 1.2rem;
-    font-size: 0.7rem;
-    letter-spacing: 0.15rem;
-  }
-}
-  </style>
-</head>
-<body>
-<div id="storm"></div>
-
-<div id="center">
-  <a href="/calendar" id="enter">BOOK</a>
-</div>
-
-<script>
-// Chaotic wind storm with multiple vortices
-const windChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/\\~`░▒▓█▀▄▌▐■□▢▣▤▥▦▧▨▩01ABCDEFxyz';
-const storm = document.getElementById('storm');
-const particles = [];
-const vortices = [];
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-const MAX_PARTICLES = isMobile ? 150 : 300;
-const MIN_PARTICLES = isMobile ? 100 : 200;
-
-// Vortex class - wandering centers of chaos
-class Vortex {
-  constructor() {
-    this.reset();
-  }
-
-  reset() {
-    this.x = Math.random() * window.innerWidth;
-    this.y = Math.random() * window.innerHeight;
-    this.vx = (Math.random() - 0.5) * 3;
-    this.vy = (Math.random() - 0.5) * 3;
-    this.strength = Math.random() * 8 + 4;
-    this.radius = Math.random() * 200 + 100;
-    this.spin = Math.random() > 0.5 ? 1 : -1;
-    this.life = Math.random() * 500 + 200;
-    this.maxLife = this.life;
-    this.erratic = Math.random() * 2;
-  }
-
-  update() {
-    // Erratic movement
-    this.vx += (Math.random() - 0.5) * this.erratic;
-    this.vy += (Math.random() - 0.5) * this.erratic;
-    this.vx *= 0.98;
-    this.vy *= 0.98;
-
-    this.x += this.vx;
-    this.y += this.vy;
-
-    // Bounce off edges chaotically
-    if (this.x < 0 || this.x > window.innerWidth) {
-      this.vx *= -1;
-      this.vx += (Math.random() - 0.5) * 4;
-    }
-    if (this.y < 0 || this.y > window.innerHeight) {
-      this.vy *= -1;
-      this.vy += (Math.random() - 0.5) * 4;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    this.life--;
-    if (this.life <= 0) this.reset();
-  }
-}
+    html, body {
+      height: 100%;
+    }
 
-// Particle class with violent behavior
-class WindParticle {
-  constructor(x, y) {
-    this.x = x !== undefined ? x : Math.random() * window.innerWidth;
-    this.y = y !== undefined ? y : Math.random() * window.innerHeight;
-    this.vx = (Math.random() - 0.5) * 10;
-    this.vy = (Math.random() - 0.5) * 10;
-    this.char = windChars[Math.floor(Math.random() * windChars.length)];
-    this.opacity = Math.random() * 0.6 + 0.2;
-    this.rotation = Math.random() * 360;
-    this.rotationSpeed = (Math.random() - 0.5) * 20;
-    this.size = Math.random() * 16 + 8;
-    this.life = Math.random() * 300 + 100;
-    this.maxLife = this.life;
-    this.flickerRate = Math.random() * 0.3;
-  }
+    body {
+      font-family: 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background:
+        linear-gradient(90deg,
+          rgba(15,5,2,1) 0%,
+          rgba(35,15,10,1) 15%,
+          rgba(25,10,5,1) 30%,
+          rgba(40,18,12,1) 45%,
+          rgba(20,8,4,1) 60%,
+          rgba(35,15,10,1) 75%,
+          rgba(25,12,8,1) 90%,
+          rgba(15,5,2,1) 100%
+        );
+      background-color: #1a0a05;
+    }
 
-  update(globalWindX, globalWindY, vortices) {
-    // Apply global wind chaos
-    this.vx += globalWindX * 0.15;
-    this.vy += globalWindY * 0.15;
+    .card {
+      width: 92vw;
+      max-width: 550px;
+      aspect-ratio: 1.75 / 1;
+      background: linear-gradient(
+        135deg,
+        #f1ece4 0%,
+        #f5f0e8 25%,
+        #f3eee6 50%,
+        #f5f0e8 75%,
+        #f1ece4 100%
+      );
+      padding: 8% 7%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow:
+        0 2px 8px rgba(0,0,0,0.3),
+        0 8px 25px rgba(0,0,0,0.25),
+        0 0 0 1px rgba(0,0,0,0.05);
+      position: relative;
+    }
 
-    // Apply vortex forces
-    for (const v of vortices) {
-      const dx = this.x - v.x;
-      const dy = this.y - v.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 2px,
+          rgba(0,0,0,0.008) 2px,
+          rgba(0,0,0,0.008) 3px
+        );
+      pointer-events: none;
+    }
 
-      if (dist < v.radius && dist > 10) {
-        const force = (v.strength * (1 - dist / v.radius)) / dist;
-        // Tangential force (spin)
-        this.vx += -dy * force * v.spin * 0.1;
-        this.vy += dx * force * v.spin * 0.1;
-        // Radial force (pull/push)
-        const radialForce = force * 0.3 * (Math.random() > 0.5 ? 1 : -1);
-        this.vx += dx * radialForce * 0.05;
-        this.vy += dy * radialForce * 0.05;
-        // Extra chaos near vortex center
-        if (dist < v.radius * 0.3) {
-          this.rotationSpeed += (Math.random() - 0.5) * 10;
-          if (Math.random() < 0.1) {
-            this.char = windChars[Math.floor(Math.random() * windChars.length)];
-          }
-        }
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .signal {
+      color: #1a1a1a;
+      font-size: clamp(10px, 2.2vw, 13px);
+      letter-spacing: 0.08em;
+    }
+
+    .signal a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid #1a1a1a;
+      padding-bottom: 1px;
+      transition: opacity 0.2s;
+    }
+
+    .signal a:hover {
+      opacity: 0.6;
+    }
+
+    .company {
+      text-align: right;
+      color: #1a1a1a;
+    }
+
+    .company-name {
+      font-size: clamp(11px, 2.4vw, 14px);
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .company-name a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid #1a1a1a;
+      padding-bottom: 1px;
+      transition: opacity 0.2s;
+    }
+
+    .company-name a:hover {
+      opacity: 0.6;
+    }
+
+    .company-tagline {
+      font-size: clamp(7px, 1.5vw, 9px);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    .center {
+      text-align: center;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5% 0;
+    }
+
+    .name {
+      color: #1a1a1a;
+      font-size: clamp(18px, 4.5vw, 26px);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4em;
+    }
+
+    .name-last {
+      font-variant: small-caps;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+    }
+
+    .title {
+      color: #1a1a1a;
+      font-size: clamp(9px, 2vw, 12px);
+      font-variant: small-caps;
+      letter-spacing: 0.18em;
+      font-weight: 400;
+    }
+
+    .bottom-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.4em;
+      color: #1a1a1a;
+      font-size: clamp(7px, 1.6vw, 9.5px);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1.8;
+    }
+
+    .bottom-row a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid #1a1a1a;
+      padding-bottom: 0px;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    .bottom-row a:hover {
+      opacity: 0.6;
+    }
+
+    .separator {
+      margin: 0 0.3em;
+      opacity: 0.4;
+    }
+
+    @media (max-width: 400px) {
+      .card {
+        padding: 6% 5%;
+      }
+
+      .bottom-row {
+        gap: 0.2em;
+      }
+
+      .separator {
+        margin: 0 0.15em;
       }
     }
 
-    // Random violent bursts
-    if (Math.random() < 0.02) {
-      this.vx += (Math.random() - 0.5) * 15;
-      this.vy += (Math.random() - 0.5) * 15;
-      this.rotationSpeed = (Math.random() - 0.5) * 30;
+    @media (prefers-color-scheme: light) {
+      body {
+        background:
+          linear-gradient(90deg,
+            rgba(35,20,15,1) 0%,
+            rgba(55,30,20,1) 15%,
+            rgba(45,25,18,1) 30%,
+            rgba(60,32,22,1) 45%,
+            rgba(40,22,15,1) 60%,
+            rgba(55,30,20,1) 75%,
+            rgba(45,25,18,1) 90%,
+            rgba(35,20,15,1) 100%
+          );
+        background-color: #2a1510;
+      }
     }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="top-row">
+      <div class="signal">
+        <a href="https://signal.me/#eu/bradflaugher.99" target="_blank" rel="noopener">bradflaugher.99</a>
+      </div>
+      <div class="company">
+        <div class="company-name"><a href="https://www.elcanotek.com/" target="_blank" rel="noopener">Elcano</a></div>
+        <div class="company-tagline">Technology & Strategy</div>
+      </div>
+    </div>
 
-    // Random character changes
-    if (Math.random() < 0.05) {
-      this.char = windChars[Math.floor(Math.random() * windChars.length)];
-    }
+    <div class="center">
+      <div class="name">Brad <span class="name-last">Flaugher</span></div>
+      <div class="title">Chief Technology Officer</div>
+    </div>
 
-    // Friction (but not too much - keep it wild)
-    this.vx *= 0.97;
-    this.vy *= 0.97;
-
-    // Clamp max velocity but keep it high
-    const maxVel = 20;
-    const vel = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-    if (vel > maxVel) {
-      this.vx = (this.vx / vel) * maxVel;
-      this.vy = (this.vy / vel) * maxVel;
-    }
-
-    this.x += this.vx;
-    this.y += this.vy;
-    this.rotation += this.rotationSpeed;
-    this.rotationSpeed *= 0.98;
-
-    // Opacity flicker
-    this.opacity = (Math.random() * this.flickerRate) + 0.2 + (0.4 * (this.life / this.maxLife));
-
-    // Wrap around screen
-    if (this.x < -100) this.x = window.innerWidth + 100;
-    if (this.x > window.innerWidth + 100) this.x = -100;
-    if (this.y < -100) this.y = window.innerHeight + 100;
-    if (this.y > window.innerHeight + 100) this.y = -100;
-
-    this.life--;
-  }
-
-  isDead() {
-    return this.life <= 0;
-  }
-}
-
-// Create initial vortices
-for (let i = 0; i < 5; i++) {
-  vortices.push(new Vortex());
-}
-
-// Create initial particles
-for (let i = 0; i < MAX_PARTICLES; i++) {
-  particles.push(new WindParticle());
-}
-
-let windTime = 0;
-let burstTimer = 0;
-
-function animateWind() {
-  windTime += 0.02 + Math.random() * 0.02;
-  burstTimer++;
-
-  // Chaotic global wind with multiple overlapping waves
-  const windX = Math.sin(windTime * 1.3) * Math.cos(windTime * 0.7) * 4
-              + Math.sin(windTime * 2.1) * 2
-              + Math.cos(windTime * 0.4) * Math.sin(windTime * 1.8) * 3;
-  const windY = Math.cos(windTime * 0.9) * Math.sin(windTime * 1.1) * 4
-              + Math.cos(windTime * 1.7) * 2
-              + Math.sin(windTime * 0.6) * Math.cos(windTime * 2.3) * 3;
-
-  // Occasional massive wind bursts
-  let burstX = 0, burstY = 0;
-  if (Math.random() < 0.01) {
-    burstX = (Math.random() - 0.5) * 30;
-    burstY = (Math.random() - 0.5) * 30;
-  }
-
-  // Update vortices
-  for (const v of vortices) {
-    v.update();
-  }
-
-  // Randomly spawn new vortex during chaos
-  if (Math.random() < 0.005 && vortices.length < 8) {
-    vortices.push(new Vortex());
-  }
-
-  // Remove old vortices occasionally
-  if (vortices.length > 5 && Math.random() < 0.002) {
-    vortices.splice(Math.floor(Math.random() * vortices.length), 1);
-  }
-
-  // Violent particle spawning bursts
-  if (Math.random() < 0.03 && particles.length < MAX_PARTICLES + 50) {
-    const burstCount = Math.floor(Math.random() * 20) + 5;
-    const burstX = Math.random() * window.innerWidth;
-    const burstY = Math.random() * window.innerHeight;
-    for (let i = 0; i < burstCount; i++) {
-      particles.push(new WindParticle(
-        burstX + (Math.random() - 0.5) * 100,
-        burstY + (Math.random() - 0.5) * 100
-      ));
-    }
-  }
-
-  // Update and cull particles
-  for (let i = particles.length - 1; i >= 0; i--) {
-    particles[i].update(windX + burstX, windY + burstY, vortices);
-
-    // Random violent death
-    if (particles[i].isDead() || (Math.random() < 0.003)) {
-      particles.splice(i, 1);
-    }
-  }
-
-  // Maintain minimum particle count
-  while (particles.length < MIN_PARTICLES) {
-    particles.push(new WindParticle());
-  }
-
-  // Render
-  storm.innerHTML = '';
-  for (const p of particles) {
-    const span = document.createElement('span');
-    span.textContent = p.char;
-    span.style.cssText = `
-      position: absolute;
-      left: ${p.x}px;
-      top: ${p.y}px;
-      color: #fff;
-      opacity: ${p.opacity};
-      font-size: ${p.size}px;
-      transform: rotate(${p.rotation}deg);
-      pointer-events: none;
-      text-shadow: 0 0 ${Math.random() * 5}px rgba(255,255,255,${Math.random() * 0.5});
-    `;
-    storm.appendChild(span);
-  }
-
-  requestAnimationFrame(animateWind);
-}
-
-animateWind();
-
-// Handle resize and orientation changes
-let resizeTimeout;
-function handleResize() {
-  clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(() => {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-
-    // Reposition vortices within new bounds
-    for (const v of vortices) {
-      if (v.x > w) v.x = Math.random() * w;
-      if (v.y > h) v.y = Math.random() * h;
-    }
-
-    // Reposition particles within new bounds
-    for (const p of particles) {
-      if (p.x > w + 100) p.x = Math.random() * w;
-      if (p.y > h + 100) p.y = Math.random() * h;
-      if (p.x < -100) p.x = Math.random() * w;
-      if (p.y < -100) p.y = Math.random() * h;
-    }
-  }, 100);
-}
-
-window.addEventListener('resize', handleResize);
-window.addEventListener('orientationchange', () => {
-  setTimeout(handleResize, 200);
-});
-
-// Console message
-console.log('%c◈ CHAOS ◈', 'color: white; font-size: 40px; font-weight: bold;');
-console.log('%cThe storm consumes all in its path.', 'color: #888; font-size: 16px;');
-console.log('%cThere is no calm at the center.', 'color: #666; font-size: 12px;');
-</script>
+    <div class="bottom-row">
+      <span>2212 Walnut St, Philadelphia 19103</span>
+      <span class="separator">|</span>
+      <a href="mailto:brad@bradflaugher.com">email</a>
+      <span class="separator">|</span>
+      <a href="https://x.com/BradFlaugher" target="_blank" rel="noopener">twitter</a>
+      <span class="separator">|</span>
+      <a href="https://github.com/bradflaugher" target="_blank" rel="noopener">github</a>
+      <span class="separator">|</span>
+      <a href="/calendar">calendar</a>
+    </div>
+  </div>
 </body>
 </html>
