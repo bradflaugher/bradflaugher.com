@@ -150,6 +150,31 @@
     color: var(--accent);
   }
 
+  .ctx-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.4rem;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .ctx-dot.work { background: #6e8efb; }
+  .ctx-dot.personal { background: #4ec990; }
+
+  .legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+  }
+
+  .legend-dot.work { background: #6e8efb; }
+  .legend-dot.personal { background: #4ec990; }
+
   .card a .domain {
     display: none;
     font-size: 0.75rem;
@@ -206,8 +231,8 @@
     </div>
     <div class="toggle-wrap">
       <button class="toggle-btn active" data-filter="all">All</button>
-      <button class="toggle-btn" data-filter="work">💼 Work</button>
-      <button class="toggle-btn" data-filter="personal">🏠 Personal</button>
+      <button class="toggle-btn" data-filter="work"><span class="legend-dot work"></span>Work</button>
+      <button class="toggle-btn" data-filter="personal"><span class="legend-dot personal"></span>Personal</button>
     </div>
   </header>
 
@@ -216,112 +241,112 @@
     <div class="card" data-category="messages">
       <h2>Messages</h2>
       <ul>
-        <li data-ctx="personal"><a href="https://mail.proton.me/u/0/inbox" data-app-url="protonmail://">🏠 Proton<span class="domain">proton.me</span></a></li>
-        <li data-ctx="work"><a href="https://outlook.office.com/mail/0/" data-app-url="ms-outlook://">💼 Outlook<span class="domain">office.com</span></a></li>
-        <li data-ctx="work"><a href="https://teams.microsoft.com/v2/" data-app-url="msteams://">💼 Teams<span class="domain">microsoft.com</span></a></li>
-        <li data-ctx="work"><a href="https://app.slack.com/client/T08D2BXJYLE/">💼 Slack<span class="domain">slack.com</span></a></li>
+        <li data-ctx="personal"><a href="https://mail.proton.me/u/0/inbox" data-app-url="protonmail://"><span class="ctx-dot personal"></span>Proton<span class="domain">proton.me</span></a></li>
+        <li data-ctx="work"><a href="https://outlook.office.com/mail/0/" data-app-url="ms-outlook://"><span class="ctx-dot work"></span>Outlook<span class="domain">office.com</span></a></li>
+        <li data-ctx="work"><a href="https://teams.microsoft.com/v2/" data-app-url="msteams://"><span class="ctx-dot work"></span>Teams<span class="domain">microsoft.com</span></a></li>
+        <li data-ctx="work"><a href="https://app.slack.com/client/T08D2BXJYLE/"><span class="ctx-dot work"></span>Slack<span class="domain">slack.com</span></a></li>
       </ul>
     </div>
 
     <div class="card" data-category="calendars">
       <h2>Calendars</h2>
       <ul>
-        <li data-ctx="personal"><a href="https://calendar.google.com/calendar/u/0/r" data-app-url="googlecalendar://">🏠 Google Calendar<span class="domain">google.com</span></a></li>
-        <li data-ctx="work"><a href="https://outlook.cloud.microsoft/calendar/0/view/week" data-app-url="ms-outlook://">💼 Outlook Calendar<span class="domain">microsoft.com</span></a></li>
-        <li data-ctx="personal"><a href="https://calendar.proton.me/u/0/" data-app-url="protoncalendar://">🏠 Proton Calendar<span class="domain">proton.me</span></a></li>
-        <li data-ctx="work"><a href="https://fantastical.app/bradflaugher/meet-with-brad-flaugher">💼 Fantastical<span class="domain">fantastical.app</span></a></li>
+        <li data-ctx="personal"><a href="https://calendar.google.com/calendar/u/0/r" data-app-url="googlecalendar://"><span class="ctx-dot personal"></span>Google Calendar<span class="domain">google.com</span></a></li>
+        <li data-ctx="work"><a href="https://outlook.cloud.microsoft/calendar/0/view/week" data-app-url="ms-outlook://"><span class="ctx-dot work"></span>Outlook Calendar<span class="domain">microsoft.com</span></a></li>
+        <li data-ctx="personal"><a href="https://calendar.proton.me/u/0/" data-app-url="protoncalendar://"><span class="ctx-dot personal"></span>Proton Calendar<span class="domain">proton.me</span></a></li>
+        <li data-ctx="work"><a href="https://fantastical.app/bradflaugher/meet-with-brad-flaugher"><span class="ctx-dot work"></span>Fantastical<span class="domain">fantastical.app</span></a></li>
       </ul>
     </div>
 
     <div class="card" data-category="files">
       <h2>Files</h2>
       <ul>
-        <li data-ctx="work"><a href="https://netorgft18239174-my.sharepoint.com/" data-app-url="ms-onedrive://">💼 OneDrive<span class="domain">sharepoint.com</span></a></li>
-        <li data-ctx="personal"><a href="https://drive.google.com/drive/my-drive" data-app-url="googledrive://">🏠 Google Drive<span class="domain">google.com</span></a></li>
-        <li data-ctx="personal"><a href="https://drive.proton.me/u/0/" data-app-url="protondrive://">🏠 Proton Drive<span class="domain">proton.me</span></a></li>
+        <li data-ctx="work"><a href="https://netorgft18239174-my.sharepoint.com/" data-app-url="ms-onedrive://"><span class="ctx-dot work"></span>OneDrive<span class="domain">sharepoint.com</span></a></li>
+        <li data-ctx="personal"><a href="https://drive.google.com/drive/my-drive" data-app-url="googledrive://"><span class="ctx-dot personal"></span>Google Drive<span class="domain">google.com</span></a></li>
+        <li data-ctx="personal"><a href="https://drive.proton.me/u/0/" data-app-url="protondrive://"><span class="ctx-dot personal"></span>Proton Drive<span class="domain">proton.me</span></a></li>
       </ul>
     </div>
 
     <div class="card" data-category="todos">
       <h2>Todos</h2>
       <ul>
-        <li data-ctx="work"><a href="https://trello.com/b/eouJ2N4x/elcano-dev" data-app-url="trello://">💼 Trello<span class="domain">trello.com</span></a></li>
-        <li data-ctx="personal"><a href="https://keep.google.com/" data-app-url="comgooglekeep://">🏠 Keep<span class="domain">google.com</span></a></li>
-        <li data-ctx="personal"><a href="https://app.todoist.com/app/inbox" data-app-url="todoist://">🏠 Todoist<span class="domain">todoist.com</span></a></li>
+        <li data-ctx="work"><a href="https://trello.com/b/eouJ2N4x/elcano-dev" data-app-url="trello://"><span class="ctx-dot work"></span>Trello<span class="domain">trello.com</span></a></li>
+        <li data-ctx="personal"><a href="https://keep.google.com/" data-app-url="comgooglekeep://"><span class="ctx-dot personal"></span>Keep<span class="domain">google.com</span></a></li>
+        <li data-ctx="personal"><a href="https://app.todoist.com/app/inbox" data-app-url="todoist://"><span class="ctx-dot personal"></span>Todoist<span class="domain">todoist.com</span></a></li>
       </ul>
     </div>
 
     <div class="card" data-category="code">
       <h2>Code</h2>
       <ul>
-        <li data-ctx="work"><a href="https://github.com/" data-app-url="github://">💼 GitHub<span class="domain">github.com</span></a></li>
-        <li data-ctx="work"><a href="https://opencode.ai/">💼 OpenCode<span class="domain">opencode.ai</span></a></li>
-        <li data-ctx="work"><a href="https://app.all-hands.dev/settings/billing">💼 OpenHands<span class="domain">all-hands.dev</span></a></li>
+        <li data-ctx="work"><a href="https://github.com/" data-app-url="github://"><span class="ctx-dot work"></span>GitHub<span class="domain">github.com</span></a></li>
+        <li data-ctx="work"><a href="https://opencode.ai/"><span class="ctx-dot work"></span>OpenCode<span class="domain">opencode.ai</span></a></li>
+        <li data-ctx="work"><a href="https://app.all-hands.dev/settings/billing"><span class="ctx-dot work"></span>OpenHands<span class="domain">all-hands.dev</span></a></li>
       </ul>
     </div>
 
     <div class="card" data-category="present">
       <h2>Present</h2>
       <ul>
-        <li data-ctx="work"><a href="https://gamma.app/">💼 Gamma<span class="domain">gamma.app</span></a></li>
-        <li data-ctx="work"><a href="https://fal.ai/">💼 fal.ai<span class="domain">fal.ai</span></a></li>
+        <li data-ctx="work"><a href="https://gamma.app/"><span class="ctx-dot work"></span>Gamma<span class="domain">gamma.app</span></a></li>
+        <li data-ctx="work"><a href="https://fal.ai/"><span class="ctx-dot work"></span>fal.ai<span class="domain">fal.ai</span></a></li>
       </ul>
     </div>
 
     <div class="card" data-category="chat">
       <h2>Chat</h2>
       <ul>
-        <li data-ctx="work"><a href="https://chatgpt.com/" data-app-url="chatgpt://">💼 ChatGPT<span class="domain">chatgpt.com</span></a></li>
-        <li data-ctx="work"><a href="https://manus.im/">💼 Manus<span class="domain">manus.im</span></a></li>
-        <li data-ctx="work"><a href="https://claude.ai/" data-app-url="claude://">💼 Claude<span class="domain">claude.ai</span></a></li>
-        <li data-ctx="personal"><a href="https://gemini.google.com/app" data-app-url="googlegemini://">🏠 Gemini<span class="domain">google.com</span></a></li>
-        <li data-ctx="personal"><a href="https://grok.com/?referrer=website">🏠 Grok<span class="domain">grok.com</span></a></li>
+        <li data-ctx="work"><a href="https://chatgpt.com/" data-app-url="chatgpt://"><span class="ctx-dot work"></span>ChatGPT<span class="domain">chatgpt.com</span></a></li>
+        <li data-ctx="work"><a href="https://manus.im/"><span class="ctx-dot work"></span>Manus<span class="domain">manus.im</span></a></li>
+        <li data-ctx="work"><a href="https://claude.ai/" data-app-url="claude://"><span class="ctx-dot work"></span>Claude<span class="domain">claude.ai</span></a></li>
+        <li data-ctx="personal"><a href="https://gemini.google.com/app" data-app-url="googlegemini://"><span class="ctx-dot personal"></span>Gemini<span class="domain">google.com</span></a></li>
+        <li data-ctx="personal"><a href="https://grok.com/?referrer=website"><span class="ctx-dot personal"></span>Grok<span class="domain">grok.com</span></a></li>
       </ul>
     </div>
 
     <div class="card" data-category="rankings">
       <h2>Rankings</h2>
       <ul>
-        <li data-ctx="work"><a href="https://artificialanalysis.ai/">💼 Artificial Analysis<span class="domain">artificialanalysis.ai</span></a></li>
-        <li data-ctx="work"><a href="https://openrouter.ai/rankings">💼 OpenRouter<span class="domain">openrouter.ai</span></a></li>
-        <li data-ctx="work"><a href="https://arena.ai/leaderboard">💼 Arena Leaderboard<span class="domain">arena.ai</span></a></li>
+        <li data-ctx="work"><a href="https://artificialanalysis.ai/"><span class="ctx-dot work"></span>Artificial Analysis<span class="domain">artificialanalysis.ai</span></a></li>
+        <li data-ctx="work"><a href="https://openrouter.ai/rankings"><span class="ctx-dot work"></span>OpenRouter<span class="domain">openrouter.ai</span></a></li>
+        <li data-ctx="work"><a href="https://arena.ai/leaderboard"><span class="ctx-dot work"></span>Arena Leaderboard<span class="domain">arena.ai</span></a></li>
       </ul>
     </div>
 
     <div class="card" data-category="news">
       <h2>News</h2>
       <ul>
-        <li data-ctx="personal"><a href="https://www.economist.com/">🏠 The Economist<span class="domain">economist.com</span></a></li>
-        <li data-ctx="work"><a href="https://www.technologyreview.com/">💼 MIT Technology Review<span class="domain">technologyreview.com</span></a></li>
-        <li data-ctx="personal"><a href="https://www.inquirer.com/">🏠 The Philadelphia Inquirer<span class="domain">inquirer.com</span></a></li>
+        <li data-ctx="personal"><a href="https://www.economist.com/"><span class="ctx-dot personal"></span>The Economist<span class="domain">economist.com</span></a></li>
+        <li data-ctx="work"><a href="https://www.technologyreview.com/"><span class="ctx-dot work"></span>MIT Technology Review<span class="domain">technologyreview.com</span></a></li>
+        <li data-ctx="personal"><a href="https://www.inquirer.com/"><span class="ctx-dot personal"></span>The Philadelphia Inquirer<span class="domain">inquirer.com</span></a></li>
       </ul>
     </div>
 
     <div class="card" data-category="social media">
       <h2>Social Media</h2>
       <ul>
-        <li data-ctx="work"><a href="https://x.com/" data-app-url="twitter://">💼 X<span class="domain">x.com</span></a></li>
-        <li data-ctx="personal"><a href="https://www.youtube.com/" data-app-url="youtube://">🏠 YouTube<span class="domain">youtube.com</span></a></li>
-        <li data-ctx="personal"><a href="https://instagram.com" data-app-url="instagram://">🏠 Instagram<span class="domain">instagram.com</span></a></li>
+        <li data-ctx="work"><a href="https://x.com/" data-app-url="twitter://"><span class="ctx-dot work"></span>X<span class="domain">x.com</span></a></li>
+        <li data-ctx="personal"><a href="https://www.youtube.com/" data-app-url="youtube://"><span class="ctx-dot personal"></span>YouTube<span class="domain">youtube.com</span></a></li>
+        <li data-ctx="personal"><a href="https://instagram.com" data-app-url="instagram://"><span class="ctx-dot personal"></span>Instagram<span class="domain">instagram.com</span></a></li>
       </ul>
     </div>
 
     <div class="card" data-category="games">
       <h2>Games</h2>
       <ul>
-        <li data-ctx="personal"><a href="https://store.playstation.com/">🏠 PlayStation Store<span class="domain">playstation.com</span></a></li>
-        <li data-ctx="personal"><a href="https://store.steampowered.com/">🏠 Steam<span class="domain">steampowered.com</span></a></li>
-        <li data-ctx="personal"><a href="https://www.paxhistoria.co/">🏠 PaxHistoria<span class="domain">paxhistoria.co</span></a></li>
-        <li data-ctx="personal"><a href="https://www.puzzmo.com/today/">🏠 Puzzmo<span class="domain">puzzmo.com</span></a></li>
+        <li data-ctx="personal"><a href="https://store.playstation.com/"><span class="ctx-dot personal"></span>PlayStation Store<span class="domain">playstation.com</span></a></li>
+        <li data-ctx="personal"><a href="https://store.steampowered.com/"><span class="ctx-dot personal"></span>Steam<span class="domain">steampowered.com</span></a></li>
+        <li data-ctx="personal"><a href="https://www.paxhistoria.co/"><span class="ctx-dot personal"></span>PaxHistoria<span class="domain">paxhistoria.co</span></a></li>
+        <li data-ctx="personal"><a href="https://www.puzzmo.com/today/"><span class="ctx-dot personal"></span>Puzzmo<span class="domain">puzzmo.com</span></a></li>
       </ul>
     </div>
 
     <div class="card" data-category="admin">
       <h2>Admin</h2>
       <ul>
-        <li data-ctx="work"><a href="http://localhost:11000/">💼 DGX Dashboard<span class="domain">localhost</span></a></li>
-        <li data-ctx="work"><a href="https://192.168.1.1/?url=/ui/core/dashboard">💼 OPNsense<span class="domain">192.168.1.1</span></a></li>
-        <li data-ctx="work"><a href="https://my.vultr.com/">💼 Vultr<span class="domain">vultr.com</span></a></li>
+        <li data-ctx="work"><a href="http://localhost:11000/"><span class="ctx-dot work"></span>DGX Dashboard<span class="domain">localhost</span></a></li>
+        <li data-ctx="work"><a href="https://192.168.1.1/?url=/ui/core/dashboard"><span class="ctx-dot work"></span>OPNsense<span class="domain">192.168.1.1</span></a></li>
+        <li data-ctx="work"><a href="https://my.vultr.com/"><span class="ctx-dot work"></span>Vultr<span class="domain">vultr.com</span></a></li>
       </ul>
     </div>
 
