@@ -512,7 +512,7 @@
     if (engine === 'maps' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
       var mapsApp = /Android/i.test(navigator.userAgent)
         ? 'geo:0,0?q=' + enc
-        : 'maps://?q=' + enc;
+        : 'comgooglemaps://?q=' + enc;
       window.location.href = mapsApp;
       setTimeout(function() {
         if (document.visibilityState !== 'hidden') {
