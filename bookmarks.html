@@ -39,20 +39,12 @@
   .container {
     max-width: 900px;
     margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
+    padding: 1.25rem 1.5rem 4rem;
   }
 
   header {
     text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  header h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
   }
 
   /* Unified search + filter component */
@@ -249,9 +241,8 @@
   .no-results.visible { display: block; }
 
   @media (max-width: 600px) {
-    .container { padding: 1.25rem 1rem 3rem; }
-    header { margin-bottom: 1.5rem; }
-    header h1 { font-size: 1.25rem; }
+    .container { padding: 1rem 1rem 3rem; }
+    header { margin-bottom: 1.25rem; }
     .grid { grid-template-columns: 1fr; gap: 0.75rem; }
     .card { padding: 1rem; }
     .card a { padding: 0.6rem 0.5rem; }
@@ -279,7 +270,6 @@
 <body>
 <div class="container">
   <header>
-    <h1>Bookmarks</h1>
     <div class="search-area">
       <div class="search-filter-unit">
         <div class="search-input-wrap">
@@ -293,9 +283,10 @@
         </div>
       </div>
       <div class="web-search-row">
-        <button class="web-btn" data-engine="ddg-html">DDG</button>
-        <button class="web-btn" data-engine="duck-ai">Duck.ai</button>
+        <button class="web-btn" data-engine="ddg-html">Simple</button>
+        <button class="web-btn" data-engine="google">Google</button>
         <button class="web-btn" data-engine="maps">Maps</button>
+        <button class="web-btn" data-engine="duck-ai">Duck.ai</button>
         <button class="web-btn" data-engine="perplexity">Perplexity</button>
       </div>
     </div>
@@ -541,6 +532,7 @@
 
     var urls = {
       'ddg-html':   'https://html.duckduckgo.com/html/?q=' + enc,
+      'google':     'https://www.google.com/search?q=' + enc,
       'duck-ai':    'https://duck.ai/?q=' + enc,
       'maps':       'https://maps.google.com/maps?q=' + enc,
       'perplexity': 'https://www.perplexity.ai/search?q=' + enc
