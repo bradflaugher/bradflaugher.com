@@ -229,6 +229,25 @@
 
   .card a:hover .domain { display: inline; }
 
+  .card li.has-access { display: flex; align-items: center; }
+  .card li.has-access > a:first-child { flex: 1; min-width: 0; }
+  .access-link {
+    display: inline-block !important;
+    padding: 0.15rem 0.4rem !important;
+    margin: 0 0 0 0.3rem !important;
+    font-size: 0.72rem !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-muted) !important;
+  }
+  .access-link:hover {
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+    background: var(--accent-dim) !important;
+  }
+
   .no-results {
     grid-column: 1 / -1;
     text-align: center;
@@ -386,7 +405,7 @@
         <li data-ctx="personal"><a href="https://www.economist.com/" data-app-url="com.economist.lamarr://home"><span class="ctx-dot personal"></span>The Economist<span class="domain">economist.com</span></a></li>
         <li data-ctx="both"><a href="https://www.technologyreview.com/"><span class="ctx-dot both"></span>MIT Technology Review<span class="domain">technologyreview.com</span></a></li>
         <li data-ctx="personal"><a href="https://www.inquirer.com/"><span class="ctx-dot personal"></span>The Philadelphia Inquirer<span class="domain">inquirer.com</span></a></li>
-        <li data-ctx="personal"><a href="https://libwww.freelibrary.org/elecres/NYTimesRemote.cfm"><span class="ctx-dot personal"></span>NY Times (via Library)<span class="domain">nytimes.com</span></a></li>
+        <li data-ctx="personal" class="has-access"><a href="https://www.nytimes.com/" data-app-url="nytimes://"><span class="ctx-dot personal"></span>NY Times<span class="domain">nytimes.com</span></a><a href="https://libwww.freelibrary.org/elecres/NYTimesRemote.cfm" class="access-link">(access)</a></li>
       </ul>
     </div>
 
