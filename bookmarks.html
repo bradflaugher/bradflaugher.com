@@ -213,6 +213,56 @@
     .card a .domain { display: inline; }
   }
 
+  /* dual context dots (work + personal) */
+  .ctx-dot + .ctx-dot { margin-left: 0.1rem; }
+
+  /* search zone card */
+  .search-zone-card { grid-column: 1 / -1; }
+
+  .search-zone-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 0.6rem;
+    font-family: inherit;
+  }
+  .search-zone-input::placeholder { color: var(--text-muted); }
+  .search-zone-input:focus { border-color: var(--accent); }
+
+  .search-zone-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .search-zone-btn {
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface-hover);
+    color: var(--text);
+    font-size: 0.82rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .search-zone-btn:hover {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  @media (max-width: 600px) {
+    .search-zone-card { grid-column: unset; }
+    .search-zone-btn { padding: 0.5rem 0.75rem; font-size: 0.875rem; }
+  }
+
   @media (prefers-color-scheme: light) {
     :root {
       --bg: #f5f5f5;
@@ -260,7 +310,7 @@
         <li data-ctx="personal"><a href="https://calendar.google.com/calendar/u/0/r" data-app-url="googlecalendar://"><span class="ctx-dot personal"></span>Google Calendar<span class="domain">google.com</span></a></li>
         <li data-ctx="work"><a href="https://outlook.cloud.microsoft/calendar/0/view/week" data-app-url="ms-outlook://"><span class="ctx-dot work"></span>Outlook Calendar<span class="domain">microsoft.com</span></a></li>
         <li data-ctx="personal"><a href="https://calendar.proton.me/u/0/" data-app-url="protoncalendar://"><span class="ctx-dot personal"></span>Proton Calendar<span class="domain">proton.me</span></a></li>
-        <li data-ctx="work"><a href="https://fantastical.app/bradflaugher/meet-with-brad-flaugher"><span class="ctx-dot work"></span>Fantastical<span class="domain">fantastical.app</span></a></li>
+        <li data-ctx="both"><a href="https://fantastical.app/bradflaugher/meet-with-brad-flaugher"><span class="ctx-dot work"></span><span class="ctx-dot personal"></span>Fantastical (openings)<span class="domain">fantastical.app</span></a></li>
       </ul>
     </div>
 
@@ -322,8 +372,8 @@
     <div class="card" data-category="news">
       <h2>News</h2>
       <ul>
-        <li data-ctx="personal"><a href="https://www.economist.com/"><span class="ctx-dot personal"></span>The Economist<span class="domain">economist.com</span></a></li>
-        <li data-ctx="work"><a href="https://www.technologyreview.com/"><span class="ctx-dot work"></span>MIT Technology Review<span class="domain">technologyreview.com</span></a></li>
+        <li data-ctx="personal"><a href="https://www.economist.com/" data-app-url="theeconomist://"><span class="ctx-dot personal"></span>The Economist<span class="domain">economist.com</span></a></li>
+        <li data-ctx="both"><a href="https://www.technologyreview.com/"><span class="ctx-dot work"></span><span class="ctx-dot personal"></span>MIT Technology Review<span class="domain">technologyreview.com</span></a></li>
         <li data-ctx="personal"><a href="https://www.inquirer.com/"><span class="ctx-dot personal"></span>The Philadelphia Inquirer<span class="domain">inquirer.com</span></a></li>
         <li data-ctx="personal"><a href="https://libwww.freelibrary.org/elecres/NYTimesRemote.cfm"><span class="ctx-dot personal"></span>NY Times (via Library)<span class="domain">nytimes.com</span></a></li>
       </ul>
@@ -332,9 +382,10 @@
     <div class="card" data-category="social media">
       <h2>Social Media</h2>
       <ul>
-        <li data-ctx="work"><a href="https://x.com/" data-app-url="twitter://"><span class="ctx-dot work"></span>X<span class="domain">x.com</span></a></li>
+        <li data-ctx="both"><a href="https://x.com/" data-app-url="twitter://"><span class="ctx-dot work"></span><span class="ctx-dot personal"></span>X<span class="domain">x.com</span></a></li>
         <li data-ctx="personal"><a href="https://www.youtube.com/" data-app-url="youtube://"><span class="ctx-dot personal"></span>YouTube<span class="domain">youtube.com</span></a></li>
         <li data-ctx="personal"><a href="https://instagram.com" data-app-url="instagram://"><span class="ctx-dot personal"></span>Instagram<span class="domain">instagram.com</span></a></li>
+        <li data-ctx="personal"><a href="https://photos.google.com/" data-app-url="googlephotos://"><span class="ctx-dot personal"></span>Google Photos<span class="domain">photos.google.com</span></a></li>
       </ul>
     </div>
 
@@ -355,6 +406,29 @@
         <li data-ctx="work"><a href="https://192.168.1.1/?url=/ui/core/dashboard"><span class="ctx-dot work"></span>OPNsense<span class="domain">192.168.1.1</span></a></li>
         <li data-ctx="work"><a href="https://my.vultr.com/"><span class="ctx-dot work"></span>Vultr<span class="domain">vultr.com</span></a></li>
       </ul>
+    </div>
+
+    <div class="card" data-category="health">
+      <h2>Health</h2>
+      <ul>
+        <li data-ctx="personal"><a href="https://clublocker.com/organizations/829/reservations/" data-app-url="clublocker://"><span class="ctx-dot personal"></span>ClubLocker<span class="domain">clublocker.com</span></a></li>
+        <li data-ctx="personal"><a href="https://www.solidcore.co/" data-app-url="solidcore://"><span class="ctx-dot personal"></span>Solidcore<span class="domain">solidcore.co</span></a></li>
+        <li data-ctx="personal"><a href="https://ouraring.com/" data-app-url="ouraring://"><span class="ctx-dot personal"></span>Oura Ring<span class="domain">ouraring.com</span></a></li>
+        <li data-ctx="personal"><a href="https://exist.io/"><span class="ctx-dot personal"></span>Exist.io<span class="domain">exist.io</span></a></li>
+      </ul>
+    </div>
+
+    <div class="card search-zone-card" data-category="search" data-always-show>
+      <h2>Search</h2>
+      <div class="search-zone">
+        <input type="text" id="web-search-input" class="search-zone-input" placeholder="Search the web..." autocomplete="off">
+        <div class="search-zone-btns">
+          <button class="search-zone-btn" onclick="doSearch('ddg-html')">DDG (plain)</button>
+          <button class="search-zone-btn" onclick="doSearch('duck-ai')">Duck.ai</button>
+          <button class="search-zone-btn" onclick="doSearch('maps')">Maps</button>
+          <button class="search-zone-btn" onclick="doSearch('perplexity')">Perplexity</button>
+        </div>
+      </div>
     </div>
 
     <div class="no-results" id="no-results">No bookmarks match your search.</div>
@@ -384,6 +458,9 @@
     let anyVisible = false;
 
     cards.forEach(card => {
+      // always-show cards (e.g. search zone) are never hidden by filters
+      if (card.dataset.alwaysShow !== undefined) return;
+
       const category = card.dataset.category || '';
       const heading = card.querySelector('h2')?.textContent.toLowerCase() || '';
       const categoryMatch = q && (category.includes(q) || heading.includes(q));
@@ -391,7 +468,7 @@
       let linkVisible = false;
       card.querySelectorAll('li').forEach(li => {
         const ctx = li.dataset.ctx;
-        const ctxMatch = activeFilter === 'all' || ctx === activeFilter;
+        const ctxMatch = activeFilter === 'all' || ctx === activeFilter || ctx === 'both';
 
         let searchMatch = true;
         if (q) {
@@ -424,6 +501,37 @@
       search.dispatchEvent(new Event('input'));
       search.blur();
     }
+  });
+
+  // Web search zone
+  function doSearch(engine) {
+    const input = document.getElementById('web-search-input');
+    const q = input.value.trim();
+    if (!q) { input.focus(); return; }
+    const enc = encodeURIComponent(q);
+    if (engine === 'maps' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      var mapsApp = /Android/i.test(navigator.userAgent)
+        ? 'geo:0,0?q=' + enc
+        : 'comgooglemaps://?q=' + enc;
+      window.location.href = mapsApp;
+      setTimeout(function() {
+        if (document.visibilityState !== 'hidden') {
+          window.open('https://maps.google.com/maps?q=' + enc, '_blank');
+        }
+      }, 1500);
+      return;
+    }
+    var urls = {
+      'ddg-html':   'https://html.duckduckgo.com/html/?q=' + enc,
+      'duck-ai':    'https://duck.ai/?q=' + enc,
+      'maps':       'https://maps.google.com/maps?q=' + enc,
+      'perplexity': 'https://www.perplexity.ai/search?q=' + enc
+    };
+    window.open(urls[engine], '_blank');
+  }
+
+  document.getElementById('web-search-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doSearch('ddg-html');
   });
 
   // Mobile: try to open native apps, fall back to web
