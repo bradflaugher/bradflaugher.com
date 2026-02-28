@@ -39,20 +39,12 @@
   .container {
     max-width: 900px;
     margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
+    padding: 1.25rem 1.5rem 4rem;
   }
 
   header {
     text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  header h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
   }
 
   /* Unified search + filter component */
@@ -249,9 +241,8 @@
   .no-results.visible { display: block; }
 
   @media (max-width: 600px) {
-    .container { padding: 1.25rem 1rem 3rem; }
-    header { margin-bottom: 1.5rem; }
-    header h1 { font-size: 1.25rem; }
+    .container { padding: 1rem 1rem 3rem; }
+    header { margin-bottom: 1.25rem; }
     .grid { grid-template-columns: 1fr; gap: 0.75rem; }
     .card { padding: 1rem; }
     .card a { padding: 0.6rem 0.5rem; }
@@ -279,7 +270,6 @@
 <body>
 <div class="container">
   <header>
-    <h1>Bookmarks</h1>
     <div class="search-area">
       <div class="search-filter-unit">
         <div class="search-input-wrap">
@@ -293,9 +283,10 @@
         </div>
       </div>
       <div class="web-search-row">
-        <button class="web-btn" data-engine="ddg-html">DDG</button>
-        <button class="web-btn" data-engine="duck-ai">Duck.ai</button>
+        <button class="web-btn" data-engine="ddg-html">Simple</button>
+        <button class="web-btn" data-engine="google">Google</button>
         <button class="web-btn" data-engine="maps">Maps</button>
+        <button class="web-btn" data-engine="duck-ai">Duck.ai</button>
         <button class="web-btn" data-engine="perplexity">Perplexity</button>
       </div>
     </div>
@@ -307,7 +298,7 @@
       <h2>Health</h2>
       <ul>
         <li data-ctx="personal"><a href="https://clublocker.com/organizations/829/reservations/" data-app-url="clublocker://"><span class="ctx-dot personal"></span>ClubLocker<span class="domain">clublocker.com</span></a></li>
-        <li data-ctx="personal"><a href="https://www.solidcore.co/book-a-class/" data-app-url="solidcore://"><span class="ctx-dot personal"></span>Solidcore<span class="domain">solidcore.co</span></a></li>
+        <li data-ctx="personal"><a href="https://www.solidcore.co/book-a-class/"><span class="ctx-dot personal"></span>Solidcore<span class="domain">solidcore.co</span></a></li>
         <li data-ctx="personal"><a href="https://cloud.ouraring.com/dashboard" data-app-url="oura://"><span class="ctx-dot personal"></span>Oura Ring<span class="domain">cloud.ouraring.com</span></a></li>
         <li data-ctx="personal"><a href="https://exist.io/"><span class="ctx-dot personal"></span>Exist.io<span class="domain">exist.io</span></a></li>
       </ul>
@@ -392,7 +383,7 @@
     <div class="card" data-category="news">
       <h2>News</h2>
       <ul>
-        <li data-ctx="personal"><a href="https://www.economist.com/" data-app-url="com.economist.lamarr://"><span class="ctx-dot personal"></span>The Economist<span class="domain">economist.com</span></a></li>
+        <li data-ctx="personal"><a href="https://www.economist.com/" data-app-url="com.economist.lamarr://home"><span class="ctx-dot personal"></span>The Economist<span class="domain">economist.com</span></a></li>
         <li data-ctx="both"><a href="https://www.technologyreview.com/"><span class="ctx-dot both"></span>MIT Technology Review<span class="domain">technologyreview.com</span></a></li>
         <li data-ctx="personal"><a href="https://www.inquirer.com/"><span class="ctx-dot personal"></span>The Philadelphia Inquirer<span class="domain">inquirer.com</span></a></li>
         <li data-ctx="personal"><a href="https://libwww.freelibrary.org/elecres/NYTimesRemote.cfm"><span class="ctx-dot personal"></span>NY Times (via Library)<span class="domain">nytimes.com</span></a></li>
@@ -541,6 +532,7 @@
 
     var urls = {
       'ddg-html':   'https://html.duckduckgo.com/html/?q=' + enc,
+      'google':     'https://www.google.com/search?q=' + enc,
       'duck-ai':    'https://duck.ai/?q=' + enc,
       'maps':       'https://maps.google.com/maps?q=' + enc,
       'perplexity': 'https://www.perplexity.ai/search?q=' + enc
