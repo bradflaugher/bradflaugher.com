@@ -23,6 +23,8 @@
     --text-muted: #888;
     --accent: #6e8efb;
     --accent-dim: rgba(110, 142, 251, 0.08);
+    --work: #9b6ef7;
+    --personal: #5ba8f7;
   }
 
   body {
@@ -31,6 +33,7 @@
     color: var(--text);
     min-height: 100vh;
     line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
   }
 
   .container {
@@ -41,7 +44,7 @@
 
   header {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
   }
 
   header h1 {
@@ -49,17 +52,33 @@
     font-weight: 600;
     letter-spacing: -0.02em;
     color: var(--text);
+    margin-bottom: 1.25rem;
   }
 
-  .search-wrap {
-    max-width: 400px;
-    margin: 1.25rem auto 0;
+  /* Unified search + filter component */
+  .search-area {
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  .search-filter-unit {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .search-filter-unit:focus-within {
+    border-color: var(--accent);
+  }
+
+  .search-input-wrap {
     position: relative;
   }
 
-  .search-wrap svg {
+  .search-input-wrap svg {
     position: absolute;
-    left: 12px;
+    left: 14px;
     top: 50%;
     transform: translateY(-50%);
     width: 16px;
@@ -70,41 +89,82 @@
 
   #search {
     width: 100%;
-    padding: 0.6rem 0.75rem 0.6rem 2.25rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    padding: 0.7rem 1rem 0.7rem 2.5rem;
+    border: none;
     background: var(--surface);
     color: var(--text);
-    font-size: 0.875rem;
+    font-size: 1rem;
+    font-family: inherit;
     outline: none;
-    transition: border-color 0.2s;
   }
 
   #search::placeholder { color: var(--text-muted); }
-  #search:focus { border-color: var(--accent); }
 
-  .toggle-wrap {
+  .filter-row {
     display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
   }
 
-  .toggle-btn {
-    padding: 0.35rem 0.9rem;
-    border: 1px solid var(--border);
-    border-radius: 20px;
+  .search-filter-unit:focus-within .filter-row {
+    border-top-color: var(--accent);
+  }
+
+  .filter-btn {
+    flex: 1;
+    padding: 0.4rem 0.5rem;
+    border: none;
+    border-right: 1px solid var(--border);
     background: transparent;
     color: var(--text-muted);
     font-size: 0.8rem;
     font-family: inherit;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background 0.15s, color 0.15s;
   }
 
-  .toggle-btn:hover { border-color: #3a3a3a; color: var(--text); }
-  .toggle-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .filter-btn:last-child { border-right: none; }
+  .filter-btn:hover { color: var(--text); background: var(--surface-hover); }
+  .filter-btn.active { color: var(--accent); background: var(--accent-dim); }
 
+  .legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+  }
+
+  .legend-dot.work { background: var(--work); }
+  .legend-dot.personal { background: var(--personal); }
+
+  .web-search-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 0.65rem;
+  }
+
+  .web-btn {
+    padding: 0.3rem 0.65rem;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .web-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  /* Grid and cards */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -120,7 +180,6 @@
   }
 
   .card.hidden { display: none; }
-
   .card:hover { border-color: #3a3a3a; }
 
   .card h2 {
@@ -134,10 +193,7 @@
     border-bottom: 1px solid var(--border);
   }
 
-  .card ul {
-    list-style: none;
-  }
-
+  .card ul { list-style: none; }
   .card li { margin: 0; }
 
   .card a {
@@ -166,20 +222,11 @@
     flex-shrink: 0;
   }
 
-  .ctx-dot.work { background: #9b6ef7; }
-  .ctx-dot.personal { background: #5ba8f7; }
-
-  .legend-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 0.3rem;
-    vertical-align: middle;
+  .ctx-dot.work { background: var(--work); }
+  .ctx-dot.personal { background: var(--personal); }
+  .ctx-dot.both {
+    background: linear-gradient(135deg, var(--work) 45%, var(--border) 45%, var(--border) 55%, var(--personal) 55%);
   }
-
-  .legend-dot.work { background: #9b6ef7; }
-  .legend-dot.personal { background: #5ba8f7; }
 
   .card a .domain {
     display: none;
@@ -205,62 +252,12 @@
     .container { padding: 1.25rem 1rem 3rem; }
     header { margin-bottom: 1.5rem; }
     header h1 { font-size: 1.25rem; }
-    #search { font-size: 1rem; }
     .grid { grid-template-columns: 1fr; gap: 0.75rem; }
     .card { padding: 1rem; }
     .card a { padding: 0.6rem 0.5rem; }
     .card a:active { background: var(--accent-dim); color: var(--accent); }
     .card a .domain { display: inline; }
-  }
-
-  /* dual context dots (work + personal) */
-  .ctx-dot + .ctx-dot { margin-left: 0.1rem; }
-
-  /* search zone card */
-  .search-zone-card { grid-column: 1 / -1; }
-
-  .search-zone-input {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 0.875rem;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 0.6rem;
-    font-family: inherit;
-  }
-  .search-zone-input::placeholder { color: var(--text-muted); }
-  .search-zone-input:focus { border-color: var(--accent); }
-
-  .search-zone-btns {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-
-  .search-zone-btn {
-    padding: 0.35rem 0.8rem;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--surface-hover);
-    color: var(--text);
-    font-size: 0.82rem;
-    font-family: inherit;
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s, color 0.15s;
-  }
-  .search-zone-btn:hover {
-    background: var(--accent-dim);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  @media (max-width: 600px) {
-    .search-zone-card { grid-column: unset; }
-    .search-zone-btn { padding: 0.5rem 0.75rem; font-size: 0.875rem; }
+    .web-btn { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
   }
 
   @media (prefers-color-scheme: light) {
@@ -273,6 +270,8 @@
       --text-muted: #777;
       --accent: #4a6cf7;
       --accent-dim: rgba(74, 108, 247, 0.06);
+      --work: #7b4ed7;
+      --personal: #3b88d7;
     }
   }
 </style>
@@ -281,18 +280,38 @@
 <div class="container">
   <header>
     <h1>Bookmarks</h1>
-    <div class="search-wrap">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/></svg>
-      <input type="text" id="search" placeholder="Search bookmarks..." autocomplete="off">
-    </div>
-    <div class="toggle-wrap">
-      <button class="toggle-btn active" data-filter="all">All</button>
-      <button class="toggle-btn" data-filter="work"><span class="legend-dot work"></span>Work</button>
-      <button class="toggle-btn" data-filter="personal"><span class="legend-dot personal"></span>Personal</button>
+    <div class="search-area">
+      <div class="search-filter-unit">
+        <div class="search-input-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/></svg>
+          <input type="text" id="search" placeholder="Search bookmarks or the web..." autocomplete="off">
+        </div>
+        <div class="filter-row">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="work"><span class="legend-dot work"></span>Work</button>
+          <button class="filter-btn" data-filter="personal"><span class="legend-dot personal"></span>Personal</button>
+        </div>
+      </div>
+      <div class="web-search-row">
+        <button class="web-btn" data-engine="ddg-html">DDG</button>
+        <button class="web-btn" data-engine="duck-ai">Duck.ai</button>
+        <button class="web-btn" data-engine="maps">Maps</button>
+        <button class="web-btn" data-engine="perplexity">Perplexity</button>
+      </div>
     </div>
   </header>
 
   <div class="grid" id="grid">
+
+    <div class="card" data-category="health">
+      <h2>Health</h2>
+      <ul>
+        <li data-ctx="personal"><a href="https://clublocker.com/organizations/829/reservations/" data-app-url="clublocker://"><span class="ctx-dot personal"></span>ClubLocker<span class="domain">clublocker.com</span></a></li>
+        <li data-ctx="personal"><a href="https://www.solidcore.co/book-a-class/"><span class="ctx-dot personal"></span>Solidcore<span class="domain">solidcore.co</span></a></li>
+        <li data-ctx="personal"><a href="https://cloud.ouraring.com/dashboard"><span class="ctx-dot personal"></span>Oura Ring<span class="domain">cloud.ouraring.com</span></a></li>
+        <li data-ctx="personal"><a href="https://exist.io/"><span class="ctx-dot personal"></span>Exist.io<span class="domain">exist.io</span></a></li>
+      </ul>
+    </div>
 
     <div class="card" data-category="messages">
       <h2>Messages</h2>
@@ -310,7 +329,8 @@
         <li data-ctx="personal"><a href="https://calendar.google.com/calendar/u/0/r" data-app-url="googlecalendar://"><span class="ctx-dot personal"></span>Google Calendar<span class="domain">google.com</span></a></li>
         <li data-ctx="work"><a href="https://outlook.cloud.microsoft/calendar/0/view/week" data-app-url="ms-outlook://"><span class="ctx-dot work"></span>Outlook Calendar<span class="domain">microsoft.com</span></a></li>
         <li data-ctx="personal"><a href="https://calendar.proton.me/u/0/" data-app-url="protoncalendar://"><span class="ctx-dot personal"></span>Proton Calendar<span class="domain">proton.me</span></a></li>
-        <li data-ctx="both"><a href="https://fantastical.app/bradflaugher/meet-with-brad-flaugher"><span class="ctx-dot work"></span><span class="ctx-dot personal"></span>Fantastical (openings)<span class="domain">fantastical.app</span></a></li>
+        <li data-ctx="both" class="fantastical-app" style="display:none;"><a href="x-fantastical3://" target="_self"><span class="ctx-dot both"></span>Fantastical<span class="domain">app</span></a></li>
+        <li data-ctx="both"><a href="https://fantastical.app/bradflaugher/meet-with-brad-flaugher"><span class="ctx-dot both"></span>Fantastical (openings)<span class="domain">fantastical.app</span></a></li>
       </ul>
     </div>
 
@@ -372,8 +392,8 @@
     <div class="card" data-category="news">
       <h2>News</h2>
       <ul>
-        <li data-ctx="personal"><a href="https://www.economist.com/" data-app-url="theeconomist://"><span class="ctx-dot personal"></span>The Economist<span class="domain">economist.com</span></a></li>
-        <li data-ctx="both"><a href="https://www.technologyreview.com/"><span class="ctx-dot work"></span><span class="ctx-dot personal"></span>MIT Technology Review<span class="domain">technologyreview.com</span></a></li>
+        <li data-ctx="personal"><a href="https://www.economist.com/"><span class="ctx-dot personal"></span>The Economist<span class="domain">economist.com</span></a></li>
+        <li data-ctx="both"><a href="https://www.technologyreview.com/"><span class="ctx-dot both"></span>MIT Technology Review<span class="domain">technologyreview.com</span></a></li>
         <li data-ctx="personal"><a href="https://www.inquirer.com/"><span class="ctx-dot personal"></span>The Philadelphia Inquirer<span class="domain">inquirer.com</span></a></li>
         <li data-ctx="personal"><a href="https://libwww.freelibrary.org/elecres/NYTimesRemote.cfm"><span class="ctx-dot personal"></span>NY Times (via Library)<span class="domain">nytimes.com</span></a></li>
       </ul>
@@ -382,7 +402,7 @@
     <div class="card" data-category="social media">
       <h2>Social Media</h2>
       <ul>
-        <li data-ctx="both"><a href="https://x.com/" data-app-url="twitter://"><span class="ctx-dot work"></span><span class="ctx-dot personal"></span>X<span class="domain">x.com</span></a></li>
+        <li data-ctx="both"><a href="https://x.com/" data-app-url="twitter://"><span class="ctx-dot both"></span>X<span class="domain">x.com</span></a></li>
         <li data-ctx="personal"><a href="https://www.youtube.com/" data-app-url="youtube://"><span class="ctx-dot personal"></span>YouTube<span class="domain">youtube.com</span></a></li>
         <li data-ctx="personal"><a href="https://instagram.com" data-app-url="instagram://"><span class="ctx-dot personal"></span>Instagram<span class="domain">instagram.com</span></a></li>
         <li data-ctx="personal"><a href="https://photos.google.com/" data-app-url="googlephotos://"><span class="ctx-dot personal"></span>Google Photos<span class="domain">photos.google.com</span></a></li>
@@ -408,29 +428,6 @@
       </ul>
     </div>
 
-    <div class="card" data-category="health">
-      <h2>Health</h2>
-      <ul>
-        <li data-ctx="personal"><a href="https://clublocker.com/organizations/829/reservations/" data-app-url="clublocker://"><span class="ctx-dot personal"></span>ClubLocker<span class="domain">clublocker.com</span></a></li>
-        <li data-ctx="personal"><a href="https://www.solidcore.co/" data-app-url="solidcore://"><span class="ctx-dot personal"></span>Solidcore<span class="domain">solidcore.co</span></a></li>
-        <li data-ctx="personal"><a href="https://ouraring.com/" data-app-url="ouraring://"><span class="ctx-dot personal"></span>Oura Ring<span class="domain">ouraring.com</span></a></li>
-        <li data-ctx="personal"><a href="https://exist.io/"><span class="ctx-dot personal"></span>Exist.io<span class="domain">exist.io</span></a></li>
-      </ul>
-    </div>
-
-    <div class="card search-zone-card" data-category="search" data-always-show>
-      <h2>Search</h2>
-      <div class="search-zone">
-        <input type="text" id="web-search-input" class="search-zone-input" placeholder="Search the web..." autocomplete="off">
-        <div class="search-zone-btns">
-          <button class="search-zone-btn" onclick="doSearch('ddg-html')">DDG (plain)</button>
-          <button class="search-zone-btn" onclick="doSearch('duck-ai')">Duck.ai</button>
-          <button class="search-zone-btn" onclick="doSearch('maps')">Maps</button>
-          <button class="search-zone-btn" onclick="doSearch('perplexity')">Perplexity</button>
-        </div>
-      </div>
-    </div>
-
     <div class="no-results" id="no-results">No bookmarks match your search.</div>
   </div>
 </div>
@@ -439,18 +436,28 @@
   const search = document.getElementById('search');
   const cards = document.querySelectorAll('.card');
   const noResults = document.getElementById('no-results');
-  const toggleBtns = document.querySelectorAll('.toggle-btn');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const isFantasticalSupported = /Macintosh|iPhone|iPad|iPod/.test(navigator.userAgent);
   let activeFilter = 'all';
 
-  toggleBtns.forEach(btn => {
+  // Show Fantastical app link on Mac/iOS
+  if (isFantasticalSupported) {
+    document.querySelectorAll('.fantastical-app').forEach(function(el) {
+      el.style.display = '';
+    });
+  }
+
+  // Filter buttons
+  filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      toggleBtns.forEach(b => b.classList.remove('active'));
+      filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeFilter = btn.dataset.filter;
       applyFilters();
     });
   });
 
+  // Live bookmark filtering
   search.addEventListener('input', applyFilters);
 
   function applyFilters() {
@@ -458,15 +465,15 @@
     let anyVisible = false;
 
     cards.forEach(card => {
-      // always-show cards (e.g. search zone) are never hidden by filters
-      if (card.dataset.alwaysShow !== undefined) return;
-
       const category = card.dataset.category || '';
       const heading = card.querySelector('h2')?.textContent.toLowerCase() || '';
       const categoryMatch = q && (category.includes(q) || heading.includes(q));
 
       let linkVisible = false;
       card.querySelectorAll('li').forEach(li => {
+        // Skip fantastical-app items on unsupported platforms
+        if (li.classList.contains('fantastical-app') && !isFantasticalSupported) return;
+
         const ctx = li.dataset.ctx;
         const ctxMatch = activeFilter === 'all' || ctx === activeFilter || ctx === 'both';
 
@@ -489,6 +496,7 @@
     noResults.classList.toggle('visible', !anyVisible);
   }
 
+  // Focus management
   if (!('ontouchstart' in window)) search.focus();
 
   document.addEventListener('keydown', e => {
@@ -503,12 +511,21 @@
     }
   });
 
-  // Web search zone
+  // Enter key triggers DDG web search
+  search.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const q = search.value.trim();
+      if (q) doSearch('ddg-html');
+    }
+  });
+
+  // Web search
   function doSearch(engine) {
-    const input = document.getElementById('web-search-input');
-    const q = input.value.trim();
-    if (!q) { input.focus(); return; }
+    const q = search.value.trim();
+    if (!q) { search.focus(); return; }
     const enc = encodeURIComponent(q);
+
     if (engine === 'maps' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
       var mapsApp = /Android/i.test(navigator.userAgent)
         ? 'geo:0,0?q=' + enc
@@ -521,6 +538,7 @@
       }, 1500);
       return;
     }
+
     var urls = {
       'ddg-html':   'https://html.duckduckgo.com/html/?q=' + enc,
       'duck-ai':    'https://duck.ai/?q=' + enc,
@@ -530,8 +548,9 @@
     window.open(urls[engine], '_blank');
   }
 
-  document.getElementById('web-search-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doSearch('ddg-html');
+  // Web search buttons
+  document.querySelectorAll('.web-btn').forEach(btn => {
+    btn.addEventListener('click', () => doSearch(btn.dataset.engine));
   });
 
   // Mobile: try to open native apps, fall back to web
