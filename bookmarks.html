@@ -229,6 +229,25 @@
 
   .card a:hover .domain { display: inline; }
 
+  .card li.has-access { display: flex; align-items: center; }
+  .card li.has-access > a:first-child { flex: 1; min-width: 0; }
+  .access-link {
+    display: inline-block !important;
+    padding: 0.15rem 0.4rem !important;
+    margin: 0 0 0 0.3rem !important;
+    font-size: 0.72rem !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-muted) !important;
+  }
+  .access-link:hover {
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+    background: var(--accent-dim) !important;
+  }
+
   .no-results {
     grid-column: 1 / -1;
     text-align: center;
@@ -248,6 +267,8 @@
     .card a { padding: 0.6rem 0.5rem; }
     .card a:active { background: var(--accent-dim); color: var(--accent); }
     .card a .domain { display: inline; }
+    .access-link { padding: 0.4rem 0.6rem !important; }
+    .access-link:active { border-color: var(--accent) !important; color: var(--accent) !important; background: var(--accent-dim) !important; }
     .web-btn { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
   }
 
@@ -298,7 +319,7 @@
       <h2>Health</h2>
       <ul>
         <li data-ctx="personal"><a href="https://clublocker.com/organizations/829/reservations/" data-app-url="clublocker://"><span class="ctx-dot personal"></span>ClubLocker<span class="domain">clublocker.com</span></a></li>
-        <li data-ctx="personal"><a href="https://www.solidcore.co/book-a-class/"><span class="ctx-dot personal"></span>Solidcore<span class="domain">solidcore.co</span></a></li>
+        <li data-ctx="personal"><a href="https://www.solidcore.co/book-a-class/" data-app-url="com.solidcore.app://"><span class="ctx-dot personal"></span>Solidcore<span class="domain">solidcore.co</span></a></li>
         <li data-ctx="personal"><a href="https://cloud.ouraring.com/dashboard" data-app-url="oura://"><span class="ctx-dot personal"></span>Oura Ring<span class="domain">cloud.ouraring.com</span></a></li>
         <li data-ctx="personal"><a href="https://exist.io/"><span class="ctx-dot personal"></span>Exist.io<span class="domain">exist.io</span></a></li>
       </ul>
@@ -386,7 +407,7 @@
         <li data-ctx="personal"><a href="https://www.economist.com/" data-app-url="com.economist.lamarr://home"><span class="ctx-dot personal"></span>The Economist<span class="domain">economist.com</span></a></li>
         <li data-ctx="both"><a href="https://www.technologyreview.com/"><span class="ctx-dot both"></span>MIT Technology Review<span class="domain">technologyreview.com</span></a></li>
         <li data-ctx="personal"><a href="https://www.inquirer.com/"><span class="ctx-dot personal"></span>The Philadelphia Inquirer<span class="domain">inquirer.com</span></a></li>
-        <li data-ctx="personal"><a href="https://libwww.freelibrary.org/elecres/NYTimesRemote.cfm"><span class="ctx-dot personal"></span>NY Times (via Library)<span class="domain">nytimes.com</span></a></li>
+        <li data-ctx="personal" class="has-access"><a href="https://www.nytimes.com/" data-app-url="nytimes://"><span class="ctx-dot personal"></span>NY Times<span class="domain">nytimes.com</span></a><a href="https://libwww.freelibrary.org/elecres/NYTimesRemote.cfm" class="access-link">(access)</a></li>
       </ul>
     </div>
 
