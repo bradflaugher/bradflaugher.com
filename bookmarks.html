@@ -759,7 +759,7 @@
         { n: 'Oura Ring', u: 'https://cloud.ouraring.com/dashboard', a: 'oura://', ctx: 'personal',
           s: t>=5&&t<7?95 : t>=7&&t<8?55 : 0 },
         { n: 'The Economist', u: 'https://www.economist.com/', a: 'com.economist.lamarr://home', ctx: 'personal',
-          s: t>=5&&t<7?90 : t>=7&&t<9?45 : !wd&&t>=9&&t<11?30 : 0 },
+          s: t>=5&&t<7?90 : (dow===4||dow===5)&&t>=7&&t<22?70 : t>=7&&t<9?45 : !wd&&t>=9&&t<21?35 : 0 },
         { n: 'Starbucks', u: 'https://www.starbucks.com/', a: 'starbucks://', ctx: 'personal',
           s: wd&&t>=8&&t<10.5?85 : 0 },
         { n: 'Claude', u: 'https://claude.ai/', a: 'claude://', ctx: 'work',
