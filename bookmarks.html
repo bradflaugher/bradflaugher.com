@@ -178,6 +178,9 @@
     transition: opacity 0.15s;
   }
 
+  .suggest-chip.ctx-work     { color: var(--work); }
+  .suggest-chip.ctx-personal { color: var(--personal); }
+
   .suggest-chip:hover {
     opacity: 0.7;
   }
@@ -753,59 +756,74 @@
       var wd = dow >= 1 && dow <= 5;
 
       var pool = [
-        { n: 'Oura Ring', u: 'https://cloud.ouraring.com/dashboard', a: 'oura://',
+        { n: 'Oura Ring', u: 'https://cloud.ouraring.com/dashboard', a: 'oura://', ctx: 'personal',
           s: t>=5&&t<7?95 : t>=7&&t<8?55 : 0 },
-        { n: 'The Economist', u: 'https://www.economist.com/', a: 'com.economist.lamarr://home',
-          s: t>=5&&t<7?90 : t>=7&&t<9?45 : 0 },
-        { n: 'Starbucks', u: 'https://www.starbucks.com/', a: 'starbucks://',
+        { n: 'The Economist', u: 'https://www.economist.com/', a: 'com.economist.lamarr://home', ctx: 'personal',
+          s: t>=5&&t<7?90 : t>=7&&t<9?45 : !wd&&t>=9&&t<11?30 : 0 },
+        { n: 'Starbucks', u: 'https://www.starbucks.com/', a: 'starbucks://', ctx: 'personal',
           s: wd&&t>=8&&t<10.5?85 : 0 },
-        { n: 'Claude', u: 'https://claude.ai/', a: 'claude://',
+        { n: 'Claude', u: 'https://claude.ai/', a: 'claude://', ctx: 'work',
           s: wd&&t>=10&&t<15?88 : wd&&t>=9&&t<10?55 : wd&&t>=15&&t<17?60 : 0 },
-        { n: 'Teams', u: 'https://teams.microsoft.com/v2/', a: 'msteams://',
+        { n: 'Teams', u: 'https://teams.microsoft.com/v2/', a: 'msteams://', ctx: 'work',
           s: wd&&t>=10&&t<15?82 : wd&&t>=9&&t<10?50 : wd&&t>=15&&t<17?50 : 0 },
-        { n: 'GitHub', u: 'https://github.com/', a: 'github://',
+        { n: 'GitHub', u: 'https://github.com/', a: 'github://', ctx: 'work',
           s: wd&&t>=9&&t<17?48 : 0 },
-        { n: 'Slack', u: 'https://app.slack.com/client/T08D2BXJYLE/',
+        { n: 'Slack', u: 'https://app.slack.com/client/T08D2BXJYLE/', ctx: 'work',
           s: wd&&t>=9&&t<17?46 : 0 },
-        { n: 'Trello', u: 'https://trello.com/b/eouJ2N4x/elcano-dev', a: 'trello://',
+        { n: 'Trello', u: 'https://trello.com/b/eouJ2N4x/elcano-dev', a: 'trello://', ctx: 'work',
           s: wd&&t>=9&&t<17?42 : 0 },
-        { n: 'Pax Historia', u: 'https://www.paxhistoria.co/',
+        { n: 'ChatGPT', u: 'https://chatgpt.com/', a: 'chatgpt://', ctx: 'work',
+          s: wd&&t>=10&&t<17?44 : 0 },
+        { n: 'Pax Historia', u: 'https://www.paxhistoria.co/', ctx: 'both',
           s: wd&&t>=10&&t<16?35 : t>=17&&t<21?45 : !wd&&t>=10&&t<21?40 : 0 },
-        { n: 'MIT Tech Review', u: 'https://www.technologyreview.com/',
-          s: wd&&t>=10&&t<17?38 : 0 },
-        { n: 'X', u: 'https://x.com/home', a: 'twitter://timeline',
-          s: wd&&t>=10&&t<18?36 : 0 },
-        { n: 'Uber Eats', u: 'https://www.ubereats.com/', a: 'ubereats://',
+        { n: 'MIT Tech Review', u: 'https://www.technologyreview.com/', ctx: 'both',
+          s: t>=7&&t<10?32 : wd&&t>=10&&t<17?38 : !wd&&t>=10&&t<17?20 : 0 },
+        { n: 'X', u: 'https://x.com/home', a: 'twitter://timeline', ctx: 'both',
+          s: t>=9&&t<21?28 : 0 },
+        { n: 'Uber Eats', u: 'https://www.ubereats.com/', a: 'ubereats://', ctx: 'personal',
           s: t>=16.5&&t<18.5?80 : t>=18.5&&t<19.5?55 : 0 },
-        { n: 'Libby', u: '#', a: 'dewey-oauth://', ao: true,
+        { n: 'Libby', u: '#', a: 'dewey-oauth://', ao: true, ctx: 'personal',
           s: t>=20||t<5?85 : t>=19&&t<20?50 : 0 },
-        { n: 'Spotify', u: 'https://open.spotify.com/', a: 'spotify://',
-          s: t>=20||t<5?82 : t>=19&&t<20?45 : 0 },
-        { n: 'Puzzmo', u: 'https://www.puzzmo.com/today/',
+        { n: 'Spotify', u: 'https://open.spotify.com/', a: 'spotify://', ctx: 'personal',
+          s: t>=20||t<5?82 : t>=19&&t<20?45 : !wd&&t>=10&&t<20?28 : 0 },
+        { n: 'Puzzmo', u: 'https://www.puzzmo.com/today/', ctx: 'personal',
           s: t>=12&&t<14?30 : t>=19&&t<22?35 : !wd&&t>=9&&t<22?28 : 15 },
-        { n: 'NY Times', u: 'https://www.nytimes.com/', a: 'nytimes://home',
-          s: dow===0?75 : dow===6?25 : 0 },
-        { n: 'Todoist', u: 'https://app.todoist.com/app/inbox', a: 'todoist://',
+        { n: 'NY Times', u: 'https://www.nytimes.com/', a: 'nytimes://home', ctx: 'personal',
+          s: dow===0?75 : dow===6?40 : 0 },
+        { n: 'Todoist', u: 'https://app.todoist.com/app/inbox', a: 'todoist://', ctx: 'personal',
           s: t>=6&&t<9?40 : 0 },
-        { n: 'YouTube TV', u: 'https://tv.youtube.com/', a: 'youtubetv://',
+        { n: 'YouTube TV', u: 'https://tv.youtube.com/', a: 'youtubetv://', ctx: 'personal',
           s: t>=17&&t<23?40 : !wd&&t>=12&&t<23?32 : 0 },
-        { n: 'Exist.io', u: 'https://exist.io/',
+        { n: 'YouTube', u: 'https://www.youtube.com/', a: 'youtube://', ctx: 'personal',
+          s: !wd&&t>=10&&t<22?27 : t>=20&&t<23?25 : 0 },
+        { n: 'Reddit', u: 'https://farside.link/redlib', a: 'narwhal://', ctx: 'personal',
+          s: !wd&&t>=9&&t<21?25 : t>=20&&t<23?20 : 0 },
+        { n: 'Google Photos', u: 'https://photos.google.com/', a: 'googlephotos://', ctx: 'personal',
+          s: !wd&&t>=10&&t<21?22 : 0 },
+        { n: 'Gemini', u: 'https://gemini.google.com/app', a: 'googlegemini://', ctx: 'personal',
+          s: !wd&&t>=9&&t<21?20 : 0 },
+        { n: 'Proton Mail', u: 'https://mail.proton.me/u/0/inbox', a: 'protonmail://', ctx: 'personal',
+          s: !wd&&t>=7&&t<10?38 : 0 },
+        { n: 'Exist.io', u: 'https://exist.io/', ctx: 'personal',
           s: t>=5&&t<8?40 : 0 }
       ];
 
       // Filter app-only items on non-mobile
       pool = pool.filter(function(item) { return !item.ao || mob; });
 
+      // On weekends, completely suppress work-context items
+      if (!wd) pool = pool.filter(function(item) { return item.ctx !== 'work'; });
+
       // Add jitter for discovery, sort, pick top 4
       var scored = pool.map(function(item) {
-        return { n: item.n, u: item.u, a: item.a, s: item.s + Math.random() * 12 };
+        return { n: item.n, u: item.u, a: item.a, ctx: item.ctx, s: item.s + Math.random() * 12 };
       }).sort(function(a, b) { return b.s - a.s; });
 
       var top = scored.slice(0, 4);
       var html = '';
       top.forEach(function(item, i) {
         if (i > 0) html += '<span class="suggest-sep">/</span>';
-        html += '<a href="' + item.u + '" class="suggest-chip"' +
+        html += '<a href="' + item.u + '" class="suggest-chip ctx-' + (item.ctx || 'personal') + '"' +
           (item.a ? ' data-app-url="' + item.a + '"' : '') +
           '>' + item.n + '</a>';
       });
