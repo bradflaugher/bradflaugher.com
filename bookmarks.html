@@ -118,18 +118,12 @@
   .filter-btn:last-child { border-right: none; }
   .filter-btn:hover { color: var(--text); background: var(--surface-hover); }
   .filter-btn.active { color: var(--accent); background: var(--accent-dim); }
-
-  .legend-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 0.3rem;
-    vertical-align: middle;
-  }
-
-  .legend-dot.work { background: var(--work); }
-  .legend-dot.personal { background: var(--personal); }
+  .filter-btn[data-filter="work"] { color: var(--work); }
+  .filter-btn[data-filter="personal"] { color: var(--personal); }
+  .filter-btn[data-filter="work"]:hover { color: var(--work); }
+  .filter-btn[data-filter="personal"]:hover { color: var(--personal); }
+  .filter-btn[data-filter="work"].active { color: var(--work); background: rgba(155, 110, 247, 0.1); }
+  .filter-btn[data-filter="personal"].active { color: var(--personal); background: rgba(91, 168, 247, 0.1); }
 
   .web-search-row {
     display: flex;
@@ -316,8 +310,8 @@
         </div>
         <div class="filter-row">
           <button class="filter-btn active" data-filter="all">All</button>
-          <button class="filter-btn" data-filter="work"><span class="legend-dot work"></span>Work</button>
-          <button class="filter-btn" data-filter="personal"><span class="legend-dot personal"></span>Personal</button>
+          <button class="filter-btn" data-filter="work">Work</button>
+          <button class="filter-btn" data-filter="personal">Personal</button>
         </div>
       </div>
       <div class="web-search-row">
