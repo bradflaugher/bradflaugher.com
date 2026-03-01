@@ -435,7 +435,6 @@
     <div class="card" data-category="admin">
       <h2>Admin</h2>
       <ul>
-        <li data-ctx="work"><a href="http://localhost:11000/"><span class="ctx-dot work"></span>DGX Dashboard<span class="domain">localhost</span></a></li>
         <li data-ctx="work"><a href="https://192.168.1.1/?url=/ui/core/dashboard"><span class="ctx-dot work"></span>OPNsense<span class="domain">192.168.1.1</span></a></li>
         <li data-ctx="work"><a href="https://my.vultr.com/"><span class="ctx-dot work"></span>Vultr<span class="domain">vultr.com</span></a></li>
       </ul>
@@ -540,6 +539,17 @@
     }
   });
 
+  // Clear search after visiting a result (desktop links open in _blank, page stays open)
+  document.getElementById('grid').addEventListener('click', function(e) {
+    var link = e.target.closest('a');
+    if (!link) return;
+    // Small delay so the link fires before we reset the UI
+    setTimeout(function() {
+      search.value = '';
+      applyFilters();
+    }, 100);
+  });
+
   // Web search
   function doSearch(engine) {
     const q = search.value.trim();
@@ -551,6 +561,8 @@
         ? 'geo:0,0?q=' + enc
         : 'comgooglemaps://?q=' + enc;
       window.location.href = mapsApp;
+      search.value = '';
+      applyFilters();
       setTimeout(function() {
         if (document.visibilityState !== 'hidden') {
           window.open('https://maps.google.com/maps?q=' + enc, '_blank');
@@ -566,6 +578,8 @@
       'perplexity':  'https://www.perplexity.ai/search?q=' + enc
     };
     window.open(urls[engine], '_blank');
+    search.value = '';
+    applyFilters();
   }
 
   // Web search buttons
