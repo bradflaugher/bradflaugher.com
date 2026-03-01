@@ -280,34 +280,43 @@
     .web-btn { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
 
     /* Mobile collapse/expand */
+    .card {
+      /* Remove card padding; let h2 own the full tap surface */
+      padding: 0;
+    }
+
     .card h2 {
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
+      margin: 0;
+      padding: 1rem;
+      padding-right: 2.5rem;
       border-bottom: none;
       position: relative;
-      padding-right: 1.5rem;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
 
     .card h2::after {
       content: '';
       position: absolute;
-      right: 0;
+      right: 1rem;
       top: 50%;
       transform: translateY(-50%) rotate(0deg);
       width: 0;
       height: 0;
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
-      border-top: 5px solid var(--text-muted);
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--text-muted);
       transition: transform 0.2s ease;
     }
 
     .card.expanded h2 {
-      margin-bottom: 0.75rem;
-      padding-bottom: 0.5rem;
+      margin-bottom: 0;
+      padding-bottom: 0.75rem;
       border-bottom: 1px solid var(--border);
     }
 
@@ -321,6 +330,7 @@
 
     .card.expanded ul {
       display: block;
+      padding: 0 1rem 1rem;
     }
   }
 
@@ -690,62 +700,19 @@
     btn.addEventListener('click', () => doSearch(btn.dataset.engine));
   });
 
-  // Mobile: tap card header to toggle expand/collapse
-  // Uses touchstart/touchend to detect taps vs scrolls, with click fallback.
-  (function() {
-    var grid = document.getElementById('grid');
-    var touchStartY = null;
-    var touchStartTime = 0;
-    var touchHandled = false;
-
-    function findH2(target) {
-      var el = target;
-      while (el && el !== grid) {
-        if (el.tagName === 'H2') return el;
-        el = el.parentElement;
-      }
-      return null;
-    }
-
-    grid.addEventListener('touchstart', function(e) {
+  // Mobile: tap card header to toggle expand/collapse.
+  // With touch-action:manipulation on body, click fires instantly (no 300ms delay).
+  // Each h2 gets its own handler — simple, direct, no delegation complexity.
+  cards.forEach(function(card) {
+    var h2 = card.querySelector('h2');
+    if (!h2) return;
+    h2.addEventListener('click', function(e) {
       if (!isMobile()) return;
-      if (!findH2(e.target)) return;
-      touchStartY = e.touches[0].clientY;
-      touchStartTime = Date.now();
-      touchHandled = false;
-    }, { passive: true });
-
-    grid.addEventListener('touchend', function(e) {
-      if (!isMobile()) return;
-      if (touchStartY === null) return;
-      var h2 = findH2(e.target);
-      if (!h2) { touchStartY = null; return; }
-      // Ignore if finger moved (scroll) or held too long (long press)
-      var dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
-      var dt = Date.now() - touchStartTime;
-      touchStartY = null;
-      if (dy > 10 || dt > 400) return;
-      // It's a genuine tap
       e.preventDefault();
       e.stopPropagation();
-      touchHandled = true;
-      setTimeout(function() { touchHandled = false; }, 400);
-      var card = h2.closest('.card');
-      if (card) card.classList.toggle('expanded');
-    }, { passive: false });
-
-    // Click fallback for non-touch devices testing at mobile width
-    grid.addEventListener('click', function(e) {
-      if (!isMobile()) return;
-      if (touchHandled) return;
-      var h2 = findH2(e.target);
-      if (!h2) return;
-      e.preventDefault();
-      e.stopPropagation();
-      var card = h2.closest('.card');
-      if (card) card.classList.toggle('expanded');
+      card.classList.toggle('expanded');
     });
-  })();
+  });
 
   // Mobile: try to open native apps, fall back to web
   if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
