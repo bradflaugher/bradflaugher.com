@@ -318,9 +318,9 @@
     <div class="card" data-category="health">
       <h2>Health</h2>
       <ul>
+        <li data-ctx="personal"><a href="https://cloud.ouraring.com/dashboard" data-app-url="oura://"><span class="ctx-dot personal"></span>Oura Ring<span class="domain">cloud.ouraring.com</span></a></li>
         <li data-ctx="personal"><a href="https://clublocker.com/organizations/829/reservations/" data-app-url="clublocker://"><span class="ctx-dot personal"></span>ClubLocker<span class="domain">clublocker.com</span></a></li>
         <li data-ctx="personal"><a href="https://www.solidcore.co/book-a-class/" data-app-url="com.solidcore.app://"><span class="ctx-dot personal"></span>Solidcore<span class="domain">solidcore.co</span></a></li>
-        <li data-ctx="personal"><a href="https://cloud.ouraring.com/dashboard" data-app-url="oura://"><span class="ctx-dot personal"></span>Oura Ring<span class="domain">cloud.ouraring.com</span></a></li>
         <li data-ctx="personal"><a href="https://exist.io/"><span class="ctx-dot personal"></span>Exist.io<span class="domain">exist.io</span></a></li>
       </ul>
     </div>
@@ -341,8 +341,10 @@
         <li data-ctx="personal"><a href="https://calendar.google.com/calendar/u/0/r" data-app-url="googlecalendar://"><span class="ctx-dot personal"></span>Google Calendar<span class="domain">google.com</span></a></li>
         <li data-ctx="work"><a href="https://outlook.cloud.microsoft/calendar/0/view/week" data-app-url="ms-outlook://"><span class="ctx-dot work"></span>Outlook Calendar<span class="domain">microsoft.com</span></a></li>
         <li data-ctx="personal"><a href="https://calendar.proton.me/u/0/" data-app-url="protoncalendar://"><span class="ctx-dot personal"></span>Proton Calendar<span class="domain">proton.me</span></a></li>
-        <li data-ctx="both" class="fantastical-app" style="display:none;"><a href="x-fantastical3://" target="_self"><span class="ctx-dot both"></span>Fantastical<span class="domain">app</span></a></li>
-        <li data-ctx="both"><a href="https://fantastical.app/bradflaugher/meet-with-brad-flaugher"><span class="ctx-dot both"></span>Fantastical (openings)<span class="domain">fantastical.app</span></a></li>
+        <li data-ctx="both" class="fantastical-item">
+          <a href="https://fantastical.app/bradflaugher/meet-with-brad-flaugher" class="fantastical-main"><span class="ctx-dot both"></span>Fantastical<span class="domain">fantastical.app</span></a>
+          <a href="https://fantastical.app/bradflaugher/meet-with-brad-flaugher" class="fantastical-pill" style="display:none;">(openings)</a>
+        </li>
       </ul>
     </div>
 
@@ -358,9 +360,9 @@
     <div class="card" data-category="todos">
       <h2>Todos</h2>
       <ul>
+        <li data-ctx="personal"><a href="https://app.todoist.com/app/inbox" data-app-url="todoist://"><span class="ctx-dot personal"></span>Todoist<span class="domain">todoist.com</span></a></li>
         <li data-ctx="work"><a href="https://trello.com/b/eouJ2N4x/elcano-dev" data-app-url="trello://"><span class="ctx-dot work"></span>Trello<span class="domain">trello.com</span></a></li>
         <li data-ctx="personal"><a href="https://keep.google.com/" data-app-url="comgooglekeep://"><span class="ctx-dot personal"></span>Keep<span class="domain">google.com</span></a></li>
-        <li data-ctx="personal"><a href="https://app.todoist.com/app/inbox" data-app-url="todoist://"><span class="ctx-dot personal"></span>Todoist<span class="domain">todoist.com</span></a></li>
       </ul>
     </div>
 
@@ -424,10 +426,10 @@
     <div class="card" data-category="games">
       <h2>Games</h2>
       <ul>
+        <li data-ctx="personal"><a href="https://www.puzzmo.com/today/"><span class="ctx-dot personal"></span>Puzzmo<span class="domain">puzzmo.com</span></a></li>
         <li data-ctx="personal"><a href="https://store.playstation.com/"><span class="ctx-dot personal"></span>PlayStation Store<span class="domain">playstation.com</span></a></li>
         <li data-ctx="personal"><a href="https://store.steampowered.com/"><span class="ctx-dot personal"></span>Steam<span class="domain">steampowered.com</span></a></li>
         <li data-ctx="personal"><a href="https://www.paxhistoria.co/"><span class="ctx-dot personal"></span>PaxHistoria<span class="domain">paxhistoria.co</span></a></li>
-        <li data-ctx="personal"><a href="https://www.puzzmo.com/today/"><span class="ctx-dot personal"></span>Puzzmo<span class="domain">puzzmo.com</span></a></li>
       </ul>
     </div>
 
@@ -452,12 +454,22 @@
   const isFantasticalSupported = /Macintosh|iPhone|iPad|iPod/.test(navigator.userAgent);
   let activeFilter = 'all';
 
-  // Show Fantastical app link on Mac/iOS
-  if (isFantasticalSupported) {
-    document.querySelectorAll('.fantastical-app').forEach(function(el) {
-      el.style.display = '';
-    });
-  }
+  // On Mac/iOS: show Fantastical app link as main + openings as access pill
+  // On other platforms: show only the openings web link
+  (function() {
+    var fantItem = document.querySelector('.fantastical-item');
+    var mainLink = document.querySelector('.fantastical-main');
+    var pill = document.querySelector('.fantastical-pill');
+    if (!fantItem || !mainLink || !pill) return;
+    if (isFantasticalSupported) {
+      mainLink.href = 'x-fantastical3://';
+      mainLink.setAttribute('target', '_self');
+      var domain = mainLink.querySelector('.domain');
+      if (domain) domain.textContent = 'app';
+      fantItem.classList.add('has-access');
+      pill.classList.add('access-link'); // triggers display:inline-block !important
+    }
+  })();
 
   // Filter buttons
   filterBtns.forEach(btn => {
@@ -483,9 +495,6 @@
 
       let linkVisible = false;
       card.querySelectorAll('li').forEach(li => {
-        // Skip fantastical-app items on unsupported platforms
-        if (li.classList.contains('fantastical-app') && !isFantasticalSupported) return;
-
         const ctx = li.dataset.ctx;
         const ctxMatch = activeFilter === 'all' || ctx === activeFilter || ctx === 'both';
 
