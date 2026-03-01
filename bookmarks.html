@@ -164,29 +164,30 @@
   /* Smart suggestions */
   .suggestions {
     max-width: 440px;
-    margin: 0.65rem auto 0;
+    margin: 0.75rem auto 1.5rem;
     text-align: center;
   }
 
   .suggestions-label {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.3rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+    opacity: 0.7;
   }
 
   .suggest-chip {
     display: inline-block;
-    padding: 0.3rem 0.65rem;
+    padding: 0.35rem 0.75rem;
     border: 1px solid var(--border);
-    border-radius: 14px;
-    background: transparent;
+    border-radius: 16px;
+    background: var(--surface);
     color: var(--text);
     text-decoration: none;
     font-size: 0.8rem;
     transition: all 0.15s;
-    margin: 0.15rem;
+    margin: 0.2rem;
   }
 
   .suggest-chip:hover {
@@ -312,7 +313,8 @@
     .access-link { padding: 0.4rem 0.6rem !important; }
     .access-link:active { border-color: var(--accent) !important; color: var(--accent) !important; background: var(--accent-dim) !important; }
     .web-btn { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
-    .suggest-chip { font-size: 0.85rem; padding: 0.4rem 0.75rem; }
+    .suggestions { margin: 0.75rem auto 1.25rem; }
+    .suggest-chip { font-size: 0.85rem; padding: 0.45rem 0.85rem; margin: 0.25rem; }
     .suggest-chip:active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
 
     /* Mobile collapse/expand */
