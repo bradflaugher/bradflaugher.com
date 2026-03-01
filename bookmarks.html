@@ -304,11 +304,10 @@
         </div>
       </div>
       <div class="web-search-row">
-        <button class="web-btn" data-engine="ddg-html">Simple</button>
-        <button class="web-btn" data-engine="google">Google</button>
+        <button class="web-btn" data-engine="ddg-html">Sites</button>
+        <button class="web-btn" data-engine="bing-images">Images</button>
         <button class="web-btn" data-engine="maps">Maps</button>
-        <button class="web-btn" data-engine="duck-ai">Duck.ai</button>
-        <button class="web-btn" data-engine="perplexity">Perplexity</button>
+        <button class="web-btn" data-engine="perplexity">Agentic</button>
       </div>
     </div>
   </header>
@@ -561,11 +560,10 @@
     }
 
     var urls = {
-      'ddg-html':   'https://html.duckduckgo.com/html/?q=' + enc,
-      'google':     'https://www.google.com/search?q=' + enc,
-      'duck-ai':    'https://duck.ai/?q=' + enc,
-      'maps':       'https://maps.google.com/maps?q=' + enc,
-      'perplexity': 'https://www.perplexity.ai/search?q=' + enc
+      'ddg-html':    'https://html.duckduckgo.com/html/?q=' + enc,
+      'bing-images': 'https://www.bing.com/images/search?q=' + enc,
+      'maps':        'https://maps.google.com/maps?q=' + enc,
+      'perplexity':  'https://www.perplexity.ai/search?q=' + enc
     };
     window.open(urls[engine], '_blank');
   }
