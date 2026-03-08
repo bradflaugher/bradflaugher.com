@@ -397,15 +397,15 @@
 <div class="grid" id="grid">
 <div class="bookmark-item" data-category="ai" data-ctx="both">
   <a class="main-link" href="https://jules.google.com/">
-    <svg class="ctx-icon" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>
+    <svg class="ctx-icon" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M12 1C8.13 1 5 3.58 5 7v3.5c0 .83.67 1.5 1.5 1.5h.5v1.5c0 .28.22.5.5.5s.5-.22.5-.5V12h2v5c0 .55-.45 1-1 1s-1-.45-1-1v-.5c0-.28-.22-.5-.5-.5s-.5.22-.5.5V17c0 1.1.9 2 2 2s2-.9 2-2v-5h2v5c0 1.1.9 2 2 2s2-.9 2-2v-.5c0-.28-.22-.5-.5-.5s-.5.22-.5.5V17c0 .55-.45 1-1 1s-1-.45-1-1v-5h2v1.5c0 .28.22.5.5.5s.5-.22.5-.5V12h.5c.83 0 1.5-.67 1.5-1.5V7c0-3.42-3.13-6-7-6zm-2.5 6.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm5 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
     <span class="name">Jules</span>
   </a>
 </div>
 
 <div class="bookmark-item" data-category="ai" data-ctx="both">
   <a class="main-link" href="https://app.all-hands.dev/">
-    <svg class="ctx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-    <span class="name">All-Hands</span>
+    <svg class="ctx-icon" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M7.5 13.5V8c0-.83-.67-1.5-1.5-1.5S4.5 7.17 4.5 8v5.5c0 .17.01.33.03.5H4.5c-.17-.5-.5-1.17-.5-1.17-.37-.64-1.06-.93-1.72-.72-.78.25-1.2 1.1-.93 1.87l1.5 4.02c.42 1.12 1.5 1.87 2.7 1.87H9.5c1.66 0 3-1.34 3-3v-4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5m0-5.5V5c0-.83-.67-1.5-1.5-1.5S3 4.17 3 5v3c0 .83.67 1.5 1.5 1.5S6 8.83 6 8m3-3V3.5c0-.83-.67-1.5-1.5-1.5S6 2.67 6 3.5V5c0 .83.67 1.5 1.5 1.5S9 5.83 9 5m1.5 6V5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v6m5.5 2.5V8c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5.5c0-.17-.01-.33-.03-.5h.03c.17.5.5 1.17.5 1.17.37.64 1.06.93 1.72.72.78-.25 1.2-1.1.93-1.87l-1.5-4.02c-.42-1.12-1.5-1.87-2.7-1.87H14.5c-1.66 0-3 1.34-3 3v4c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5m0 5.5v3c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-3c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5m3-6v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V5c0-.83-.67-1.5-1.5-1.5S18 4.17 18 5m-3 0v-1.5c0-.83-.67-1.5-1.5-1.5S12 2.67 12 3.5V5c0 .83.67 1.5 1.5 1.5S15 5.83 15 5"/><path d="M10.5 1.5l1.5-1 1.5 1M9.5.5L10.5 0M14.5.5L13.5 0"/></svg>
+    <span class="name">OpenHands</span>
   </a>
 </div>
 
@@ -588,24 +588,59 @@ function applyFilters() {
         const n = item.querySelector('.name').textContent.trim();
         let s = 0; // base score
 
-        // Match the logic from the old suggestions pool based on link text content
-        if (n === 'Oura Ring') { s = t>=5&&t<7?95 : t>=7&&t<8?55 : 0; }
-        else if (n === 'The Economist') { s = t>=5&&t<7?90 : (dow===4||dow===5)&&t>=7&&t<22?70 : t>=7&&t<9?45 : !wd&&t>=9&&t<21?35 : 0; }
-        else if (n === 'Starbucks') { s = wd&&t>=8&&t<10.5?85 : 0; }
-        else if (n === 'MIT Technology Review') { s = t>=7&&t<10?32 : wd&&t>=10&&t<17?38 : !wd&&t>=10&&t<17?20 : 0; }
-        else if (n === 'X') { s = t>=9&&t<21?28 : 0; }
-        else if (n === 'Uber Eats') { s = t>=16.5&&t<18.5?80 : t>=18.5&&t<19.5?55 : 0; }
-        else if (n === 'Libby') { s = t>=20||t<5?85 : t>=19&&t<20?50 : 0; }
-        else if (n === 'Spotify') { s = t>=20||t<5?82 : t>=19&&t<20?45 : !wd&&t>=10&&t<20?28 : 0; }
-        else if (n === 'NY Times') { s = dow===0?75 : dow===6?40 : 0; }
-        else if (n === 'Todoist') { s = t>=6&&t<9?40 : 0; }
-        else if (n === 'YouTube TV') { s = t>=17&&t<23?40 : !wd&&t>=12&&t<23?32 : 0; }
-        else if (n === 'YouTube') { s = !wd&&t>=10&&t<22?27 : t>=20&&t<23?25 : 0; }
-        else if (n === 'Reddit') { s = !wd&&t>=9&&t<21?25 : t>=20&&t<23?20 : 0; }
-        else if (n === 'Google Photos') { s = !wd&&t>=10&&t<21?22 : 0; }
-        else if (n === 'Gemini') { s = !wd&&t>=9&&t<21?20 : 0; }
-        else if (n === 'Proton') { s = !wd&&t>=7&&t<10?38 : 0; }
-        else if (n === 'Exist.io') { s = t>=5&&t<8?40 : 0; }
+        // ── Scoring tuned for a 9-5 father of 2 ──
+        // Daily rhythm: morning paper + health → commute/coffee → work + midday tennis
+        //   → kids & dinner → Spotify / Libby wind-down
+
+        // ─── Morning newspaper & health (5 – 8) ───
+        if (n === 'Oura Ring')        { s = t>=5&&t<7?92 : t>=7&&t<8?50 : t>=20&&t<22?45 : 0; }
+        else if (n === 'Exist.io')    { s = t>=5&&t<7?88 : t>=20&&t<22?38 : 0; }
+        else if (n === 'NY Times')    { s = t>=5.5&&t<8?94 : dow===0?78 : dow===6&&t<12?62 : wd&&t>=12&&t<13?40 : 0; }
+        else if (n === 'The Economist') { s = t>=5.5&&t<8?72 : (dow===4||dow===5)&&t>=7&&t<22?70 : !wd&&t>=9&&t<21?50 : wd&&t>=12&&t<13?35 : 0; }
+        else if (n === 'The Philadelphia Inquirer') { s = t>=6&&t<8?68 : t>=12&&t<13?28 : 0; }
+        else if (n === 'MIT Technology Review') { s = t>=6&&t<8?48 : wd&&t>=12&&t<13?35 : wd&&t>=9&&t<17?25 : !wd&&t>=9&&t<14?22 : 0; }
+
+        // ─── Morning routine & commute (6:30 – 9) ───
+        else if (n === 'Starbucks')   { s = wd&&t>=6.5&&t<9?82 : !wd&&t>=7&&t<10?62 : 0; }
+        else if (n === 'Fantastical') { s = t>=6&&t<9?72 : wd&&t>=9&&t<12?38 : t>=16&&t<18?42 : 0; }
+        else if (n === 'Google Calendar') { s = t>=6&&t<9?68 : wd&&t>=9&&t<17?32 : t>=16&&t<18?38 : 0; }
+        else if (n === 'Keep')        { s = t>=6&&t<9?58 : wd&&t>=9&&t<17?28 : 0; }
+        else if (n === 'Todoist')     { s = t>=6&&t<9?62 : wd&&t>=9&&t<17?28 : t>=17&&t<18?32 : 0; }
+        else if (n === 'Proton')      { s = t>=6&&t<9?64 : wd&&t>=9&&t<17?32 : !wd&&t>=8&&t<10?42 : 0; }
+        else if (n === 'Proton Calendar') { s = t>=6&&t<9?52 : wd&&t>=9&&t<17?22 : 0; }
+        else if (n === 'Uber')        { s = wd&&t>=7.5&&t<9?42 : t>=17&&t<18?35 : 0; }
+
+        // ─── Work block + midday tennis (9 – 17) ───
+        else if (n === 'ClubLocker')  { s = wd&&t>=6&&t<8?52 : wd&&t>=11&&t<14?78 : !wd&&t>=7&&t<18?82 : 0; }
+        else if (n === 'Solidcore')   { s = wd&&t>=6&&t<8?55 : wd&&t>=11&&t<14?52 : !wd&&t>=7&&t<12?68 : 0; }
+        else if (n === 'Jules')       { s = wd&&t>=9&&t<17?62 : wd&&t>=8&&t<9?30 : wd&&t>=17&&t<18?28 : 0; }
+        else if (n === 'OpenHands')   { s = wd&&t>=9&&t<17?60 : wd&&t>=8&&t<9?28 : wd&&t>=17&&t<18?26 : 0; }
+        else if (n === 'Manus')       { s = wd&&t>=9&&t<17?58 : wd&&t>=8&&t<9?26 : 0; }
+        else if (n === 'Gemini')      { s = wd&&t>=9&&t<17?52 : !wd&&t>=10&&t<16?25 : 0; }
+        else if (n === 'fal.ai')      { s = wd&&t>=9&&t<17?45 : 0; }
+        else if (n === 'Grok')        { s = wd&&t>=9&&t<17?38 : 0; }
+        else if (n === 'Google Drive') { s = wd&&t>=9&&t<17?40 : 0; }
+        else if (n === 'Proton Drive') { s = wd&&t>=9&&t<17?30 : 0; }
+
+        // ─── Lunch break social (12 – 13) ───
+        else if (n === 'Instagram')   { s = t>=7&&t<8?28 : t>=12&&t<13?35 : t>=20&&t<23?42 : 0; }
+        else if (n === 'X')           { s = t>=7&&t<9?22 : t>=12&&t<13?30 : t>=20&&t<22?28 : 0; }
+        else if (n === 'Polymarket')  { s = t>=7&&t<9?28 : t>=12&&t<13?25 : t>=20&&t<22?24 : 0; }
+        else if (n === 'Reddit')      { s = t>=12&&t<13?30 : t>=20&&t<23?38 : !wd&&t>=9&&t<21?25 : 0; }
+
+        // ─── Kids & dinner (17 – 20) ───
+        else if (n === 'Uber Eats')   { s = t>=16.5&&t<18.5?82 : t>=18.5&&t<19.5?55 : 0; }
+        else if (n === 'YouTube TV')  { s = t>=17&&t<20?52 : t>=20&&t<23?45 : !wd&&t>=12&&t<23?35 : 0; }
+        else if (n === 'YouTube')     { s = t>=17&&t<20?38 : t>=20&&t<23?45 : !wd&&t>=10&&t<22?30 : 0; }
+        else if (n === 'Google Photos') { s = t>=17&&t<21?48 : !wd&&t>=10&&t<21?42 : 0; }
+        else if (n === 'Amazon')      { s = t>=19&&t<22?38 : !wd&&t>=10&&t<18?30 : 0; }
+
+        // ─── Wind-down: Spotify & Libby (20 – late) ───
+        else if (n === 'Spotify')     { s = t>=20||t<5?90 : t>=17&&t<20?52 : !wd&&t>=10&&t<20?35 : 0; }
+        else if (n === 'Libby')       { s = t>=20.5||t<5?92 : t>=19&&t<20.5?55 : 0; }
+
+        // ─── Low-priority / niche ───
+        else if (n === 'OPNsense')    { s = t>=20&&t<22?15 : 0; }
 
         // Add random jitter only if it has a positive base score, or we can add it to all.
         // Let's add jitter only for > 0 scores so irrelevant ones stay alphabetical at the bottom.
