@@ -133,35 +133,16 @@
   }
 
   /* Smart suggestions */
-  .suggestions {
-    max-width: 440px;
-    margin: 0.5rem auto 1.25rem;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
-  .suggest-chip {
-    color: var(--accent);
-    text-decoration: none;
-    font-size: 0.8rem;
-    transition: opacity 0.15s;
-  }
 
-  .suggest-chip.ctx-personal { color: var(--text-muted); }
-  .suggest-chip.ctx-both { color: var(--text-muted); }
 
-  .suggest-chip:hover {
-    opacity: 0.7;
-  }
 
-  .suggest-sep {
-    color: var(--text-muted);
-    opacity: 0.4;
-    margin: 0 0.4rem;
-    font-size: 0.7rem;
-  }
+
+
+
+
+
+
 
   /* Grid and cards */
 
@@ -350,9 +331,9 @@
     .access-link { padding: 0.4rem 0.6rem !important; }
     .access-link:active { border-color: var(--accent) !important; color: var(--accent) !important; background: var(--accent-dim) !important; }
     .web-btn { padding: 0.45rem 0; font-size: 0.75rem; }
-    .suggestions { margin: 0.5rem auto 1rem; }
-    .suggest-chip { font-size: 0.85rem; }
-    .suggest-chip:active { opacity: 0.5; }
+
+
+
 
     /* Mobile collapse/expand */
 
@@ -412,7 +393,7 @@
 </div>
 </div>
 </header>
-<div class="suggestions" id="suggestions"></div>
+
 <div class="grid" id="grid">
 <div class="bookmark-item" data-category="ai" data-ctx="both">
   <a class="main-link" href="https://jules.google.com/">
@@ -496,9 +477,7 @@ function applyFilters() {
     const q = search.value.toLowerCase().trim();
     let anyVisible = false;
 
-    // Hide suggestions while searching
-    var sugEl = document.getElementById('suggestions');
-    if (sugEl) sugEl.style.display = q ? 'none' : '';
+
 
     const items = document.querySelectorAll('.bookmark-item');
     items.forEach(item => {
@@ -590,13 +569,10 @@ function applyFilters() {
     btn.addEventListener('click', () => doSearch(btn.dataset.engine));
   });
 
-  // Smart suggestions based on time of day and day of week
-  (function() {
-    var mob = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    var sugEl = document.getElementById('suggestions');
-    if (!sugEl) return;
 
-    function renderSuggestions() {
+  // Dynamic sorting of bookmarks based on time of day and day of week
+  (function() {
+    function sortBookmarksDynamically() {
       var now = new Date();
       var h = now.getHours();
       var m = now.getMinutes();
@@ -604,78 +580,76 @@ function applyFilters() {
       var dow = now.getDay();
       var wd = dow >= 1 && dow <= 5;
 
-      var pool = [
-        { n: 'Oura Ring', u: 'https://cloud.ouraring.com/dashboard', a: 'oura://', ctx: 'personal',
-          s: t>=5&&t<7?95 : t>=7&&t<8?55 : 0 },
-        { n: 'The Economist', u: 'https://www.economist.com/', a: 'com.economist.lamarr://home', ctx: 'personal',
-          s: t>=5&&t<7?90 : (dow===4||dow===5)&&t>=7&&t<22?70 : t>=7&&t<9?45 : !wd&&t>=9&&t<21?35 : 0 },
-        { n: 'Starbucks', u: 'https://www.starbucks.com/', a: 'starbucks://', ctx: 'personal',
-          s: wd&&t>=8&&t<10.5?85 : 0 },
-        { n: 'MIT Tech Review', u: 'https://www.technologyreview.com/', ctx: 'personal',
-          s: t>=7&&t<10?32 : wd&&t>=10&&t<17?38 : !wd&&t>=10&&t<17?20 : 0 },
-        { n: 'X', u: 'https://x.com/home', a: 'twitter://timeline', ctx: 'personal',
-          s: t>=9&&t<21?28 : 0 },
-        { n: 'Uber Eats', u: 'https://www.ubereats.com/', a: 'ubereats://', ctx: 'personal',
-          s: t>=16.5&&t<18.5?80 : t>=18.5&&t<19.5?55 : 0 },
-        { n: 'Libby', u: '#', a: 'dewey-oauth://', ao: true, ctx: 'personal',
-          s: t>=20||t<5?85 : t>=19&&t<20?50 : 0 },
-        { n: 'Spotify', u: 'https://open.spotify.com/', a: 'spotify://', ctx: 'personal',
-          s: t>=20||t<5?82 : t>=19&&t<20?45 : !wd&&t>=10&&t<20?28 : 0 },
-        { n: 'NY Times', u: 'https://www.nytimes.com/', a: 'nytimes://home', ctx: 'personal',
-          s: dow===0?75 : dow===6?40 : 0 },
-        { n: 'Todoist', u: 'https://app.todoist.com/app/inbox', a: 'todoist://', ctx: 'personal',
-          s: t>=6&&t<9?40 : 0 },
-        { n: 'YouTube TV', u: 'https://tv.youtube.com/', a: 'youtubetv://', ctx: 'personal',
-          s: t>=17&&t<23?40 : !wd&&t>=12&&t<23?32 : 0 },
-        { n: 'YouTube', u: 'https://www.youtube.com/', a: 'youtube://', ctx: 'personal',
-          s: !wd&&t>=10&&t<22?27 : t>=20&&t<23?25 : 0 },
-        { n: 'Reddit', u: 'https://farside.link/redlib', a: 'narwhal://', ctx: 'personal',
-          s: !wd&&t>=9&&t<21?25 : t>=20&&t<23?20 : 0 },
-        { n: 'Google Photos', u: 'https://photos.google.com/', a: 'googlephotos://', ctx: 'personal',
-          s: !wd&&t>=10&&t<21?22 : 0 },
-        { n: 'Gemini', u: 'https://gemini.google.com/app', a: 'googlegemini://', ctx: 'personal',
-          s: !wd&&t>=9&&t<21?20 : 0 },
-        { n: 'Proton Mail', u: 'https://mail.proton.me/u/0/inbox', a: 'protonmail://', ctx: 'personal',
-          s: !wd&&t>=7&&t<10?38 : 0 },
-        { n: 'Exist.io', u: 'https://exist.io/', ctx: 'personal',
-          s: t>=5&&t<8?40 : 0 }
-      ];
+      const grid = document.getElementById('grid');
+      const items = Array.from(document.querySelectorAll('.bookmark-item'));
 
-      // Filter app-only items on non-mobile
-      pool = pool.filter(function(item) { return !item.ao || mob; });
+      items.forEach(item => {
+        const link = item.querySelector('a.main-link');
+        const n = item.querySelector('.name').textContent.trim();
+        let s = 0; // base score
 
-      // Add jitter for discovery, sort, pick top 4
-      var scored = pool.map(function(item) {
-        return { n: item.n, u: item.u, a: item.a, ctx: item.ctx, s: item.s + Math.random() * 12 };
-      }).sort(function(a, b) { return b.s - a.s; });
+        // Match the logic from the old suggestions pool based on link text content
+        if (n === 'Oura Ring') { s = t>=5&&t<7?95 : t>=7&&t<8?55 : 0; }
+        else if (n === 'The Economist') { s = t>=5&&t<7?90 : (dow===4||dow===5)&&t>=7&&t<22?70 : t>=7&&t<9?45 : !wd&&t>=9&&t<21?35 : 0; }
+        else if (n === 'Starbucks') { s = wd&&t>=8&&t<10.5?85 : 0; }
+        else if (n === 'MIT Technology Review') { s = t>=7&&t<10?32 : wd&&t>=10&&t<17?38 : !wd&&t>=10&&t<17?20 : 0; }
+        else if (n === 'X') { s = t>=9&&t<21?28 : 0; }
+        else if (n === 'Uber Eats') { s = t>=16.5&&t<18.5?80 : t>=18.5&&t<19.5?55 : 0; }
+        else if (n === 'Libby') { s = t>=20||t<5?85 : t>=19&&t<20?50 : 0; }
+        else if (n === 'Spotify') { s = t>=20||t<5?82 : t>=19&&t<20?45 : !wd&&t>=10&&t<20?28 : 0; }
+        else if (n === 'NY Times') { s = dow===0?75 : dow===6?40 : 0; }
+        else if (n === 'Todoist') { s = t>=6&&t<9?40 : 0; }
+        else if (n === 'YouTube TV') { s = t>=17&&t<23?40 : !wd&&t>=12&&t<23?32 : 0; }
+        else if (n === 'YouTube') { s = !wd&&t>=10&&t<22?27 : t>=20&&t<23?25 : 0; }
+        else if (n === 'Reddit') { s = !wd&&t>=9&&t<21?25 : t>=20&&t<23?20 : 0; }
+        else if (n === 'Google Photos') { s = !wd&&t>=10&&t<21?22 : 0; }
+        else if (n === 'Gemini') { s = !wd&&t>=9&&t<21?20 : 0; }
+        else if (n === 'Proton') { s = !wd&&t>=7&&t<10?38 : 0; }
+        else if (n === 'Exist.io') { s = t>=5&&t<8?40 : 0; }
 
-      var top = scored.slice(0, 4);
-      var html = '';
-      top.forEach(function(item, i) {
-        if (i > 0) html += '<span class="suggest-sep">/</span>';
-        html += '<a href="' + item.u + '" class="suggest-chip"' +
-          (item.a ? ' data-app-url="' + item.a + '"' : '') +
-          '>' + item.n + '</a>';
+        // Add random jitter only if it has a positive base score, or we can add it to all.
+        // Let's add jitter only for > 0 scores so irrelevant ones stay alphabetical at the bottom.
+        item.dataset.score = s > 0 ? (s + Math.random() * 12) : 0;
       });
-      sugEl.innerHTML = html;
 
+      items.sort((a, b) => {
+        const scoreA = parseFloat(a.dataset.score);
+        const scoreB = parseFloat(b.dataset.score);
+        if (scoreA !== scoreB) {
+            return scoreB - scoreA; // Descending
+        }
+        // Fallback to alphabetical if scores are 0 (or equal)
+        const nameA = a.querySelector('.name').textContent.trim().toLowerCase();
+        const nameB = b.querySelector('.name').textContent.trim().toLowerCase();
+        return nameA.localeCompare(nameB);
+      });
+
+      const noResults = document.getElementById('no-results');
+
+      items.forEach(item => {
+        grid.insertBefore(item, noResults);
+      });
     }
 
-    renderSuggestions();
+    sortBookmarksDynamically();
 
     // Re-render every 60 seconds so suggestions stay fresh
-    setInterval(renderSuggestions, 60000);
+    setInterval(sortBookmarksDynamically, 60000);
 
     // Re-render when tab regains focus
     document.addEventListener('visibilitychange', function() {
-      if (document.visibilityState === 'visible') renderSuggestions();
+      if (document.visibilityState === 'visible') sortBookmarksDynamically();
     });
 
-    // Mobile: handle app URLs in suggestion chips
+    var mob = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     if (mob) {
-      sugEl.addEventListener('click', function(e) {
+      document.getElementById('grid').addEventListener('click', function(e) {
         var link = e.target.closest('a[data-app-url]');
         if (!link) return;
+
+        // Ignore access links or other links with class access-link
+        if (link.classList.contains('access-link')) return;
+
         e.preventDefault();
         var appUrl = link.dataset.appUrl;
         var webUrl = link.href;
@@ -689,25 +663,11 @@ function applyFilters() {
     }
   })();
 
+
   // Mobile: tap card header to toggle expand/collapse.
   // With touch-action:manipulation on body, click fires instantly (no 300ms delay).
   // Each h2 gets its own handler — simple, direct, no delegation complexity.
-  // Mobile: try to open native apps, fall back to web
-  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-    document.getElementById('grid').addEventListener('click', function(e) {
-      var link = e.target.closest('a[data-app-url]');
-      if (!link) return;
-      e.preventDefault();
-      var appUrl = link.dataset.appUrl;
-      var webUrl = link.href;
-      window.location.href = appUrl;
-      setTimeout(function() {
-        if (document.visibilityState !== 'hidden') {
-          window.location.href = webUrl;
-        }
-      }, 1500);
-    });
-  }
+
 </script>
 </body>
 </html>
