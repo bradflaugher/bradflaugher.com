@@ -121,12 +121,12 @@
 
   .web-btn {
     flex: 1;
-    padding: 0.4rem 0;
+    padding: 0.6rem 0;
     border: none;
     border-right: 1px solid var(--border);
     background: var(--surface);
     color: var(--text-muted);
-    font-size: 0.72rem;
+    font-size: 0.85rem;
     font-family: inherit;
     cursor: pointer;
     transition: all 0.15s;
@@ -171,7 +171,7 @@
     border-radius: 8px;
     transition: border-color 0.2s, background 0.15s;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     overflow: hidden;
   }
 
@@ -211,7 +211,7 @@
 
   @media (max-width: 600px) {
     .grid { grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
-    .bookmark-item > a.main-link { padding: 0.4rem; font-size: 0.75rem; }
+    .bookmark-item > a.main-link { padding: 0.6rem 0.5rem; font-size: 0.9rem; }
   }
 
 
@@ -274,7 +274,7 @@
 
 
 
-  .access-link {
+  .access-link, .fantastical-pill {
     display: inline-block !important;
     padding: 0.15rem 0.4rem !important;
     margin: 0 0 0 0.3rem !important;
@@ -284,6 +284,7 @@
     border: 1px solid var(--border);
     border-radius: 4px;
     color: var(--text-muted) !important;
+    align-self: center;
   }
   .access-link:hover {
     border-color: var(--accent) !important;
@@ -306,60 +307,6 @@
     .container { padding: 1rem 1rem 3rem; }
     header { margin-bottom: 1.25rem; }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 0.5rem;
-  }
-
-  .bookmark-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    transition: border-color 0.2s, background 0.15s;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-  }
-
-  .bookmark-item.hidden { display: none; }
-  .bookmark-item:hover { border-color: #3a3a3a; background: var(--surface-hover); }
-
-  .bookmark-item > a.main-link {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-width: 0;
-    padding: 0.4rem 0.5rem;
-    color: var(--text);
-    text-decoration: none;
-    font-size: 0.8rem;
-    border-radius: 8px;
-  }
-
-  .bookmark-item > a.main-link:hover {
-    color: var(--text);
-  }
-
-  .bookmark-item a .domain {
-    display: none;
-  }
-
-  .bookmark-item a .name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* access link overrides */
-  .bookmark-item.has-access > a.main-link {
-    padding-right: 0.2rem;
-  }
-
-  @media (max-width: 600px) {
-    .grid { grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
-    .bookmark-item > a.main-link { padding: 0.4rem; font-size: 0.75rem; }
-  }
 
 
 
@@ -367,7 +314,7 @@
 
     .access-link { padding: 0.4rem 0.6rem !important; }
     .access-link:active { border-color: var(--accent) !important; color: var(--accent) !important; background: var(--accent-dim) !important; }
-    .web-btn { padding: 0.45rem 0; font-size: 0.75rem; }
+    .web-btn { padding: 0.6rem 0; font-size: 0.9rem; }
 
 
 
