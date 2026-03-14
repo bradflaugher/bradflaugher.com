@@ -425,7 +425,7 @@
   const search = document.getElementById('search');
   const items = document.querySelectorAll('.bookmark-item');
   const noResults = document.getElementById('no-results');
-  const isFantasticalSupported = /Macintosh|iPhone|iPad|iPod/.test(navigator.userAgent);
+  const isFantasticalSupported = /Windows|Macintosh|iPhone|iPad|iPod/.test(navigator.userAgent);
   const isMobile = () => window.matchMedia('(max-width: 600px)').matches;
 
   // On Mac/iOS: show Fantastical app link as main + openings as access pill
@@ -443,7 +443,11 @@
       fantItem.classList.add('has-access');
       pill.classList.add('access-link'); // triggers display:inline-block !important
     } else {
-      fantItem.insertAdjacentHTML('afterend', '<div class="bookmark-item" data-category="calendars" data-ctx="personal"><a class="main-link" data-app-url="googlecalendar://" href="https://calendar.google.com/calendar/u/0/r"><svg aria-hidden="true" class="ctx-icon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg><span class="name">Google Calendar</span></a></div>');
+      mainLink.href = 'https://calendar.google.com/calendar/u/0/r';
+      mainLink.setAttribute('data-app-url', 'googlecalendar://');
+      mainLink.innerHTML = '<svg aria-hidden="true" class="ctx-icon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg><span class="name">Google Calendar</span>';
+      fantItem.classList.add('has-access');
+      pill.classList.add('access-link'); // triggers display:inline-block !important
     }
   })();
 
