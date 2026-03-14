@@ -134,3 +134,4 @@ dmypy.json
 .idea/*
 
 html/node_modules/*
+node_modules/
