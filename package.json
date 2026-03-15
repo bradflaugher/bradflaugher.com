@@ -1,6 +1,6 @@
 {
   "dependencies": {
     "playwright": "^1.58.2",
-    "simple-icons": "^16.11.0"
+    "simple-icons": "^16.12.0"
   }
 }
