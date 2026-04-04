@@ -1,0 +1,17 @@
+{
+  "name": "Communications",
+  "short_name": "Communications",
+  "description": "Brad Flaugher's communications",
+  "start_url": "/communications.html",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#0f0f0f",
+  "icons": [
+    {
+      "src": "/communications-icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
