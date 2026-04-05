@@ -161,7 +161,7 @@ header {
 /* Grid and cards */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
   gap: 0.5rem;
   flex: 1;
   align-content: start;
@@ -189,9 +189,9 @@ header {
   padding: 0.75rem 0.75rem;
   color: #ffffff !important;
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0px;
 }
 
 .bookmark-item a .domain {
