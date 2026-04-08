@@ -23,6 +23,7 @@
   --cat-chat: #0078d7; /* blue */
   --cat-meet: #107c10; /* green */
   --cat-school: #ffb900; /* yellow */
+  --cat-browser: #0078d7; /* blue */
 }
 
 @media (prefers-color-scheme: light) {
@@ -229,6 +230,7 @@ header {
 .bookmark-item[data-category="chat"] { background: var(--cat-chat); }
 .bookmark-item[data-category="meet"] { background: var(--cat-meet); }
 .bookmark-item[data-category="school"] { background: var(--cat-school); }
+.bookmark-item[data-category="browser"] { background: var(--cat-browser); }
 
 /* Fallback background if no category matches */
 .bookmark-item { background: #555555; }
