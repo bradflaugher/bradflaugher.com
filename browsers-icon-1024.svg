@@ -1,8 +1,81 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <rect width="1024" height="1024" fill="transparent" />
-  <g transform="translate(512, 512) scale(34) translate(-12.5, -12.5)" fill="none" stroke="#e4e4e4" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(45 12 12)" />
-    <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-45 12 12)" />
+  <defs>
+    <linearGradient id="globe-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4FC3F7"/>
+      <stop offset="50%" stop-color="#2196F3"/>
+      <stop offset="100%" stop-color="#1565C0"/>
+    </linearGradient>
+    <linearGradient id="ring-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#81D4FA"/>
+      <stop offset="100%" stop-color="#1E88E5"/>
+    </linearGradient>
+    <linearGradient id="sat-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E3F2FD"/>
+      <stop offset="100%" stop-color="#90CAF9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Globe body -->
+  <circle cx="512" cy="512" r="260" fill="url(#globe-grad)" opacity="0.9"/>
+
+  <!-- Globe grid lines - latitude -->
+  <ellipse cx="512" cy="512" rx="260" ry="90" fill="none" stroke="#E3F2FD" stroke-width="5" opacity="0.35"/>
+  <ellipse cx="512" cy="512" rx="260" ry="180" fill="none" stroke="#E3F2FD" stroke-width="5" opacity="0.3"/>
+
+  <!-- Globe grid lines - longitude -->
+  <ellipse cx="512" cy="512" rx="90" ry="260" fill="none" stroke="#E3F2FD" stroke-width="5" opacity="0.35"/>
+  <ellipse cx="512" cy="512" rx="180" ry="260" fill="none" stroke="#E3F2FD" stroke-width="5" opacity="0.3"/>
+
+  <!-- Equator -->
+  <line x1="252" y1="512" x2="772" y2="512" stroke="#E3F2FD" stroke-width="5" opacity="0.3"/>
+  <!-- Prime meridian -->
+  <line x1="512" y1="252" x2="512" y2="772" stroke="#E3F2FD" stroke-width="5" opacity="0.3"/>
+
+  <!-- Globe outline -->
+  <circle cx="512" cy="512" r="260" fill="none" stroke="#E3F2FD" stroke-width="7" opacity="0.5"/>
+
+  <!-- Orbital ring 1 (tilted) -->
+  <ellipse cx="512" cy="512" rx="400" ry="120" fill="none" stroke="url(#ring-grad)" stroke-width="8" opacity="0.6" transform="rotate(-30 512 512)"/>
+
+  <!-- Orbital ring 2 (tilted other way) -->
+  <ellipse cx="512" cy="512" rx="400" ry="120" fill="none" stroke="url(#ring-grad)" stroke-width="8" opacity="0.6" transform="rotate(40 512 512)"/>
+
+  <!-- Orbital ring 3 -->
+  <ellipse cx="512" cy="512" rx="400" ry="120" fill="none" stroke="url(#ring-grad)" stroke-width="8" opacity="0.5" transform="rotate(-80 512 512)"/>
+
+  <!-- Satellite 1 - on ring 1 -->
+  <g transform="rotate(-30 512 512)">
+    <circle cx="880" cy="512" r="28" fill="url(#sat-grad)"/>
+    <circle cx="880" cy="512" r="18" fill="#E3F2FD"/>
+    <!-- Solar panels -->
+    <rect x="855" y="500" width="8" height="24" rx="2" fill="#90CAF9" opacity="0.8"/>
+    <rect x="897" y="500" width="8" height="24" rx="2" fill="#90CAF9" opacity="0.8"/>
   </g>
+
+  <!-- Satellite 2 - on ring 2 -->
+  <g transform="rotate(40 512 512)">
+    <circle cx="160" cy="512" r="28" fill="url(#sat-grad)"/>
+    <circle cx="160" cy="512" r="18" fill="#E3F2FD"/>
+    <rect x="135" y="500" width="8" height="24" rx="2" fill="#90CAF9" opacity="0.8"/>
+    <rect x="177" y="500" width="8" height="24" rx="2" fill="#90CAF9" opacity="0.8"/>
+  </g>
+
+  <!-- Satellite 3 - on ring 3 -->
+  <g transform="rotate(-80 512 512)">
+    <circle cx="880" cy="512" r="24" fill="url(#sat-grad)"/>
+    <circle cx="880" cy="512" r="15" fill="#E3F2FD"/>
+    <rect x="858" y="501" width="7" height="22" rx="2" fill="#90CAF9" opacity="0.8"/>
+    <rect x="895" y="501" width="7" height="22" rx="2" fill="#90CAF9" opacity="0.8"/>
+  </g>
+
+  <!-- Satellite 4 - on ring 1 opposite side -->
+  <g transform="rotate(-30 512 512)">
+    <circle cx="145" cy="512" r="22" fill="url(#sat-grad)"/>
+    <circle cx="145" cy="512" r="14" fill="#E3F2FD"/>
+    <rect x="125" y="502" width="6" height="20" rx="2" fill="#90CAF9" opacity="0.8"/>
+    <rect x="157" y="502" width="6" height="20" rx="2" fill="#90CAF9" opacity="0.8"/>
+  </g>
+
+  <!-- Subtle glow on globe -->
+  <circle cx="440" cy="440" r="120" fill="#ffffff" opacity="0.08"/>
 </svg>
