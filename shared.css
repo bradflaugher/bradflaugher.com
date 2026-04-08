@@ -16,6 +16,7 @@
   --cat-listen: #e3008c; /* magenta */
   --cat-shopping: #68217a; /* purple */
   --cat-keep: #ffb900; /* yellow */
+  --cat-games: #d83b01; /* orange/red */
 
   --cat-util: #68217a; /* purple */
   --cat-mail: #e3008c; /* magenta */
@@ -221,6 +222,7 @@ header {
 .bookmark-item[data-category="listen"] { background: var(--cat-listen); }
 .bookmark-item[data-category="shopping"] { background: var(--cat-shopping); }
 .bookmark-item[data-category="keep"] { background: var(--cat-keep); }
+.bookmark-item[data-category="games"] { background: var(--cat-games); }
 
 .bookmark-item[data-category="util"] { background: var(--cat-util); }
 .bookmark-item[data-category="mail"] { background: var(--cat-mail); }
