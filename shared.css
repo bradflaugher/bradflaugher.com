@@ -246,7 +246,7 @@ header {
 
 .no-results.visible { display: block; }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .hide-on-mobile { display: none !important; }
 
   .container {
@@ -260,8 +260,6 @@ header {
 
   /* Mobile Grid - dynamically stretch to fill remaining space */
   .grid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(5, minmax(0, 1fr));
     gap: 0.5rem;
     align-content: stretch;
   }
@@ -280,5 +278,19 @@ header {
     height: 32px;
     margin-right: 0;
     margin-bottom: auto; /* Push icon to the top left, text stays at bottom left */
+  }
+}
+
+@media (max-width: 900px) and (orientation: portrait) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .grid {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, minmax(0, 1fr));
   }
 }
