@@ -1,8 +1,10 @@
 {
   "dependencies": {
     "node-html-parser": "^7.1.0",
-    "playwright": "^1.59.1",
     "sharp": "^0.34.5",
     "simple-icons": "^16.13.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.59.1"
   }
 }
