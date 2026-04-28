@@ -14,7 +14,10 @@
 <meta content="#000000" name="theme-color"/>
 <link rel="stylesheet" href="shared.css?v=5">
 <script>
-  window.APP_CATEGORY_ORDER = ['listen', 'games', 'news', 'health'];
+  var isMobile = window.matchMedia("(max-width: 600px)").matches || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  window.APP_CATEGORY_ORDER = isMobile
+    ? ['listen', 'news', 'games', 'health']
+    : ['listen', 'games', 'news', 'health'];
   window.APP_CUSTOM_ORDER = {
     'news': ['the economist', 'x', 'nyt', 'polymarket'],
     'games': ['games'],
