@@ -13,12 +13,12 @@
 <meta content="#000000" name="theme-color"/>
 <link rel="stylesheet" href="shared.css?v=4">
 <script>
-  window.APP_CATEGORY_ORDER = ['util', 'mail', 'chat', 'meet', 'school'];
+  window.APP_CATEGORY_ORDER = ['chat', 'mail', 'meet', 'util', 'school'];
   window.APP_CUSTOM_ORDER = {
-    'util': ['google home', 'cardhop'],
+    'chat': ['phone', 'messages', 'teams'],
     'mail': ['protonmail', 'outlook'],
-    'chat': ['messages', 'teams'],
     'meet': ['google meet', 'zoom', 'webex'],
+    'util': ['google home'],
     'school': ['classdojo']
   };
 </script>
@@ -44,11 +44,11 @@
 
 <div class="grid" id="grid">
 
+<!-- Phone -->
+<div class="bookmark-item" data-category="chat" data-ctx="personal"><a class="main-link" href="shortcuts://run-shortcut?name=Phone"><svg aria-hidden="true" class="ctx-icon" fill="currentColor" stroke="none" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span class="name">Phone</span></a></div>
+
 <!-- Google Home -->
 <div class="bookmark-item" data-category="util" data-ctx="personal"><a class="main-link" data-app-url="googlehome://" href="https://home.google.com"><svg aria-hidden="true" class="ctx-icon" fill="currentColor" stroke="none" viewBox="0 0 24 24"><path d="M12 0a1.44 1.44 0 0 0-.947.399L.547 10.762a1.26 1.26 0 0 0-.342.808v11.138c0 .768.53 1.292 1.311 1.292h20.968c.78 0 1.311-.522 1.311-1.292V11.57a1.25 1.25 0 0 0-.34-.804L15.68 3.097h-.001L12.947.4A1.454 1.454 0 0 0 12 0Zm0 6.727 6.552 6.456v5.65H5.446v-5.65z"/></svg><span class="name">Google Home</span></a></div>
-
-<!-- Cardhop -->
-<div class="bookmark-item" data-category="util" data-ctx="personal"><a class="main-link" data-app-url="x-cardhop://" href="#"><svg aria-hidden="true" class="ctx-icon" fill="currentColor" stroke="none" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 2v12h16V6H4zm4 3a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm0 1.5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-3 4.5h6v1.5H5v-1.5zm8-4h5v1.5h-5v-1.5zm0 3h5v1.5h-5v-1.5z"/></svg><span class="name">Cardhop</span></a></div>
 
 <!-- ProtonMail -->
 <div class="bookmark-item" data-category="mail" data-ctx="personal"><a class="main-link" data-app-url="protonmail://" href="https://mail.proton.me/"><svg aria-hidden="true" class="ctx-icon" fill="currentColor" stroke="none" viewBox="0 0 24 24"><path d="m15.24 8.998 3.656-3.073v15.81H2.482C1.11 21.735 0 20.609 0 19.223V6.944l7.58 6.38a2.186 2.186 0 0 0 2.871-.042l4.792-4.284h-.003zm-5.456 3.538 1.809-1.616a2.438 2.438 0 0 1-1.178-.533L.905 2.395A.552.552 0 0 0 0 2.826v2.811l8.226 6.923a1.186 1.186 0 0 0 1.558-.024zM23.871 2.463a.551.551 0 0 0-.776-.068l-3.199 2.688v16.653h1.623c1.371 0 2.481-1.127 2.481-2.513V2.824a.551.551 0 0 0-.129-.36z"/></svg><span class="name">ProtonMail</span></a></div>

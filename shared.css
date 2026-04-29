@@ -11,19 +11,22 @@
   --accent-dim: rgba(255, 255, 255, 0.1);
 
   /* Shared Tile Colors (Windows Phone inspired colors can be vibrant) */
-  --cat-news: #0078d7; /* blue */
-  --cat-health: #107c10; /* green */
-  --cat-listen: #e3008c; /* magenta */
-  --cat-shopping: #68217a; /* purple */
-  --cat-keep: #ffb900; /* yellow */
-  --cat-games: #ffb900; /* yellow */
+  --cat-news: #00A4EF; /* light blue */
+  --cat-health: #7FBA00; /* vibrant green */
+  --cat-listen: #F25022; /* vibrant red-orange */
+  --cat-shopping: #737373; /* grey (unused mostly) */
+  --cat-keep: #FFB900; /* yellow */
+  --cat-games: #FF8C00; /* dark orange */
 
-  --cat-util: #68217a; /* purple */
-  --cat-mail: #e3008c; /* magenta */
-  --cat-chat: #0078d7; /* blue */
-  --cat-meet: #107c10; /* green */
-  --cat-school: #ffb900; /* yellow */
-  --cat-browser: #0078d7; /* blue */
+  --cat-util: #68217A; /* purple */
+  --cat-mail: #E3008C; /* magenta */
+  --cat-chat: #0078D7; /* classic blue */
+  --cat-meet: #107C10; /* dark green */
+  --cat-school: #FFD700; /* gold */
+
+  --cat-safari: #00C4FF; /* cyan */
+  --cat-vpn: #8E8CD8; /* soft purple/indigo */
+  --cat-orion: #00E676; /* neon green */
 }
 
 @media (prefers-color-scheme: light) {
@@ -230,7 +233,10 @@ header {
 .bookmark-item[data-category="chat"] { background: var(--cat-chat); }
 .bookmark-item[data-category="meet"] { background: var(--cat-meet); }
 .bookmark-item[data-category="school"] { background: var(--cat-school); }
-.bookmark-item[data-category="browser"] { background: var(--cat-browser); }
+
+.bookmark-item[data-category="safari"] { background: var(--cat-safari); }
+.bookmark-item[data-category="vpn"] { background: var(--cat-vpn); }
+.bookmark-item[data-category="orion"] { background: var(--cat-orion); }
 
 /* Fallback background if no category matches */
 .bookmark-item { background: #555555; }
