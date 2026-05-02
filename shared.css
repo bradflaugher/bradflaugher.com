@@ -326,6 +326,15 @@ header {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(5, minmax(0, 1fr));
   }
+
+  .bookmark-item > a.access-link {
+    top: 0.5rem;
+    right: 0.5rem;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0 0.6rem;
+    font-size: 0.7rem;
+  }
 }
 
 @media (max-width: 900px) and (orientation: landscape) {
