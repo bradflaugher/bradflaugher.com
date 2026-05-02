@@ -174,6 +174,7 @@ header {
 }
 
 .bookmark-item {
+  position: relative;
   border-radius: 0; /* Windows Phone style */
   transition: filter 0.15s, transform 0.1s;
   display: flex;
@@ -207,6 +208,27 @@ header {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.bookmark-item > a.access-link {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  z-index: 2;
+  padding: 0.15rem 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: rgba(0, 0, 0, 0.18);
+  color: #ffffff !important;
+  text-decoration: none;
+  font-size: 0.58rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.bookmark-item > a.access-link:hover {
+  background: rgba(255, 255, 255, 0.24);
 }
 
 /* Icons inside the tile */
