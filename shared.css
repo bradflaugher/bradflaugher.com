@@ -211,13 +211,14 @@ header {
 }
 
 .bookmark-item > a.access-link {
-  position: absolute;
-  top: 0.35rem;
-  right: 0.35rem;
-  z-index: 2;
-  padding: 0.15rem 0.35rem;
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  background: rgba(0, 0, 0, 0.18);
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.35rem;
+  padding: 0 0.5rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(0, 0, 0, 0.16);
   color: #ffffff !important;
   text-decoration: none;
   font-size: 0.58rem;
@@ -306,6 +307,17 @@ header {
     height: 32px;
     margin-right: 0;
     margin-bottom: auto; /* Push icon to the top left, text stays at bottom left */
+  }
+
+  .bookmark-item > a.access-link {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.35rem;
+    z-index: 2;
+    min-width: 0;
+    padding: 0.15rem 0.35rem;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    background: rgba(0, 0, 0, 0.18);
   }
 }
 
