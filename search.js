@@ -28,7 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let url = engines[engine] || engines['ddg'];
 
-    if (isIOS) {
+    // Grok, Perplexity, and Maps should go "direct" to allow system/app handling
+    const isDirectEngine = ['grok', 'perplexity', 'maps'].includes(engine);
+
+    if (isIOS && !isDirectEngine) {
       if (browser === 'orion') {
         // Orion specific routing
         if (engine === 'ddg') {
