@@ -50,13 +50,36 @@ document.addEventListener('DOMContentLoaded', () => {
       if (searchMatch) anyVisible = true;
     });
 
-    noResults.classList.toggle('visible', !anyVisible);
+    if (noResults) noResults.classList.toggle('visible', !anyVisible);
   }
-
-  search.addEventListener('input', applyFilters);
 
   // Focus management
   if (!('ontouchstart' in window)) search.focus();
+
+  // Clear button logic
+  const clearBtn = document.createElement('button');
+  clearBtn.id = 'clear-search';
+  clearBtn.innerHTML = '&times;';
+  clearBtn.setAttribute('aria-label', 'Clear search');
+  search.parentNode.appendChild(clearBtn);
+
+  function toggleClearBtn() {
+    clearBtn.style.display = search.value ? 'block' : 'none';
+  }
+
+  search.addEventListener('input', () => {
+    toggleClearBtn();
+    applyFilters();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    search.value = '';
+    search.focus();
+    toggleClearBtn();
+    applyFilters();
+  });
+
+  toggleClearBtn();
 
   document.addEventListener('keydown', e => {
     if (e.key === '/' && document.activeElement !== search) {
@@ -70,12 +93,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Enter key triggers DDG web search
+  // Enter key triggers default web search
   search.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
       e.preventDefault();
       const q = search.value.trim();
-      if (q) doSearch('ddg-html');
+      if (q) {
+        const browser = document.querySelector('input[name="browser"]:checked')?.value || 'safari';
+        // bookmarks.html uses ddg-html by default, search.html uses ddg
+        const defaultEngine = document.body.contains(document.getElementById('grid')) ? 'ddg-html' : 'ddg';
+        window.doSearch(defaultEngine, browser);
+      }
     }
   });
 
@@ -113,43 +141,77 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Web search function
-  function doSearch(engine) {
+  window.doSearch = function(engine, browser = 'safari') {
     const q = search.value.trim();
     if (!q) { search.focus(); return; }
     const enc = encodeURIComponent(q);
 
-    if (engine === 'maps' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      var appUrl = /Android/i.test(navigator.userAgent)
-        ? 'geo:0,0?q=' + enc
-        : 'comgooglemaps://?q=' + enc;
-      var webUrl = 'https://maps.google.com/maps?q=' + enc;
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-      window.location.href = appUrl;
-      search.value = '';
-      applyFilters();
-      setTimeout(function() {
-        if (document.visibilityState !== 'hidden') {
-          window.open(webUrl, '_blank');
-        }
-      }, 1500);
-      return;
-    }
-
-    var urls = {
-      'ddg-html':    'https://html.duckduckgo.com/html/?q=' + enc,
+    const engines = {
+      'ddg':    'https://duckduckgo.com/?q=' + enc,
+      'ddg-html': 'https://html.duckduckgo.com/html/?q=' + enc,
+      'bing':   'https://www.bing.com/search?q=' + enc,
+      'google': 'https://www.google.com/search?q=' + enc,
       'bing-images': 'https://www.bing.com/images/search?q=' + enc,
       'maps':        'https://maps.google.com/maps?q=' + enc,
       'perplexity':  'https://www.perplexity.ai/search?q=' + enc,
       'grok':        'https://grok.com/?q=' + enc
     };
-    window.open(urls[engine], '_blank');
-    search.value = '';
-    applyFilters();
+
+    let url = engines[engine] || engines['ddg'];
+
+    if (isIOS) {
+      if (browser === 'orion') {
+        // Use browser's native search for default engine, otherwise open engine URL
+        if (engine === 'ddg' || engine === 'ddg-html') {
+          window.location.href = 'orion://search?q=' + enc;
+        } else {
+          window.location.href = 'orion://open-url?url=' + encodeURIComponent(url);
+        }
+        return;
+      } else if (browser === 'comet') {
+        if (engine === 'ddg' || engine === 'ddg-html') {
+          window.location.href = 'comet-ai://search?q=' + enc;
+        } else {
+          window.location.href = 'comet-ai://open-url?url=' + encodeURIComponent(url);
+        }
+        return;
+      }
     }
 
-    // Bind Web search buttons
-    document.querySelectorAll('.web-btn').forEach(btn => {
-    btn.addEventListener('click', () => doSearch(btn.dataset.engine));
+    // Special handling for maps app
+    if (engine === 'maps' && isIOS) {
+      const appUrl = /Android/i.test(navigator.userAgent)
+        ? 'geo:0,0?q=' + enc
+        : 'comgooglemaps://?q=' + enc;
+      
+      window.location.href = appUrl;
+      if (typeof applyFilters === 'function') {
+        search.value = '';
+        applyFilters();
+      }
+      setTimeout(function() {
+        if (document.visibilityState !== 'hidden') {
+          window.open(url, '_blank');
+        }
+      }, 1500);
+      return;
+    }
+
+    window.open(url, '_blank');
+    if (typeof applyFilters === 'function') {
+      search.value = '';
+      applyFilters();
+    }
+  }
+
+  // Bind Web search buttons
+  document.querySelectorAll('.web-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const browser = document.querySelector('input[name="browser"]:checked')?.value || 'safari';
+      window.doSearch(btn.dataset.engine, browser);
     });
+  });
 
 });
