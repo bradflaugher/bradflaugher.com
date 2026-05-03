@@ -9,24 +9,6 @@
   --text-muted: #888;
   --accent: var(--text);
   --accent-dim: rgba(255, 255, 255, 0.1);
-
-  /* Shared Tile Colors (Windows Phone inspired colors can be vibrant) */
-  --cat-news: #00A4EF; /* light blue */
-  --cat-health: #7FBA00; /* vibrant green */
-  --cat-listen: #F25022; /* vibrant red-orange */
-  --cat-shopping: #737373; /* grey (unused mostly) */
-  --cat-keep: #FFB900; /* yellow */
-  --cat-games: #FF8C00; /* dark orange */
-
-  --cat-util: #68217A; /* purple */
-  --cat-mail: #E3008C; /* magenta */
-  --cat-chat: #0078D7; /* classic blue */
-  --cat-meet: #107C10; /* dark green */
-  --cat-school: #FFD700; /* gold */
-
-  --cat-safari: #00C4FF; /* cyan */
-  --cat-vpn: #8E8CD8; /* soft purple/indigo */
-  --cat-orion: #00E676; /* neon green */
 }
 
 @media (prefers-color-scheme: light) {
@@ -39,8 +21,6 @@
     --text-muted: #666;
     --accent: var(--text);
     --accent-dim: rgba(0, 0, 0, 0.06);
-
-    /* Keep tile colors vibrant for light mode as well */
   }
 }
 
@@ -56,7 +36,6 @@ body {
   touch-action: manipulation;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
-  /* Safe area insets for iPhone notch / Dynamic Island */
   padding-top: env(safe-area-inset-top);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
@@ -87,7 +66,6 @@ header {
   margin-bottom: 1.5rem;
 }
 
-/* Unified search + filter component */
 .search-area {
   max-width: 440px;
   margin: 0 auto;
@@ -95,7 +73,7 @@ header {
 
 .search-filter-unit {
   border: 1px solid var(--border);
-  border-radius: 0; /* Windows Phone style */
+  border-radius: 0;
   overflow: hidden;
   transition: border-color 0.2s;
 }
@@ -163,7 +141,6 @@ header {
   background: var(--accent-dim);
 }
 
-/* Grid and cards */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
@@ -175,12 +152,13 @@ header {
 
 .bookmark-item {
   position: relative;
-  border-radius: 0; /* Windows Phone style */
+  border-radius: 0;
   transition: filter 0.15s, transform 0.1s;
   display: flex;
   align-items: stretch;
   overflow: hidden;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+  background: #555555; /* Fallback */
 }
 
 .bookmark-item.hidden { display: none !important; }
@@ -198,10 +176,6 @@ header {
   font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: 0px;
-}
-
-.bookmark-item a .domain {
-  display: none;
 }
 
 .bookmark-item a .name {
@@ -232,7 +206,6 @@ header {
   background: rgba(255, 255, 255, 0.24);
 }
 
-/* Icons inside the tile */
 .ctx-icon {
   display: inline-block;
   width: 20px;
@@ -242,27 +215,6 @@ header {
   vertical-align: middle;
   color: #ffffff !important;
 }
-
-/* Background Colors for Tiles based on Category */
-.bookmark-item[data-category="news"] { background: var(--cat-news); }
-.bookmark-item[data-category="health"] { background: var(--cat-health); }
-.bookmark-item[data-category="listen"] { background: var(--cat-listen); }
-.bookmark-item[data-category="shopping"] { background: var(--cat-shopping); }
-.bookmark-item[data-category="keep"] { background: var(--cat-keep); }
-.bookmark-item[data-category="games"] { background: var(--cat-games); }
-
-.bookmark-item[data-category="util"] { background: var(--cat-util); }
-.bookmark-item[data-category="mail"] { background: var(--cat-mail); }
-.bookmark-item[data-category="chat"] { background: var(--cat-chat); }
-.bookmark-item[data-category="meet"] { background: var(--cat-meet); }
-.bookmark-item[data-category="school"] { background: var(--cat-school); }
-
-.bookmark-item[data-category="safari"] { background: var(--cat-safari); }
-.bookmark-item[data-category="vpn"] { background: var(--cat-vpn); }
-.bookmark-item[data-category="orion"] { background: var(--cat-orion); }
-
-/* Fallback background if no category matches */
-.bookmark-item { background: #555555; }
 
 .no-results {
   grid-column: 1 / -1;
@@ -280,20 +232,17 @@ header {
 
   .container {
     padding: 1rem;
-    /* Force full height available */
   }
 
   header { margin-bottom: 1rem; }
 
   .web-btn { padding: 0.6rem 0; font-size: 0.9rem; }
 
-  /* Mobile Grid - dynamically stretch to fill remaining space */
   .grid {
     gap: 0.5rem;
     align-content: stretch;
   }
 
-  /* Tile layout for mobile (Windows Phone authentic) */
   .bookmark-item > a.main-link {
     flex-direction: column;
     align-items: flex-start;
@@ -306,7 +255,7 @@ header {
     width: 32px;
     height: 32px;
     margin-right: 0;
-    margin-bottom: auto; /* Push icon to the top left, text stays at bottom left */
+    margin-bottom: auto;
   }
 
   .bookmark-item > a.access-link {
