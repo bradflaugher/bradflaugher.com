@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'ddg-html':    'https://html.duckduckgo.com/html/?q=' + enc,
       'bing-images': 'https://www.bing.com/images/search?q=' + enc,
       'maps':        'https://maps.google.com/maps?q=' + enc,
-      'brave-ai':    'https://search.brave.com/ask?q=' + enc + '&source=llmSuggest'
+      'perplexity':  'https://www.perplexity.ai/search?q=' + enc
     };
     window.open(urls[engine], '_blank');
     search.value = '';
