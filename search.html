@@ -10,6 +10,7 @@
 <meta content="Search" name="apple-mobile-web-app-title"/>
 <meta content="#000000" name="theme-color"/>
 <link rel="stylesheet" href="shared.css?v={{SHARED_CSS_HASH}}">
+<link rel="stylesheet" href="search.css?v={{SEARCH_CSS_HASH}}">
 <style>
   .search-page-container {
     justify-content: center;
@@ -31,16 +32,20 @@
 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 <input autocomplete="off" id="search" placeholder="Search the web..." type="text"/>
 </div>
-<div class="web-search-row">
-<button class="web-btn" data-engine="ddg"><svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>DuckDuckGo</button>
-<button class="web-btn" data-engine="bing"><svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12"><path d="M5 3l14 9-14 9V3z"></path></svg>Bing</button>
-<button class="web-btn" data-engine="google"><svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12L21 7.5"></path></svg>Google</button>
 </div>
-<div class="web-search-row">
-<button class="web-btn" data-engine="perplexity"><svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>Perplexity</button>
-<button class="web-btn" data-engine="grok"><svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>Grok</button>
-<button class="web-btn" data-engine="maps"><svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"></path></svg>Maps</button>
+
+<div class="engine-grid">
+<button class="web-btn" data-engine="ddg"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>DuckDuckGo</button>
+<button class="web-btn" data-engine="ddg-html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>DDG (Lite)</button>
+<button class="web-btn" data-engine="google"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12L21 7.5"></path></svg>Google</button>
+<button class="web-btn" data-engine="bing-images"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="3"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>Images</button>
+<button class="web-btn" data-engine="perplexity"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>Perplexity</button>
+<button class="web-btn" data-engine="grok"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>Grok</button>
+<button class="web-btn" data-engine="maps"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"></path></svg>Maps</button>
 </div>
+
+<div class="browser-selector-wrap" id="browser-selector">
+<div class="browser-selector-label">Send to Browser</div>
 <div class="browser-selector-row">
 <label class="browser-option">
 <input name="browser" type="radio" value="safari" checked/>
@@ -68,22 +73,7 @@
 
     if (query) {
       searchInput.value = query;
-      // Optionally auto-trigger search if directed to do so, but user said "prepopulate"
     }
-
-    // Restore browser preference
-    const savedBrowser = localStorage.getItem('preferred_browser');
-    if (savedBrowser) {
-      const radio = document.querySelector(`input[name="browser"][value="${savedBrowser}"]`);
-      if (radio) radio.checked = true;
-    }
-
-    // Save browser preference on change
-    document.querySelectorAll('input[name="browser"]').forEach(radio => {
-      radio.addEventListener('change', (e) => {
-        localStorage.setItem('preferred_browser', e.target.value);
-      });
-    });
   });
 </script>
 </body>
