@@ -139,7 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
       'ddg-html':    'https://html.duckduckgo.com/html/?q=' + enc,
       'bing-images': 'https://www.bing.com/images/search?q=' + enc,
       'maps':        'https://maps.google.com/maps?q=' + enc,
-      'perplexity':  'https://www.perplexity.ai/search?q=' + enc
+      'perplexity':  'https://www.perplexity.ai/search?q=' + enc,
+      'grok':        'https://grok.com/?q=' + enc
     };
     window.open(urls[engine], '_blank');
     search.value = '';
