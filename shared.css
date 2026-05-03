@@ -236,7 +236,7 @@ header {
 
   header { margin-bottom: 1rem; }
 
-  .web-btn { padding: 0.6rem 0; font-size: 0.9rem; }
+  .web-btn { padding: 0.6rem 0; font-size: 0.8rem; gap: 0.2rem; }
 
   .grid {
     gap: 0.5rem;
