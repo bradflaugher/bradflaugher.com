@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Live filtering
   function applyFilters() {
+    if (!search) return;
     const q = search.value.toLowerCase().trim();
     let anyVisible = false;
 
@@ -54,39 +55,41 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Focus management
-  if (!('ontouchstart' in window)) search.focus();
+  if (search && !('ontouchstart' in window)) search.focus();
 
   // Clear button logic
-  const clearBtn = document.createElement('button');
-  clearBtn.id = 'clear-search';
-  clearBtn.innerHTML = '&times;';
-  clearBtn.setAttribute('aria-label', 'Clear search');
-  search.parentNode.appendChild(clearBtn);
+  if (search) {
+    const clearBtn = document.createElement('button');
+    clearBtn.id = 'clear-search';
+    clearBtn.innerHTML = '&times;';
+    clearBtn.setAttribute('aria-label', 'Clear search');
+    search.parentNode.appendChild(clearBtn);
 
-  function toggleClearBtn() {
-    clearBtn.style.display = search.value ? 'block' : 'none';
+    const toggleClearBtn = () => {
+      clearBtn.style.display = search.value ? 'block' : 'none';
+    };
+
+    search.addEventListener('input', () => {
+      toggleClearBtn();
+      applyFilters();
+    });
+
+    clearBtn.addEventListener('click', () => {
+      search.value = '';
+      search.focus();
+      toggleClearBtn();
+      applyFilters();
+    });
+
+    toggleClearBtn();
   }
 
-  search.addEventListener('input', () => {
-    toggleClearBtn();
-    applyFilters();
-  });
-
-  clearBtn.addEventListener('click', () => {
-    search.value = '';
-    search.focus();
-    toggleClearBtn();
-    applyFilters();
-  });
-
-  toggleClearBtn();
-
   document.addEventListener('keydown', e => {
-    if (e.key === '/' && document.activeElement !== search) {
+    if (e.key === '/' && search && document.activeElement !== search) {
       e.preventDefault();
       search.focus();
     }
-    if (e.key === 'Escape') {
+    if (e.key === 'Escape' && search) {
       search.value = '';
       search.dispatchEvent(new Event('input'));
       search.blur();
@@ -94,33 +97,37 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Enter key triggers default web search
-  search.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const q = search.value.trim();
-      if (q) {
-        const browser = document.querySelector('input[name="browser"]:checked')?.value || 'safari';
-        // bookmarks.html uses ddg-html by default, search.html uses ddg
-        const defaultEngine = document.body.contains(document.getElementById('grid')) ? 'ddg-html' : 'ddg';
-        window.doSearch(defaultEngine, browser);
+  if (search) {
+    search.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const q = search.value.trim();
+        if (q) {
+          const browser = document.querySelector('input[name="browser"]:checked')?.value || 'safari';
+          // bookmarks.html uses ddg-html by default, search.html uses ddg
+          const defaultEngine = grid ? 'ddg-html' : 'ddg';
+          window.doSearch(defaultEngine, browser);
+        }
       }
-    }
-  });
+    });
+  }
 
   // Clear search after visiting a result
-  grid.addEventListener('click', function(e) {
-    var link = e.target.closest('a');
-    if (!link) return;
-    if (!search.value.trim()) return;
-    setTimeout(function() {
-      search.value = '';
-      applyFilters();
-    }, 100);
-  });
+  if (grid && search) {
+    grid.addEventListener('click', function(e) {
+      var link = e.target.closest('a');
+      if (!link) return;
+      if (!search.value.trim()) return;
+      setTimeout(function() {
+        search.value = '';
+        applyFilters();
+      }, 100);
+    });
+  }
 
   // Mobile App Links Logic
   var mob = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if (mob) {
+  if (mob && grid) {
     grid.addEventListener('click', function(e) {
       var link = e.target.closest('a[data-app-url]');
       if (!link) return;
@@ -142,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Web search function
   window.doSearch = function(engine, browser = 'safari') {
+    if (!search) return;
     const q = search.value.trim();
     if (!q) { search.focus(); return; }
     const enc = encodeURIComponent(q);
