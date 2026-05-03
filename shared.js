@@ -118,13 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!q) { search.focus(); return; }
     const enc = encodeURIComponent(q);
 
-    if ((engine === 'maps' || engine === 'perplexity') && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      var appUrl = engine === 'maps'
-        ? (/Android/i.test(navigator.userAgent) ? 'geo:0,0?q=' + enc : 'comgooglemaps://?q=' + enc)
-        : 'perplexity://search?q=' + enc;
-      var webUrl = engine === 'maps'
-        ? 'https://maps.google.com/maps?q=' + enc
-        : 'https://www.perplexity.ai/search?q=' + enc;
+    if (engine === 'maps' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      var appUrl = /Android/i.test(navigator.userAgent)
+        ? 'geo:0,0?q=' + enc
+        : 'comgooglemaps://?q=' + enc;
+      var webUrl = 'https://maps.google.com/maps?q=' + enc;
 
       window.location.href = appUrl;
       search.value = '';
