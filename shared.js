@@ -118,16 +118,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!q) { search.focus(); return; }
     const enc = encodeURIComponent(q);
 
-    if (engine === 'maps' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      var mapsApp = /Android/i.test(navigator.userAgent)
-        ? 'geo:0,0?q=' + enc
-        : 'comgooglemaps://?q=' + enc;
-      window.location.href = mapsApp;
+    if ((engine === 'maps' || engine === 'perplexity') && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      var appUrl = engine === 'maps'
+        ? (/Android/i.test(navigator.userAgent) ? 'geo:0,0?q=' + enc : 'comgooglemaps://?q=' + enc)
+        : 'perplexity://search?q=' + enc;
+      var webUrl = engine === 'maps'
+        ? 'https://maps.google.com/maps?q=' + enc
+        : 'https://www.perplexity.ai/search?q=' + enc;
+
+      window.location.href = appUrl;
       search.value = '';
       applyFilters();
       setTimeout(function() {
         if (document.visibilityState !== 'hidden') {
-          window.open('https://maps.google.com/maps?q=' + enc, '_blank');
+          window.open(webUrl, '_blank');
         }
       }, 1500);
       return;
@@ -142,12 +146,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.open(urls[engine], '_blank');
     search.value = '';
     applyFilters();
-  }
+    }
 
-  // Bind Web search buttons
-  window.doSearch = doSearch; // expose if needed inline
-  document.querySelectorAll('.web-btn').forEach(btn => {
+    // Bind Web search buttons
+    document.querySelectorAll('.web-btn').forEach(btn => {
     btn.addEventListener('click', () => doSearch(btn.dataset.engine));
-  });
+    });
 
 });
