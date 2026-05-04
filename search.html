@@ -232,6 +232,28 @@
     animation: spin 0.8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+  .status-dot.failed {
+    background: #ff3b30;
+    opacity: 0.8;
+    box-shadow: 0 0 10px rgba(255, 59, 48, 0.3);
+  }
+  .error-banner {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 90vw;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    background: rgba(255, 59, 48, 0.12);
+    border: 1px solid rgba(255, 59, 48, 0.4);
+    color: #ff3b30;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: none;
+    z-index: 150;
+  }
+  .error-banner.active { display: block; }
 </style>
 </head>
 <body>
@@ -248,9 +270,11 @@
   <button class="cancel-btn" id="cancel">Cancel</button>
 </div>
 
-<div class="status-dot" id="status" title="Embedding Model Loading..."></div>
+<div class="status-dot" id="status" data-state="loading" title="Embedding Model Loading..."></div>
 
 <div class="scores-panel" id="scores"></div>
+
+<div class="error-banner" id="error-banner" role="alert"></div>
 
 <div class="loading-overlay" id="loading">
   <div class="loading-spinner"></div>
@@ -260,299 +284,353 @@
 <script type="module">
   import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.2.4';
 
-  // Configuration
+  // ───────────────────────────────────────────────────────────────────────
+  // Config
+  //
+  // We ship a single quantized ONNX file (model_quantized.onnx, ~22 MB).
+  // dtype: 'q8' tells transformers.js v3 to load that exact filename.
+  // Using any other dtype (e.g. 'fp32' → model.onnx) would 404; on
+  // Cloudflare Pages a 404 is served as HTML, which the ONNX runtime
+  // then tries to parse as protobuf and fails with the cryptic
+  // "Failed to load model because protobuf parsing failed" error.
+  // ───────────────────────────────────────────────────────────────────────
   env.allowLocalModels = true;
   env.allowRemoteModels = false;
   env.localModelPath = '/models/';
   env.useBrowserCache = true;
 
-  let routeTimer = null;
-  const search = document.getElementById('search');
-  const hint = document.getElementById('hint');
-  const overlay = document.getElementById('overlay');
-  const display = document.getElementById('engine-display');
-  const progress = document.getElementById('progress');
-  const cancel = document.getElementById('cancel');
-  const status = document.getElementById('status');
-  const loadingOverlay = document.getElementById('loading');
+  const MODEL_ID = 'sentence-transformers/all-MiniLM-L6-v2';
+  const MODEL_DTYPE = 'q8';
+  const EMBEDDINGS_URL = '/search-embeddings.json';
+  const SIMILARITY_THRESHOLD = 0.30;   // below this, fall back to DuckDuckGo
+  const ROUTE_DELAY_MS = 1500;         // user-cancelable delay before redirect (Enter)
+  const INPUT_DEBOUNCE_MS = 150;
 
   const engines = {
-    'ddg': { name: 'DuckDuckGo', color: '#DE5833', url: q => `https://html.duckduckgo.com/html/?q=${q}` },
-    'bing-images': { name: 'Bing Images', color: '#008373', url: q => `https://www.bing.com/images/search?q=${q}` },
-    'perplexity': { name: 'Perplexity', color: '#20B2AA', url: q => `https://www.perplexity.ai/search?q=${q}` },
-    'grok': { name: 'Grok', color: '#ffffff', url: q => `https://grok.com/?q=${q}` },
-    'maps': { name: 'Google Maps', color: '#4285F4', url: q => `https://maps.google.com/maps?q=${q}` },
-    'youtube': { name: 'YouTube', color: '#FF0000', url: q => `https://www.youtube.com/results?search_query=${q}` },
-    'amazon': { name: 'Amazon', color: '#FF9900', url: q => `https://www.amazon.com/s?k=${q}` },
-    'github': { name: 'GitHub', color: '#333', url: q => `https://github.com/search?q=${q}` },
-    'wolfram': { name: 'Wolfram Alpha', color: '#DA0E1A', url: q => `https://www.wolframalpha.com/input/?i=${q}` },
-    'direct': { name: 'Direct Link', color: '#00ff00', url: q => q.startsWith('http') ? q : `https://${q}` }
+    'ddg':         { name: 'DuckDuckGo',    color: '#DE5833', url: q => `https://html.duckduckgo.com/html/?q=${q}` },
+    'bing-images': { name: 'Bing Images',   color: '#008373', url: q => `https://www.bing.com/images/search?q=${q}` },
+    'perplexity':  { name: 'Perplexity',    color: '#20B2AA', url: q => `https://www.perplexity.ai/search?q=${q}` },
+    'grok':        { name: 'Grok',          color: '#ffffff', url: q => `https://grok.com/?q=${q}` },
+    'maps':        { name: 'Google Maps',   color: '#4285F4', url: q => `https://maps.google.com/maps?q=${q}` },
+    'youtube':     { name: 'YouTube',       color: '#FF0000', url: q => `https://www.youtube.com/results?search_query=${q}` },
+    'amazon':      { name: 'Amazon',        color: '#FF9900', url: q => `https://www.amazon.com/s?k=${q}` },
+    'github':      { name: 'GitHub',        color: '#333',    url: q => `https://github.com/search?q=${q}` },
+    'wolfram':     { name: 'Wolfram Alpha', color: '#DA0E1A', url: q => `https://www.wolframalpha.com/input/?i=${q}` },
+    'direct':      { name: 'Direct Link',   color: '#00ff00', url: q => q.startsWith('http') ? q : `https://${q}` }
   };
 
-  let extractor = null;
-  let routeVectors = [];
-  let modelReady = false;
-  let isInitializing = false;
-  let isRedirecting = !!new URLSearchParams(window.location.search).get('q');
+  // Bang shortcuts (always win over semantic routing)
+  const BANG_MAP = {
+    yt: 'youtube',     y: 'youtube',
+    a: 'amazon',       amz: 'amazon',
+    m: 'maps',         map: 'maps',
+    i: 'bing-images',  img: 'bing-images',
+    p: 'perplexity',   px: 'perplexity',
+    g: 'grok',         gr: 'grok',
+    gh: 'github',      git: 'github',
+    w: 'wolfram',      wa: 'wolfram',
+    d: 'ddg',          ddg: 'ddg'
+  };
 
+  const DOMAIN_RE    = /^[a-z0-9]+([\-\.][a-z0-9]+)*\.[a-z]{2,10}(:[0-9]{1,5})?(\/.*)?$/i;
+  const LOCALHOST_RE = /^localhost(:[0-9]{1,5})?(\/.*)?$/i;
+
+  // ───────────────────────────────────────────────────────────────────────
+  // DOM
+  // ───────────────────────────────────────────────────────────────────────
+  const $ = id => document.getElementById(id);
+  const search         = $('search');
+  const hint           = $('hint');
+  const overlay        = $('overlay');
+  const display        = $('engine-display');
+  const progress       = $('progress');
+  const cancel         = $('cancel');
+  const statusDot      = $('status');
+  const loadingOverlay = $('loading');
+  const scoresPanel    = $('scores');
+  const errorBanner    = $('error-banner');
+
+  // ───────────────────────────────────────────────────────────────────────
+  // State
+  // ───────────────────────────────────────────────────────────────────────
+  let extractor = null;
+  let routes = [];                                       // [{ key, vectors: Float32Array[] }]
+  let modelReady = false;
+  let modelFailed = false;
+  let routeTimer = null;
+  const qParam = new URLSearchParams(location.search).get('q');
+  const isRedirecting = qParam !== null;
+
+  // ───────────────────────────────────────────────────────────────────────
+  // Model + embeddings loader
+  // ───────────────────────────────────────────────────────────────────────
   async function initModel() {
-    if (isInitializing) return;
-    isInitializing = true;
-    
-    // Ensure loading overlay is visible
     loadingOverlay.classList.add('active');
-    
     try {
-      console.log('Search router: Initializing model...');
-      
-      // Load pre-calculated embeddings and model in parallel
-      const [embeddingsResponse, model] = await Promise.all([
-        fetch('/search-embeddings.json'),
-        pipeline('feature-extraction', 'sentence-transformers/all-MiniLM-L6-v2', {
-          dtype: 'q8',
-        })
+      console.log('Search router: initializing…');
+
+      const [embeddingsResp, model] = await Promise.all([
+        fetch(EMBEDDINGS_URL),
+        pipeline('feature-extraction', MODEL_ID, { dtype: MODEL_DTYPE })
       ]);
 
-      if (!embeddingsResponse.ok) {
-        throw new Error(`Failed to load search-embeddings.json: ${embeddingsResponse.status} ${embeddingsResponse.statusText}`);
+      if (!embeddingsResp.ok) {
+        throw new Error(`Failed to load embeddings (${embeddingsResp.status})`);
       }
-      
-      routeVectors = await embeddingsResponse.json();
-      extractor = model;
-      
-      if (!routeVectors || routeVectors.length === 0) {
-        throw new Error('Embeddings file is empty or invalid');
+      const raw = await embeddingsResp.json();
+      if (!Array.isArray(raw) || raw.length === 0) {
+        throw new Error('Embeddings file is empty or malformed');
       }
 
+      // Convert to typed arrays once. Vectors are L2-normalized at build
+      // time, so cosine similarity == dot product (no per-query sqrt).
+      routes = raw.map(r => ({
+        key: r.key,
+        vectors: r.vectors.map(v => Float32Array.from(v))
+      }));
+      extractor = model;
       modelReady = true;
-      status.classList.add('ready');
-      status.title = "Embedding Model Ready";
-      
-      console.log(`Search router: Semantic model loaded with ${routeVectors.length} categories`);
-      
-      if (!isRedirecting) {
-        loadingOverlay.classList.remove('active');
-      }
-      
+
+      statusDot.classList.add('ready');
+      statusDot.dataset.state = 'ready';
+      statusDot.title = 'Embedding Model Ready';
+
+      const total = routes.reduce((n, r) => n + r.vectors.length, 0);
+      console.log(`Search router: ready (${routes.length} routes, ${total} vectors)`);
+
+      if (!isRedirecting) loadingOverlay.classList.remove('active');
       updateHint();
     } catch (err) {
-      console.error('Search router: Initialization failed', err);
-      status.title = "Embedding Model Failed: " + err.message;
-      status.style.background = "#ff0000";
+      modelFailed = true;
+      statusDot.classList.add('failed');
+      statusDot.dataset.state = 'failed';
+      statusDot.title = 'Embedding Model Failed: ' + err.message;
+      errorBanner.textContent = 'Semantic routing unavailable — falling back to DuckDuckGo. (' + err.message + ')';
+      errorBanner.classList.add('active');
+      console.error('Search router: init failed', err);
       loadingOverlay.classList.remove('active');
-    } finally {
-      isInitializing = false;
     }
   }
 
-  function cosineSimilarity(a, b) {
-    let dot = 0, na = 0, nb = 0;
-    for (let i = 0; i < a.length; i++) {
-      dot += a[i] * b[i];
-      na += a[i] * a[i];
-      nb += b[i] * b[i];
-    }
-    const similarity = dot / (Math.sqrt(na) * Math.sqrt(nb));
-    return isNaN(similarity) ? 0 : similarity;
+  // ───────────────────────────────────────────────────────────────────────
+  // Routing
+  // ───────────────────────────────────────────────────────────────────────
+
+  /**
+   * Dot product. Inputs MUST both be L2-normalized — then this equals
+   * cosine similarity. We assert that on the route side at load time
+   * (vectors come from a build-time pipeline with normalize=true) and
+   * on the query side via `normalize: true` in the extractor call.
+   */
+  function dot(a, b) {
+    const len = a.length;
+    let s = 0;
+    for (let i = 0; i < len; i++) s += a[i] * b[i];
+    return s;
   }
 
-  const getEngineKey = async (q, abortToken) => {
-    const query = q.toLowerCase().trim();
-    if (!query) return { key: 'ddg', scores: [] };
-
-    // 1. Absolute Overrides (Bangs)
-    if (query.startsWith('!')) {
-      const cmd = query.split(' ')[0].slice(1);
-      const cmdMap = {
-        'yt': 'youtube', 'y': 'youtube',
-        'a': 'amazon', 'amz': 'amazon',
-        'm': 'maps', 'map': 'maps', 'i': 'bing-images', 'img': 'bing-images',
-        'p': 'perplexity', 'px': 'perplexity', 'g': 'grok', 'gr': 'grok',
-        'gh': 'github', 'git': 'github',
-        'w': 'wolfram', 'wa': 'wolfram',
-        'd': 'ddg', 'ddg': 'ddg'
-      };
-      if (cmdMap[cmd]) return { key: cmdMap[cmd], scores: [] };
-    }
-    
-    // Direct Link detection
-    if (/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,10}(:[0-9]{1,5})?(\/.*)?$/i.test(query) && !query.includes(' ')) return { key: 'direct', scores: [] };
-    if (/^localhost(:[0-9]{1,5})?(\/.*)?$/i.test(query) && !query.includes(' ')) return { key: 'direct', scores: [] };
-
-    // 2. Semantic Routing (if ready)
-    if (modelReady) {
-      try {
-        const output = await extractor([query], { pooling: 'mean', normalize: true });
-        if (abortToken && abortToken.aborted) return null;
-        const qVector = output.tolist()[0];
-        
-        let bestKey = 'ddg';
-        let maxScore = -1;
-        const allScores = [];
-        
-        for (const rv of routeVectors) {
-          let routeMax = -1;
-          for (const v of rv.vectors) {
-            const score = cosineSimilarity(qVector, v);
-            if (score > routeMax) routeMax = score;
-          }
-          allScores.push({ key: rv.key, score: routeMax });
-          if (routeMax > maxScore) {
-            maxScore = routeMax;
-            bestKey = rv.key;
-          }
-        }
-        
-        allScores.sort((a, b) => b.score - a.score);
-        
-        if (maxScore > 0.30) return { key: bestKey, scores: allScores };
-        return { key: 'ddg', scores: allScores };
-      } catch (e) {
-        console.error('Inference error', e);
+  /**
+   * Score a query against every route. Each route's score is the *max*
+   * similarity over its example vectors (nearest-neighbor pooling — more
+   * robust than averaging when example phrasings vary widely).
+   */
+  function scoreAll(qVec) {
+    const scores = new Array(routes.length);
+    for (let i = 0; i < routes.length; i++) {
+      const vecs = routes[i].vectors;
+      let best = -1;
+      for (let j = 0; j < vecs.length; j++) {
+        const s = dot(qVec, vecs[j]);
+        if (s > best) best = s;
       }
+      scores[i] = { key: routes[i].key, score: best };
     }
+    scores.sort((a, b) => b.score - a.score);
+    return scores;
+  }
 
-    // 3. Fallback to default
-    return { key: 'ddg', scores: [] };
-  };
+  function classifyRules(query) {
+    if (query.startsWith('!')) {
+      const cmd = query.split(' ', 1)[0].slice(1);
+      if (BANG_MAP[cmd]) return BANG_MAP[cmd];
+    }
+    if (!query.includes(' ') && (DOMAIN_RE.test(query) || LOCALHOST_RE.test(query))) {
+      return 'direct';
+    }
+    return null;
+  }
 
-  const scoresPanel = document.getElementById('scores');
+  /**
+   * Returns { key, scores } where `scores` is sorted desc by similarity
+   * (or [] when classification was rule-based / model not ready).
+   * `staleCheck` is an optional () => boolean; if it ever returns true
+   * we abort and return null so the caller can drop a stale result.
+   */
+  async function classify(rawQuery, staleCheck) {
+    const q = rawQuery.toLowerCase().trim();
+    if (!q) return { key: 'ddg', scores: [] };
 
-  const updateHint = async () => {
-    const q = search.value.trim();
-    if (!q) {
-      hint.classList.remove('active');
-      document.documentElement.style.setProperty('--engine-color', 'transparent');
+    const ruleKey = classifyRules(q);
+    if (ruleKey) return { key: ruleKey, scores: [] };
+
+    if (!modelReady) return { key: 'ddg', scores: [] };
+
+    try {
+      const output = await extractor([q], { pooling: 'mean', normalize: true });
+      if (staleCheck && staleCheck()) return null;
+      const qVec = output.tolist()[0];
+      const scores = scoreAll(qVec);
+      const top = scores[0];
+      const key = top.score >= SIMILARITY_THRESHOLD ? top.key : 'ddg';
+      return { key, scores };
+    } catch (e) {
+      console.error('Inference error', e);
+      return { key: 'ddg', scores: [] };
+    }
+  }
+
+  // ───────────────────────────────────────────────────────────────────────
+  // UI updates (always cancellable; latest input wins)
+  // ───────────────────────────────────────────────────────────────────────
+  let hintSeq = 0;
+
+  function clearHint() {
+    hint.classList.remove('active');
+    document.documentElement.style.setProperty('--engine-color', 'transparent');
+    delete document.body.dataset.engine;
+    scoresPanel.classList.remove('active');
+    scoresPanel.replaceChildren();
+  }
+
+  function renderScores(result) {
+    if (!result.scores.length) {
       scoresPanel.classList.remove('active');
-      scoresPanel.innerHTML = '';
+      scoresPanel.replaceChildren();
       return;
     }
-    const token = { aborted: false };
-    inferenceAbort = token;
-    const result = await getEngineKey(q, token);
-    if (!result || token.aborted) return;
-    inferenceAbort = null;
+    // Build with DOM nodes (avoids innerHTML / XSS surface).
+    const frag = document.createDocumentFragment();
+    for (const s of result.scores) {
+      const pct = Math.round(s.score * 100);
+      const isBest = s.key === result.key;
+      const row = document.createElement('div');
+      row.className = 'score-row';
+      row.dataset.engine = s.key;
+      row.innerHTML =
+        `<span class="score-label">${engines[s.key].name}</span>` +
+        `<div class="score-bar"><div class="score-fill${isBest ? ' best' : ''}" style="width:${pct}%"></div></div>` +
+        `<span class="score-val">${pct}%</span>`;
+      frag.appendChild(row);
+    }
+    scoresPanel.replaceChildren(frag);
+    scoresPanel.classList.add('active');
+  }
+
+  async function updateHint() {
+    const q = search.value.trim();
+    const mySeq = ++hintSeq;
+    if (!q) { clearHint(); return; }
+
+    const result = await classify(q, () => mySeq !== hintSeq);
+    if (!result || mySeq !== hintSeq) return;       // a newer keystroke is in flight
+
     const engine = engines[result.key];
     hint.textContent = engine.name;
     hint.classList.add('active');
     document.documentElement.style.setProperty('--engine-color', engine.color);
-    
-    // Render scores
-    if (result.scores.length > 0) {
-      scoresPanel.innerHTML = result.scores.map(s => {
-        const isBest = s.key === result.key;
-        const pct = Math.round(s.score * 100);
-        return `<div class="score-row"><span class="score-label">${engines[s.key].name}</span><div class="score-bar"><div class="score-fill ${isBest ? 'best' : ''}" style="width:${pct}%"></div></div><span class="score-val">${pct}%</span></div>`;
-      }).join('');
-      scoresPanel.classList.add('active');
-    } else {
-      scoresPanel.classList.remove('active');
-      scoresPanel.innerHTML = '';
-    }
-  };
+    document.body.dataset.engine = result.key;
+    renderScores(result);
+  }
 
-  const performRoute = async (q, immediate = false) => {
-    if (!q) return;
-    const result = await getEngineKey(q);
-    const target = engines[result.key];
-    
-    let finalQuery = q;
-    if (q.trim().startsWith('!')) {
-      const parts = q.trim().split(/\s+/);
-      if (parts.length > 1) finalQuery = parts.slice(1).join(' ');
+  // ───────────────────────────────────────────────────────────────────────
+  // Routing / redirect
+  // ───────────────────────────────────────────────────────────────────────
+  function buildTargetUrl(rawQuery, key) {
+    let q = rawQuery.trim();
+    if (q.startsWith('!')) {
+      const parts = q.split(/\s+/);
+      if (parts.length > 1) q = parts.slice(1).join(' ');
     }
-    
-    const enc = encodeURIComponent(finalQuery.trim());
+    return key === 'direct'
+      ? engines.direct.url(q)
+      : engines[key].url(encodeURIComponent(q));
+  }
+
+  async function performRoute(rawQuery, immediate = false) {
+    if (!rawQuery) return;
+    const result = await classify(rawQuery);
+    const url = buildTargetUrl(rawQuery, result.key);
 
     if (immediate) {
-      window.location.replace(target.url(result.key === 'direct' ? finalQuery.trim() : enc));
+      location.replace(url);
       return;
     }
-
-    display.textContent = target.name;
+    display.textContent = engines[result.key].name;
     overlay.style.display = 'flex';
     search.blur();
+    requestAnimationFrame(() => { progress.style.width = '100%'; });
+    routeTimer = setTimeout(() => location.replace(url), ROUTE_DELAY_MS);
+  }
 
-    setTimeout(() => { progress.style.width = '100%'; }, 50);
-    routeTimer = setTimeout(() => {
-      window.location.replace(target.url(result.key === 'direct' ? finalQuery.trim() : enc));
-    }, 1500);
-  };
+  // ───────────────────────────────────────────────────────────────────────
+  // Event wiring
+  // ───────────────────────────────────────────────────────────────────────
+  let debounceTimer;
+  search.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(updateHint, INPUT_DEBOUNCE_MS);
+  });
 
+  search.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && search.value.trim()) performRoute(search.value);
+  });
+
+  cancel.addEventListener('click', () => {
+    clearTimeout(routeTimer);
+    routeTimer = null;
+    overlay.style.display = 'none';
+    progress.style.width = '0%';
+    search.focus();
+  });
+
+  // Rotating placeholder (decorative)
   const placeholders = [
-    'Type to search...',
-    '2 + 2 * 42',
-    'pizza near me',
-    '!yt lofi hip hop',
-    'explain quantum gravity',
-    'github.com',
-    'image of a black hole',
-    'latest AI news',
-    '!gh gemini-cli',
-    'integral of x^2',
-    'distance to moon'
+    'Type to search...', '2 + 2 * 42', 'pizza near me', '!yt lofi hip hop',
+    'explain quantum gravity', 'github.com', 'image of a black hole',
+    'latest AI news', '!gh gemini-cli', 'integral of x^2', 'distance to moon'
   ];
   let pIdx = 0;
   setInterval(() => {
-    if (!search.value) {
+    if (!search.value && document.activeElement !== search) {
       pIdx = (pIdx + 1) % placeholders.length;
       search.placeholder = placeholders[pIdx];
     }
   }, 3000);
 
-  let debounceTimer;
-  let inferenceAbort = null;
-  let isProcessing = false;
-  search.addEventListener('input', () => {
-    clearTimeout(debounceTimer);
-    if (inferenceAbort) {
-      inferenceAbort.aborted = true;
-      inferenceAbort = null;
-    }
-    debounceTimer = setTimeout(() => {
-      if (!isProcessing) {
-        isProcessing = true;
-        updateHint().finally(() => { isProcessing = false; });
-      }
-    }, 150);
-  });
-
-  search.addEventListener('keydown', e => {
-    if (e.key === 'Enter') performRoute(search.value);
-  });
-
-  cancel.addEventListener('click', () => {
-    clearTimeout(routeTimer);
-    overlay.style.display = 'none';
-    progress.style.width = '0%';
-    search.focus();
-  });
-  
-  // Handle query params after model loads
-  const qParam = new URLSearchParams(window.location.search).get('q');
-  if (qParam) {
-    isRedirecting = true;
-    const routeWhenReady = async () => {
-      try {
+  // ───────────────────────────────────────────────────────────────────────
+  // ?q=… auto-redirect entry point
+  // ───────────────────────────────────────────────────────────────────────
+  if (qParam !== null) {
+    const trimmed = qParam.trim();
+    if (!trimmed) {
+      // Empty query → just show the page.
+      loadingOverlay.classList.remove('active');
+    } else {
+      search.value = trimmed;
+      const tryRoute = () => {
         if (modelReady) {
-          await performRoute(qParam, true);
-        } else if (status.title.startsWith('Embedding Model Failed')) {
-          console.warn('Falling back to DuckDuckGo due to model failure');
-          // If model fails, we still want the query param to work, so fall back to default
-          const target = engines['ddg'];
-          window.location.replace(target.url(encodeURIComponent(qParam.trim())));
+          performRoute(trimmed, true);
+        } else if (modelFailed) {
+          console.warn('Search router: model failed, falling back to DuckDuckGo');
+          location.replace(engines.ddg.url(encodeURIComponent(trimmed)));
         } else {
-          setTimeout(routeWhenReady, 100);
+          setTimeout(tryRoute, 80);
         }
-      } catch (err) {
-        console.error('Redirect failed', err);
-        loadingOverlay.classList.remove('active');
-      }
-    };
-    routeWhenReady();
+      };
+      tryRoute();
+    }
   }
 
-  // Initialize model
   initModel();
 </script>
 </body>
