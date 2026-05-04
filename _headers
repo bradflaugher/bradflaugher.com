@@ -18,5 +18,5 @@
   Cache-Control: public, max-age=604800
 /favicon.ico
   Cache-Control: public, max-age=604800
-/bookmarks.webmanifest
+/search.webmanifest
   Cache-Control: public, max-age=604800
