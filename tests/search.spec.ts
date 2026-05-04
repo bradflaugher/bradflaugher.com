@@ -14,17 +14,18 @@ test.describe('Search E2E Tests', () => {
 
   test('query parameters should trigger a redirect', async ({ page }) => {
     // '!yt' is a bang that should definitely redirect to YouTube.
-    // The query param handler starts the process, and performRoute has a 1.5s delay
-    // plus the model initialization time.
+    // We listen for the navigation to confirm it happens.
+    
+    // We expect a navigation to happen after the model loads
+    const navigationPromise = page.waitForURL(/youtube\.com/, { timeout: 60000 });
+    
     await page.goto('http://localhost:3000/search.html?q=!yt+lofi');
     
     // The loading overlay should be visible while it's processing
     const loadingOverlay = page.locator('#loading');
     await expect(loadingOverlay).toHaveClass(/active/);
 
-    // Wait for the URL to change to YouTube. 
-    // We increase the timeout to allow for model load + processing.
-    await page.waitForURL(/youtube\.com/, { timeout: 60000 });
+    await navigationPromise;
     expect(page.url()).toContain('youtube.com');
   });
 
