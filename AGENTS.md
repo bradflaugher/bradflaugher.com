@@ -96,6 +96,30 @@ delay.
 - Route vectors total ~461 × 384 ≈ 177 K multiplications per query — fast
   enough on the main thread (no Web Worker needed for this scale).
 
+### iOS / cache-coherency invariants
+
+`search-embeddings.json` is fetched as `/search-embeddings.json?v=<N>`,
+where `N` is the `EMBEDDINGS_VERSION` constant in `search.html`. **Bump
+this any time you regenerate the JSON file.** Without it, iOS Safari
+clients with a previously-immutable-cached copy will keep using the
+stale vectors against a freshly-fetched HTML page.
+
+Backstop: `_headers` pins the URL to `max-age=3600, must-revalidate`,
+so even if you forget to bump the version, every client recovers
+within an hour. Do not change that to `immutable` — the whole point is
+that it's update-prone.
+
+`initModel()` returns a memoized, **never-rejecting** Promise<boolean>.
+The `?q=` redirect path `await`s it; do not reintroduce a polling loop
+(`setTimeout(tryRoute, 80)` and similar) — earlier versions had one and
+it was a maintenance trap.
+
+The error banner ships a **Retry** button (`#error-retry`) that calls
+`clearAppCaches()` and `location.reload()`. `clearAppCaches()` walks
+`caches.keys()` and `indexedDB.databases()` and nukes everything; it's
+intentionally aggressive so iOS users with a corrupted half-cache have
+a self-service recovery path.
+
 ### Critical pitfall: `dtype` must match the shipped ONNX file
 
 We ship exactly one model file: `model_quantized.onnx`. In
@@ -212,17 +236,19 @@ first test takes a few extra seconds. Subsequent specs in the same run
 reuse the on-disk model file (browser caching is short-lived because each
 test gets a fresh context).
 
-### What the tests cover (18 specs, ~50 s wall clock)
+### What the tests cover (40 specs, ~90 s wall clock)
 
 | Group                                     | Coverage |
 | ----------------------------------------- | -------- |
-| boot                                      | model loads, status reaches `ready`, no console errors |
-| bang shortcuts (parametrized × 7)         | each `!x` routes to the right host (encoding-agnostic) |
-| `?q=` redirect                            | auto-redirect for `?q=!yt+lofi`; empty `?q=` stays put |
-| direct URL detection                      | `github.com` / `localhost:3000` → direct; phrase with space → not direct |
-| semantic routing                          | scores panel renders 9 rows with one `.best`, hint matches `data-engine`, no stale UI on rapid input |
-| cancel button                             | overlay hides, focus restored, query intact (uses `addInitScript` to stub `location.replace` so the 1.5 s timer can't race the click) |
+| boot                                      | model loads, status reaches `ready`, no console errors, input has `aria-label`, embeddings fetched with `?v=…` |
+| bang shortcuts (parametrized × 11)        | each `!x` routes to the right host (encoding-agnostic), aliases (`!y`, `!git`, `!ddg`, `!gr`), bang-only (`!yt`), unknown bang (`!nope foo`) |
+| `?q=` redirect                            | `?q=!yt+lofi` auto-redirects; `?q=github.com` direct-links; non-bang non-domain queries (`?q=how+to+make+pizza`) wait for the model and route semantically; empty / whitespace-only stay on the page |
+| direct URL detection                      | `github.com`, `github.com/openhands`, `localhost:3000` → direct; phrase with space → not direct; Enter on `github.com` actually navigates |
+| semantic routing                          | scores panel renders 9 rows with one `.best`, hint matches `data-engine`, no stale UI on rapid input (`hintSeq` race fix) |
+| cancel button                             | overlay hides, focus restored, query intact (uses `addInitScript` to neuter the 1.5 s timer so a slow click can't race it); Escape works the same; double-Enter doesn't stack timers |
 | mobile keyboard awareness                 | a synthetic `visualViewport` resize lifts `.scores-panel` by ~350 px |
+| model load failure                        | embeddings 500 → status `failed`, error banner active, **Retry** visible; Enter still routes to DDG; `?q=…` falls back to DDG; clicking Retry reloads and recovers |
+| cache reliability                         | second page load on the same context reuses cached `model_quantized.onnx` |
 
 ### Updating the embeddings file
 
@@ -240,6 +266,12 @@ If you regenerate the file, sanity-check it with the snippet under
 (`ddg`, `bing-images`, `perplexity`, `grok`, `maps`, `youtube`, `amazon`,
 `github`, `wolfram`) are present. `direct` is rule-based and has no
 vectors.
+
+**Then bump `EMBEDDINGS_VERSION` in `search.html`.** The page fetches
+`/search-embeddings.json?v=<EMBEDDINGS_VERSION>`, so without a bump
+clients can serve a stale cached copy alongside the new HTML. The
+boot test (`embeddings.json is fetched with a cache-busting version
+param`) guards the existence of the query string, but not the value.
 
 ---
 
@@ -292,3 +324,19 @@ HTML report as an artifact (`playwright-report/`, 14-day retention).
 6. **Mobile keyboard hides the scores panel** → check that the JS
    `visualViewport` block is still present and that `.scores-panel` /
    `.status-dot` use `bottom: calc(2rem + var(--keyboard-inset, 0px))`.
+
+7. **Progress bar fills faster/slower than the redirect** → the bar
+   transition and the route timer both read `--route-delay-ms`. JS reads
+   it back via `getComputedStyle`. Don't hardcode `1500` in either place.
+
+8. **Reports of "stale results on iOS Safari"** → first thing to check
+   is whether `EMBEDDINGS_VERSION` was bumped after a JSON regen. If it
+   wasn't, every iOS user with an immutable-cached old copy is silently
+   running the old vectors. Either bump it now (forward fix) or ask
+   them to tap the Retry banner if they ever see one.
+
+9. **Retry button does nothing** → `clearAppCaches()` swallows errors
+   on purpose (some browsers throw on `indexedDB.databases()` in
+   private mode). The reload itself must still fire — check
+   DevTools → Application → IndexedDB to confirm the entries you
+   expect to be wiped actually went away.

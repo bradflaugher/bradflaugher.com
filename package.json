@@ -120,7 +120,11 @@
     "serve": "^14.2.6"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "playwright test",
+    "test:ci": "CI=1 playwright test",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report",
+    "serve": "serve -l 3000 ."
   },
   "repository": {
     "type": "git",

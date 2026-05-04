@@ -20,8 +20,6 @@ For deep implementation notes, gotchas, and CI details, see
 
 ## `search.html` — a semantic search router that runs in your browser
 
-![Screenshot of the search router](./screenshot.png)
-
 Set `https://bradflaugher.com/search?q=%s` as your browser's default
 search engine. From then on, every query you type goes through a small
 classifier that picks the best destination:
@@ -146,27 +144,31 @@ subsequent loads use the browser cache.
 
 ### Tests
 
-A Playwright suite ([`tests/search.spec.ts`](./tests/search.spec.ts))
-covers the whole stack:
+A Playwright suite ([`tests/search.spec.ts`](./tests/search.spec.ts), 40
+specs) covers the whole stack:
 
 | Group                          | What it asserts                                                                  |
 | ------------------------------ | -------------------------------------------------------------------------------- |
-| boot                           | model loads, status indicator reaches `ready`, no console errors                 |
-| bang shortcuts                 | each `!x` routes to the right host (encoding-agnostic)                           |
-| `?q=` redirect                 | `?q=!yt+lofi` auto-redirects; empty `?q=` stays on the page                      |
-| direct URL detection           | domains and `localhost:3000` classify as direct; phrases with spaces don't       |
-| semantic routing               | scores panel renders all 9 routes with exactly one `.best`; no stale UI on rapid input |
-| cancel button                  | clicking cancel stops the redirect, restores focus, preserves the query          |
+| boot                           | model loads, status indicator reaches `ready`, no console errors, input is accessible, embeddings.json is requested with a `?v=…` cache-buster |
+| bang shortcuts                 | each `!x` (plus aliases `!y`, `!git`, `!ddg`, `!gr`) routes to the right host; bang-only (`!yt`) and unknown bang (`!nope foo`) don't crash |
+| `?q=` redirect                 | `?q=!yt+lofi` auto-redirects; `?q=github.com` direct-links; `?q=how+to+make+pizza` waits for the model and routes semantically; empty / whitespace-only `?q=` stays on the page |
+| direct URL detection           | domains, `domain/path`, and `localhost:3000` classify as direct; phrases with spaces don't; Enter on `github.com` actually navigates |
+| semantic routing               | scores panel renders all 9 routes with exactly one `.best`; clearing input clears the UI; rapid-fire keystrokes settle on the latest query (`hintSeq` race) |
+| cancel button                  | clicking cancel or pressing Escape stops the redirect, restores focus, preserves the query; rapid double-Enter doesn't stack timers |
 | mobile keyboard awareness      | a synthetic `visualViewport` resize lifts the scores panel above the keyboard    |
+| model load failure             | a 500 on `search-embeddings.json` flips status to `failed`, shows the error banner with a working **Retry**, falls back to DuckDuckGo on Enter and on `?q=…` |
+| cache reliability              | a second page load on the same context reuses the cached ONNX model              |
 
 Run them:
 
 ```bash
+npm ci                                          # one-time
 npx playwright install --with-deps chromium    # one-time
-npx playwright test                             # full suite, ~50s
-npx playwright test -g "bang"                   # one describe block
-npx playwright test -g "cancel" --headed        # watch it run
-npx playwright show-report                      # open last HTML report
+npm test                                        # full suite, ~90s
+npm run test:ci                                 # CI mode (retries=1, html report)
+npx playwright test -g "bang"                  # one describe block
+npx playwright test -g "cancel" --headed       # watch it run
+npm run test:report                             # open last HTML report
 ```
 
 The `webServer` block in [`playwright.config.ts`](./playwright.config.ts)
@@ -176,6 +178,28 @@ CI runs the same suite on every PR via
 [`.github/workflows/search-tests.yml`](./.github/workflows/search-tests.yml),
 caches the Playwright browsers, and uploads the HTML report as an
 artifact when something fails.
+
+### iOS reliability and caching
+
+iOS Safari is famously creative about caches: it can drop one resource
+from disk while keeping a paired one, or serve an immutable-cached
+asset across builds even after a server-side change. To keep the
+router working through those moods, the page does three things:
+
+1. **Versioned embeddings URL.** `search.html` requests
+   `/search-embeddings.json?v=<EMBEDDINGS_VERSION>`. Bumping the
+   constant invalidates every browser cache atomically. The
+   [`_headers`](./_headers) file pins this URL to a 1-hour TTL with
+   `must-revalidate` regardless, as a safety net.
+2. **Never-rejecting init promise + fetch timeout.** If the embeddings
+   fetch hangs (slow network, partial body) it aborts after 30 s; if
+   the model itself errors, the page degrades to a DuckDuckGo
+   pass-through instead of getting stuck on the loading overlay.
+3. **Self-service Retry.** A failed load shows an error banner with a
+   **Retry** link. The handler clears `caches.*`, blasts every
+   IndexedDB the origin owns (transformers.js parks the model there),
+   and full-reloads. That's the recovery path you reach for when iOS
+   serves a corrupted half-cache and nothing else helps.
 
 ### Mobile keyboard handling
 
