@@ -3,76 +3,94 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
-<title>Bookmarks</title>
+<title>Launcher</title>
 <base target="_blank"/>
-<link href="/bookmarks.webmanifest" rel="manifest"/>
 <link href="/bookmarks-icon-180.png" rel="apple-touch-icon"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
-<meta content="Bookmarks" name="apple-mobile-web-app-title"/>
+<meta content="Launcher" name="apple-mobile-web-app-title"/>
 <meta content="#000000" name="theme-color"/>
 <style>
-  /* Base Reset & Variables */
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
-    --bg: #000000; --surface: #1a1a1a; --border: #333333;
-    --text: #ffffff; --text-muted: #888;
-  }
-  @media (prefers-color-scheme: light) {
-    :root { --bg: #ffffff; --surface: #f2f2f2; --border: #cccccc; --text: #000000; --text-muted: #666; }
+    --bg: #000000;
+    --text: #ffffff;
+    --text-muted: #888;
   }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg); color: var(--text); min-height: 100dvh; display: flex; flex-direction: column;
-    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: env(safe-area-inset-top) 2rem env(safe-area-inset-bottom) 2rem;
   }
-  .container { width: 100%; max-width: 900px; margin: 0 auto; padding: 1.25rem 1.5rem; flex: 1; }
-  @media (max-width: 900px) { .container { padding: 1rem; } }
-
-  /* Grid & Bookmarks */
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 0.5rem; }
+  .container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  .grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
   .bookmark-item {
-    position: relative; transition: filter 0.15s, transform 0.1s; display: flex; align-items: stretch;
-    overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
   }
-  .bookmark-item[data-category="listen"] { background: #1DB954; }
-  .bookmark-item[data-category="news"] { background: #E3120B; }
-  .bookmark-item[data-category="health"] { background: #2664F5; }
+  .bookmark-item a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    transition: opacity 0.2s;
+    display: block;
+    width: 100%;
+  }
+  .bookmark-item a:active {
+    opacity: 0.5;
+  }
+  .bookmark-item .access-link {
+    display: none;
+  }
   
-  .bookmark-item:hover { filter: brightness(1.1); transform: scale(0.98); }
-  .bookmark-item:active { transform: scale(0.95); }
-  .bookmark-item > a.main-link {
-    display: flex; align-items: center; flex: 1; padding: 0.75rem;
-    color: #ffffff !important; text-decoration: none; font-size: 0.85rem; font-weight: 600;
+  /* Category indicator */
+  .bookmark-item::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    margin-right: 1rem;
+    opacity: 0.5;
   }
-  .bookmark-item a .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .bookmark-item > a.access-link {
-    flex: 0 0 auto; display: flex; align-items: center; justify-content: center; min-width: 3.35rem; padding: 0 0.5rem;
-    border-left: 1px solid rgba(255, 255, 255, 0.45); background: rgba(0, 0, 0, 0.16);
-    color: #ffffff !important; text-decoration: none; font-size: 0.58rem; font-weight: 700; text-transform: uppercase;
-  }
-  .ctx-icon { width: 20px; height: 20px; margin-right: 0.5rem; color: #ffffff !important; }
+  .bookmark-item[data-category="listen"]::before { background: #1DB954; }
+  .bookmark-item[data-category="news"]::before { background: #E3120B; }
+  .bookmark-item[data-category="health"]::before { background: #2664F5; }
 
-  @media (max-width: 900px) {
-    .bookmark-item > a.main-link { flex-direction: column; align-items: flex-start; justify-content: flex-end; padding: 1rem; font-size: 1.1rem; }
-    .ctx-icon { width: 32px; height: 32px; margin-right: 0; margin-bottom: auto; }
-    .bookmark-item > a.access-link { position: absolute; top: 0.35rem; right: 0.35rem; border: 1px solid rgba(255, 255, 255, 0.65); background: rgba(0, 0, 0, 0.18); }
+  @media (min-width: 600px) {
+    .bookmark-item a:hover {
+      opacity: 0.7;
+    }
   }
-  @media (max-width: 900px) and (orientation: portrait) { .grid { grid-template-columns: repeat(2, 1fr); } }
 </style>
 </head>
 <body>
 <div class="container">
 <div class="grid" id="grid">
-  <div class="bookmark-item" data-category="health"><a class="main-link" data-app-url="clublocker://" href="https://clublocker.com/organizations/829/reservations/"><svg class="ctx-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg><span class="name">RCOP</span></a></div>
-  <div class="bookmark-item" data-category="health"><a class="main-link" data-app-url="oura://" href="https://cloud.ouraring.com/dashboard"><svg class="ctx-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg><span class="name">Oura Ring</span></a></div>
-  <div class="bookmark-item" data-category="health"><a class="main-link" data-app-url="com.solidcore.app://" href="https://www.solidcore.co/book-a-class/"><svg class="ctx-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg><span class="name">Solidcore</span></a></div>
-  <div class="bookmark-item" data-category="listen"><a class="main-link" data-app-url="spotify://" href="https://open.spotify.com/"><svg class="ctx-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0z"/></svg><span class="name">Spotify</span></a></div>
-  <div class="bookmark-item" data-category="listen"><a class="main-link" data-app-url="classical://" href="https://music.apple.com/us/curator/apple-music-classical/976439532"><svg class="ctx-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg><span class="name">Classical</span></a></div>
-  <div class="bookmark-item" data-category="listen"><a class="main-link" data-app-url="kobo://" href="https://www.kobo.com/"><svg class="ctx-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21l-8-3V7l8 3 8-3v11l-8 3z"/></svg><span class="name">Kobo</span></a></div>
-  <div class="bookmark-item" data-category="news"><a class="main-link" data-app-url="com.economist.lamarr://home" href="https://www.economist.com/"><svg class="ctx-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M0 0h24v24H0z"/></svg><span class="name">The Economist</span></a></div>
-  <div class="bookmark-item" data-category="news"><a class="main-link" data-app-url="twitter://timeline" href="https://x.com/home"><svg class="ctx-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M18.2 3H21L14.7 10.1 22 21H16.4L10.8 12.5 4.5 21H1.8L8.6 13 1.5 3H7.3L12.4 11 18.2 3z"/></svg><span class="name">X</span></a></div>
-  <div class="bookmark-item" data-category="news"><a class="main-link" data-app-url="nytimes://home" href="https://www.nytimes.com/"><svg class="ctx-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z"/></svg><span class="name">NYT</span></a><a class="access-link" href="https://libwww.freelibrary.org/elecres/NYTimesRemote.cfm">FREE</a></div>
+  <div class="bookmark-item" data-category="health"><a data-app-url="clublocker://" href="https://clublocker.com/organizations/829/reservations/">RCOP</a></div>
+  <div class="bookmark-item" data-category="health"><a data-app-url="oura://" href="https://cloud.ouraring.com/dashboard">Oura Ring</a></div>
+  <div class="bookmark-item" data-category="health"><a data-app-url="com.solidcore.app://" href="https://www.solidcore.co/book-a-class/">Solidcore</a></div>
+  <div class="bookmark-item" data-category="listen"><a data-app-url="spotify://" href="https://open.spotify.com/">Spotify</a></div>
+  <div class="bookmark-item" data-category="listen"><a data-app-url="classical://" href="https://music.apple.com/us/curator/apple-music-classical/976439532">Classical</a></div>
+  <div class="bookmark-item" data-category="listen"><a data-app-url="kobo://" href="https://www.kobo.com/">Kobo</a></div>
+  <div class="bookmark-item" data-category="listen"><a data-app-url="dewey-oauth://" href="https://www.freelibrary.org/">Libby</a></div>
+  <div class="bookmark-item" data-category="news"><a data-app-url="com.economist.lamarr://home" href="https://www.economist.com/">The Economist</a></div>
+  <div class="bookmark-item" data-category="news"><a data-app-url="twitter://timeline" href="https://x.com/home">X</a></div>
+  <div class="bookmark-item" data-category="news"><a data-app-url="nytimes://home" href="https://www.nytimes.com/">NYT</a></div>
 </div>
 </div>
 <script>
@@ -80,16 +98,22 @@
     const grid = document.getElementById('grid');
     const items = Array.from(document.querySelectorAll('.bookmark-item'));
     const CAT_ORDER = ['listen', 'news', 'health'];
-    const CUSTOM = { 'news': ['the economist', 'x', 'nytimes'], 'listen': ['spotify'], 'health': ['oura ring', 'clublocker', 'solidcore'] };
+    const CUSTOM = { 
+      'news': ['the economist', 'x', 'nytimes'], 
+      'listen': ['spotify', 'classical', 'kobo', 'libby'], 
+      'health': ['oura ring', 'clublocker', 'solidcore'] 
+    };
 
     items.sort((a, b) => {
       let cA = CAT_ORDER.indexOf(a.dataset.category), cB = CAT_ORDER.indexOf(b.dataset.category);
       if (cA !== cB) return cA - cB;
-      let nA = a.querySelector('.name').textContent.trim().toLowerCase(), nB = b.querySelector('.name').textContent.trim().toLowerCase();
+      let nA = a.textContent.trim().toLowerCase(), nB = b.textContent.trim().toLowerCase();
       let cat = a.dataset.category;
       if (CUSTOM[cat]) {
         let iA = CUSTOM[cat].indexOf(nA), iB = CUSTOM[cat].indexOf(nB);
         if (iA !== -1 && iB !== -1) return iA - iB;
+        if (iA !== -1) return -1;
+        if (iB !== -1) return 1;
       }
       return nA.localeCompare(nB);
     });
@@ -102,7 +126,11 @@
         e.preventDefault();
         window.location.href = a.dataset.appUrl;
         const web = a.getAttribute('href');
-        if (web && web !== '#') setTimeout(() => { if (document.visibilityState !== 'hidden') window.location.href = web; }, 1500);
+        if (web && web !== '#') {
+          setTimeout(() => { 
+            if (document.visibilityState !== 'hidden') window.location.href = web; 
+          }, 1500);
+        }
       });
     }
   });
