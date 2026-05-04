@@ -245,7 +245,7 @@
     'bing-images': { name: 'Bing Images', color: '#008373', url: q => `https://www.bing.com/images/search?q=${q}` },
     'perplexity': { name: 'Perplexity', color: '#20B2AA', url: q => `https://www.perplexity.ai/search?q=${q}` },
     'grok': { name: 'Grok', color: '#ffffff', url: q => `https://grok.com/?q=${q}` },
-    'maps': { name: 'Google Maps', color: '#4285F4', url: q => `https://maps.google.com/maps?q=${q}` },
+    'maps': { name: 'Maps', color: '#4285F4', url: q => `https://maps.google.com/maps?q=${q}` },
     'youtube': { name: 'YouTube', color: '#FF0000', url: q => `https://www.youtube.com/results?search_query=${q}` },
     'amazon': { name: 'Amazon', color: '#FF9900', url: q => `https://www.amazon.com/s?k=${q}` },
     'github': { name: 'GitHub', color: '#333', url: q => `https://github.com/search?q=${q}` },
@@ -304,7 +304,7 @@
     return isNaN(similarity) ? 0 : similarity;
   }
 
-  const getEngineKey = async (q) => {
+  const getEngineKey = async (q, abortToken) => {
     const query = q.toLowerCase().trim();
     if (!query) return { key: 'ddg', scores: [] };
 
@@ -331,6 +331,7 @@
     if (modelReady) {
       try {
         const output = await extractor([query], { pooling: 'mean', normalize: true });
+        if (abortToken && abortToken.aborted) return null;
         const qVector = output.tolist()[0];
         
         let bestKey = 'ddg';
@@ -374,7 +375,11 @@
       scoresPanel.innerHTML = '';
       return;
     }
-    const result = await getEngineKey(q);
+    const token = { aborted: false };
+    inferenceAbort = token;
+    const result = await getEngineKey(q, token);
+    if (!result || token.aborted) return;
+    inferenceAbort = null;
     const engine = engines[result.key];
     hint.textContent = engine.name;
     hint.classList.add('active');
@@ -408,7 +413,7 @@
     const enc = encodeURIComponent(finalQuery.trim());
 
     if (immediate) {
-      window.location.replace(target.url(key === 'direct' ? finalQuery.trim() : enc));
+      window.location.replace(target.url(result.key === 'direct' ? finalQuery.trim() : enc));
       return;
     }
 
@@ -418,7 +423,7 @@
 
     setTimeout(() => { progress.style.width = '100%'; }, 50);
     routeTimer = setTimeout(() => {
-      window.location.replace(target.url(key === 'direct' ? finalQuery.trim() : enc));
+      window.location.replace(target.url(result.key === 'direct' ? finalQuery.trim() : enc));
     }, 1500);
   };
 
@@ -444,9 +449,14 @@
   }, 3000);
 
   let debounceTimer;
+  let inferenceAbort = null;
   search.addEventListener('input', () => {
     clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(updateHint, 50);
+    if (inferenceAbort) {
+      inferenceAbort.aborted = true;
+      inferenceAbort = null;
+    }
+    debounceTimer = setTimeout(updateHint, 150);
   });
 
   search.addEventListener('keydown', e => {
