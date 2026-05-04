@@ -13,13 +13,18 @@ test.describe('Search E2E Tests', () => {
   });
 
   test('query parameters should trigger a redirect', async ({ page }) => {
-    // We use a query that we know should route to something specific if semantic search is working,
-    // or at least test that the redirect happens.
     // '!yt' is a bang that should definitely redirect to YouTube.
+    // The query param handler starts the process, and performRoute has a 1.5s delay
+    // plus the model initialization time.
     await page.goto('http://localhost:3000/search.html?q=!yt+lofi');
     
-    // Wait for the URL to change to the target engine
-    await page.waitForURL(/youtube\.com/, { timeout: 30000 });
+    // The loading overlay should be visible while it's processing
+    const loadingOverlay = page.locator('#loading');
+    await expect(loadingOverlay).toHaveClass(/active/);
+
+    // Wait for the URL to change to YouTube. 
+    // We increase the timeout to allow for model load + processing.
+    await page.waitForURL(/youtube\.com/, { timeout: 60000 });
     expect(page.url()).toContain('youtube.com');
   });
 
