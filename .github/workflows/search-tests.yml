@@ -1,0 +1,40 @@
+name: Search E2E Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'search.html'
+      - 'search-embeddings.json'
+      - 'tests/**'
+      - 'playwright.config.ts'
+      - '.github/workflows/search-tests.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'search.html'
+      - 'search-embeddings.json'
+      - 'tests/**'
+      - 'playwright.config.ts'
+      - '.github/workflows/search-tests.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps chromium
+
+    - name: Run Playwright tests
+      run: npx playwright test
