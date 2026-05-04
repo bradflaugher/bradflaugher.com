@@ -202,6 +202,36 @@
     width: 35px;
     text-align: right;
   }
+  .loading-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    text-align: center;
+  }
+  .loading-overlay.active {
+    display: flex;
+  }
+  .loading-text {
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+  .loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--text-muted);
+    border-top-color: var(--text);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -222,6 +252,11 @@
 
 <div class="scores-panel" id="scores"></div>
 
+<div class="loading-overlay" id="loading">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading model...</div>
+</div>
+
 <script type="module">
   import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.2.4';
 
@@ -239,6 +274,7 @@
   const progress = document.getElementById('progress');
   const cancel = document.getElementById('cancel');
   const status = document.getElementById('status');
+  const loadingOverlay = document.getElementById('loading');
 
   const engines = {
     'ddg': { name: 'DuckDuckGo', color: '#DE5833', url: q => `https://html.duckduckgo.com/html/?q=${q}` },
@@ -284,12 +320,14 @@
       modelReady = true;
       status.classList.add('ready');
       status.title = "Embedding Model Ready";
+      loadingOverlay.classList.remove('active');
       console.log('Search router: Semantic model loaded');
       updateHint();
     } catch (err) {
       console.error('Search router: Failed to load model', err);
       status.title = "Embedding Model Failed";
       status.style.background = "#ff0000";
+      loadingOverlay.classList.remove('active');
     }
   }
 
@@ -479,8 +517,10 @@
   // Handle query params after model loads
   const qParam = new URLSearchParams(window.location.search).get('q');
   if (qParam) {
+    loadingOverlay.classList.add('active');
     const routeWhenReady = () => {
       if (modelReady) {
+        loadingOverlay.classList.remove('active');
         performRoute(qParam, true);
       } else {
         setTimeout(routeWhenReady, 100);
