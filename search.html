@@ -60,7 +60,7 @@
     font-size: 1.5rem;
     font-weight: 300;
     outline: none;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
   }
   #clear-search {
     position: absolute;
@@ -91,7 +91,7 @@
     cursor: pointer;
     text-align: left;
     transition: opacity 0.2s;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
   }
   .web-btn:hover {
     opacity: 0.7;
@@ -109,6 +109,7 @@
   </div>
   <div class="engine-grid">
     <button class="web-btn" data-engine="ddg">DuckDuckGo</button>
+    <button class="web-btn" data-engine="bing-images">Bing Images</button>
     <button class="web-btn" data-engine="perplexity">Perplexity</button>
     <button class="web-btn" data-engine="grok">Grok</button>
     <button class="web-btn" data-engine="maps">Maps</button>
@@ -126,6 +127,7 @@
       const enc = encodeURIComponent(q);
       const urls = {
         'ddg': 'https://html.duckduckgo.com/html/?q=' + enc,
+        'bing-images': 'https://www.bing.com/images/search?q=' + enc,
         'perplexity': 'https://www.perplexity.ai/search?q=' + enc,
         'grok': 'https://grok.com/?q=' + enc,
         'maps': 'https://maps.google.com/maps?q=' + enc
