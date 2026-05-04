@@ -135,3 +135,7 @@ dmypy.json
 
 html/node_modules/*
 node_modules/
+test-search-router.mjs
+install-test-deps.sh
+package.json
+package-lock.json
