@@ -34,7 +34,3 @@ in place; there's no build step.
 ```
 
 ---
-
-## License
-
-Code in this repository is mine.
