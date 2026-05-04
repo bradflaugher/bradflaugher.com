@@ -3,29 +3,27 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
-<title>Search Router</title>
-<link href="/bookmarks-icon-180.png" rel="apple-touch-icon"/>
+<title>Search</title>
+<link href="/search.webmanifest" rel="manifest"/>
+<link href="/favicon-32x32.png" rel="icon" type="image/png"/>
+<link href="/favicon-144x144.png" rel="apple-touch-icon"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
-<meta content="Search" name="apple-mobile-web-app-title"/>
-<meta content="#000000" name="theme-color"/>
+<meta content="#000000" name="theme-color" id="theme-color"/>
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
     --bg: #000000;
-    --surface: #1a1a1a;
-    --border: #333333;
     --text: #ffffff;
-    --text-muted: #888;
+    --text-muted: #666;
     --accent: #ffffff;
+    --engine-color: transparent;
   }
   @media (prefers-color-scheme: light) {
     :root {
       --bg: #ffffff;
-      --surface: #f2f2f2;
-      --border: #cccccc;
       --text: #000000;
-      --text-muted: #666;
+      --text-muted: #999;
       --accent: #000000;
     }
   }
@@ -38,136 +36,287 @@
     flex-direction: column;
     justify-content: center;
     padding: env(safe-area-inset-top) 2rem env(safe-area-inset-bottom) 2rem;
+    transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--engine-color);
+    opacity: 0.05;
+    pointer-events: none;
+    transition: background 0.8s ease;
   }
   .container {
     width: 100%;
-    max-width: 400px;
+    max-width: 600px;
     margin: 0 auto;
-  }
-  
-  .search-input-wrap {
     position: relative;
-    background: transparent;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 2rem;
+    z-index: 10;
+  }
+  .input-wrap {
+    position: relative;
   }
   #search {
     width: 100%;
-    padding: 0.75rem 0;
+    padding: 1.5rem 0;
     border: none;
     background: transparent;
     color: var(--text);
-    font-size: 1.5rem;
-    font-weight: 300;
+    font-size: clamp(1.5rem, 5vw, 3rem);
+    font-weight: 200;
     outline: none;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.05em;
+    transition: all 0.3s;
   }
-  #clear-search {
+  .engine-hint {
     position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
+    bottom: -1.5rem;
+    left: 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     color: var(--text-muted);
-    font-size: 1.5rem;
-    cursor: pointer;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .engine-hint.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .routing-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg);
     display: none;
-    padding: 5px;
-  }
-
-  .engine-grid {
-    display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
   }
-  .web-btn {
-    padding: 0;
-    border: none;
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .engine-name {
+    font-size: 3.5rem;
+    font-weight: 100;
+    letter-spacing: -0.06em;
+    margin-bottom: 2rem;
+  }
+  .cancel-btn {
     background: transparent;
-    color: var(--text);
-    font-size: 1.5rem;
-    font-weight: 300;
+    border: 1px solid var(--text-muted);
+    color: var(--text-muted);
+    padding: 0.6rem 2rem;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     cursor: pointer;
-    text-align: left;
-    transition: opacity 0.2s;
-    letter-spacing: -0.025em;
+    margin-top: 3rem;
+    transition: all 0.2s;
   }
-  .web-btn:hover {
-    opacity: 0.7;
+  .cancel-btn:hover {
+    color: var(--text);
+    border-color: var(--text);
+    background: rgba(255,255,255,0.05);
   }
-  .web-btn:active {
-    opacity: 0.5;
+  .progress-bar {
+    width: 240px;
+    height: 1px;
+    background: var(--text-muted);
+    position: relative;
+    overflow: hidden;
+    opacity: 0.2;
+  }
+  .progress-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 0%;
+    background: var(--text);
+    transition: width 1.5s linear;
   }
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="search-input-wrap">
-    <input autocomplete="off" id="search" placeholder="Search" type="text"/>
-    <button id="clear-search" aria-label="Clear">&times;</button>
-  </div>
-  <div class="engine-grid">
-    <button class="web-btn" data-engine="ddg">DuckDuckGo</button>
-    <button class="web-btn" data-engine="bing-images">Bing Images</button>
-    <button class="web-btn" data-engine="perplexity">Perplexity</button>
-    <button class="web-btn" data-engine="grok">Grok</button>
-    <button class="web-btn" data-engine="maps">Maps</button>
+  <div class="input-wrap">
+    <input autocomplete="off" id="search" placeholder="Type to search..." type="text" autofocus/>
+    <div class="engine-hint" id="hint">DuckDuckGo</div>
   </div>
 </div>
+
+<div class="routing-overlay" id="overlay">
+  <div class="engine-name" id="engine-display">DuckDuckGo</div>
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+  <button class="cancel-btn" id="cancel">Cancel</button>
+</div>
+
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const search = document.getElementById('search');
-    const clearBtn = document.getElementById('clear-search');
-    const isIOS = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  let routeTimer = null;
+  const search = document.getElementById('search');
+  const hint = document.getElementById('hint');
+  const overlay = document.getElementById('overlay');
+  const display = document.getElementById('engine-display');
+  const progress = document.getElementById('progress');
+  const cancel = document.getElementById('cancel');
 
-    const doSearch = (engine) => {
-      const q = search.value.trim();
-      if (!q) { search.focus(); return; }
-      const enc = encodeURIComponent(q);
-      const urls = {
-        'ddg': 'https://html.duckduckgo.com/html/?q=' + enc,
-        'bing-images': 'https://www.bing.com/images/search?q=' + enc,
-        'perplexity': 'https://www.perplexity.ai/search?q=' + enc,
-        'grok': 'https://grok.com/?q=' + enc,
-        'maps': 'https://maps.google.com/maps?q=' + enc
+  const engines = {
+    'ddg': { name: 'DuckDuckGo', color: '#DE5833', url: q => `https://html.duckduckgo.com/html/?q=${q}` },
+    'bing-images': { name: 'Bing Images', color: '#008373', url: q => `https://www.bing.com/images/search?q=${q}` },
+    'perplexity': { name: 'Perplexity', color: '#20B2AA', url: q => `https://www.perplexity.ai/search?q=${q}` },
+    'grok': { name: 'Grok', color: '#ffffff', url: q => `https://grok.com/?q=${q}` },
+    'maps': { name: 'Google Maps', color: '#4285F4', url: q => `https://maps.google.com/maps?q=${q}` },
+    'youtube': { name: 'YouTube', color: '#FF0000', url: q => `https://www.youtube.com/results?search_query=${q}` },
+    'wolfram': { name: 'WolframAlpha', color: '#F9690E', url: q => `https://www.wolframalpha.com/input?i=${q}` },
+    'amazon': { name: 'Amazon', color: '#FF9900', url: q => `https://www.amazon.com/s?k=${q}` },
+    'github': { name: 'GitHub', color: '#6e5494', url: q => `https://github.com/search?q=${q}` },
+    'direct': { name: 'Direct Link', color: '#00ff00', url: q => q.startsWith('http') ? q : `https://${q}` }
+  };
+
+  const getEngineKey = (q) => {
+    const query = q.toLowerCase().trim();
+    if (!query) return 'ddg';
+
+    // Explicit Commands (Bangs)
+    if (query.startsWith('!')) {
+      const cmd = query.split(' ')[0].slice(1);
+      const cmdMap = {
+        'yt': 'youtube', 'y': 'youtube',
+        'w': 'wolfram', 'wa': 'wolfram',
+        'a': 'amazon', 'amz': 'amazon',
+        'gh': 'github', 'git': 'github',
+        'm': 'maps', 'map': 'maps',
+        'i': 'bing-images', 'img': 'bing-images',
+        'p': 'perplexity', 'px': 'perplexity',
+        'g': 'grok', 'gr': 'grok',
+        'd': 'ddg', 'ddg': 'ddg'
       };
-      let url = urls[engine] || urls['ddg'];
-      if (engine === 'maps' && isIOS) {
-        const appUrl = /iPhone|iPad|iPod/.test(navigator.userAgent) ? 'comgooglemaps://?q=' + enc : 'geo:0,0?q=' + enc;
-        window.location.href = appUrl;
-        setTimeout(() => { if (document.visibilityState !== 'hidden') window.open(url, '_blank'); }, 1500);
-        return;
-      }
-      window.open(url, '_blank');
-    };
+      if (cmdMap[cmd]) return cmdMap[cmd];
+    }
 
-    document.querySelectorAll('.web-btn').forEach(btn => {
-      btn.addEventListener('click', () => doSearch(btn.dataset.engine));
-    });
+    // Direct URL detection (e.g., github.com, localhost:3000)
+    if (/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,10}(:[0-9]{1,5})?(\/.*)?$/i.test(query) && !query.includes(' ')) return 'direct';
 
-    search.addEventListener('input', () => {
-      clearBtn.style.display = search.value ? 'block' : 'none';
-    });
-
-    clearBtn.addEventListener('click', () => {
-      search.value = '';
-      search.focus();
-      clearBtn.style.display = 'none';
-    });
-
-    search.addEventListener('keydown', e => {
-      if (e.key === 'Enter') doSearch('ddg');
-    });
+    const words = query.split(/\s+/);
     
-    const q = new URLSearchParams(window.location.search).get('q');
-    if (q) {
-      search.value = q;
-      clearBtn.style.display = 'block';
+    // YouTube
+    const videoKeywords = ['video', 'youtube', 'trailer', 'movie', 'tutorial', 'clip', 'how to', 'watch'];
+    if (words.some(w => videoKeywords.includes(w))) return 'youtube';
+
+    // WolframAlpha / Math
+    const mathKeywords = ['calc', 'math', 'solve', 'equation', 'integral', 'sqrt', 'derivative'];
+    if (words.some(w => mathKeywords.includes(w)) || /^[\d\s\+\-\*\/\(\)\=\.x\^]+$/.test(query) && /[\+\-\*\/\=\^]/.test(query)) return 'wolfram';
+
+    // Amazon
+    const shopKeywords = ['buy', 'price', 'shop', 'amazon', 'order', 'cost'];
+    if (words.some(w => shopKeywords.includes(w))) return 'amazon';
+
+    // GitHub
+    const devKeywords = ['github', 'npm', 'repo', 'git', 'source code', 'documentation', 'api'];
+    if (words.some(w => devKeywords.includes(w))) return 'github';
+
+    // Bing Image Search
+    const imageKeywords = ['image', 'pic', 'photo', 'gif', 'svg', 'png', 'jpg', 'wallpaper', 'logo'];
+    if (words.some(w => imageKeywords.includes(w))) return 'bing-images';
+    
+    // Maps
+    const mapKeywords = ['near me', 'restaurant', 'hotel', 'park', 'address', 'city', 'map', 'directions', 'located', 'cafe', 'pizza', 'airport', 'station'];
+    if (words.some(w => mapKeywords.includes(w)) || /\d+\s+[a-z]+/.test(query) || query.includes(' street') || query.includes(' ave')) return 'maps';
+    
+    // Grok
+    const socialKeywords = ['news', 'opinion', 'social', 'twitter', 'x', 'trending', 'politics', 'crypto', 'viral', 'reddit', 'tiktok'];
+    if (words.some(w => socialKeywords.includes(w)) || query.includes('what happened') || query.includes('who is')) return 'grok';
+    
+    // Perplexity
+    const researchKeywords = ['explain', 'research', 'compare', 'deep dive', 'summarize', 'vs', 'difference between'];
+    if (query.length > 70 || words.length > 10 || query.includes('?') || words.some(w => researchKeywords.includes(w))) return 'perplexity';
+    
+    return 'ddg';
+  };
+
+  const updateHint = () => {
+    const q = search.value.trim();
+    if (!q) {
+      hint.classList.remove('active');
+      document.documentElement.style.setProperty('--engine-color', 'transparent');
+      return;
+    }
+    const key = getEngineKey(q);
+    const engine = engines[key];
+    hint.textContent = engine.name;
+    hint.classList.add('active');
+    document.documentElement.style.setProperty('--engine-color', engine.color);
+  };
+
+  const performRoute = (q, immediate = false) => {
+    if (!q) return;
+    const key = getEngineKey(q);
+    const target = engines[key];
+    
+    // Strip bang command from query if present
+    let finalQuery = q;
+    if (q.trim().startsWith('!')) {
+      const parts = q.trim().split(/\s+/);
+      if (parts.length > 1) {
+        finalQuery = parts.slice(1).join(' ');
+      }
     }
     
-    if (!('ontouchstart' in window)) search.focus();
+    const enc = encodeURIComponent(finalQuery.trim());
+
+    if (immediate) {
+      window.location.replace(target.url(key === 'direct' ? finalQuery.trim() : enc));
+      return;
+    }
+
+    display.textContent = target.name;
+    overlay.style.display = 'flex';
+    search.blur();
+
+    setTimeout(() => { progress.style.width = '100%'; }, 50);
+    routeTimer = setTimeout(() => {
+      window.location.replace(target.url(key === 'direct' ? finalQuery.trim() : enc));
+    }, 1500);
+  };
+
+  const placeholders = [
+    'Type to search...',
+    '2 + 2 * 42',
+    'pizza near me',
+    '!yt lofi hip hop',
+    'explain quantum gravity',
+    'github.com',
+    'image of a black hole',
+    'latest AI news',
+    '!gh gemini-cli'
+  ];
+  let pIdx = 0;
+  setInterval(() => {
+    if (!search.value) {
+      pIdx = (pIdx + 1) % placeholders.length;
+      search.placeholder = placeholders[pIdx];
+    }
+  }, 3000);
+
+  search.addEventListener('input', updateHint);
+  search.addEventListener('keydown', e => {
+    if (e.key === 'Enter') performRoute(search.value);
   });
+
+  cancel.addEventListener('click', () => {
+    clearTimeout(routeTimer);
+    overlay.style.display = 'none';
+    progress.style.width = '0%';
+    search.focus();
+  });
+  
+  const q = new URLSearchParams(window.location.search).get('q');
+  if (q) performRoute(q, true);
 </script>
 </body>
 </html>
