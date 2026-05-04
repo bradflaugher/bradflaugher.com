@@ -11,80 +11,159 @@
 <meta content="#000000" name="theme-color"/>
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  :root { --bg: #000000; --surface: #1a1a1a; --border: #333333; --text: #ffffff; --text-muted: #888; --accent: #ffffff; }
+  :root {
+    --bg: #000000;
+    --surface: #1a1a1a;
+    --border: #333333;
+    --text: #ffffff;
+    --text-muted: #888;
+    --accent: #ffffff;
+  }
   @media (prefers-color-scheme: light) {
-    :root { --bg: #ffffff; --surface: #f2f2f2; --border: #cccccc; --text: #000000; --text-muted: #666; --accent: #000000; }
+    :root {
+      --bg: #ffffff;
+      --surface: #f2f2f2;
+      --border: #cccccc;
+      --text: #000000;
+      --text-muted: #666;
+      --accent: #000000;
+    }
   }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg); color: var(--text); min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; padding: 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: env(safe-area-inset-top) 2rem env(safe-area-inset-bottom) 2rem;
   }
-  .container { width: 100%; max-width: 500px; margin: 0 auto; }
+  .container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
   .search-input-wrap {
-    position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden;
+    position: relative;
+    background: transparent;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
   }
-  .search-input-wrap:focus-within { border-color: var(--accent); }
-  .search-input-wrap svg {
-    position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--text-muted); pointer-events: none;
+  #search {
+    width: 100%;
+    padding: 0.75rem 0;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 1.5rem;
+    font-weight: 300;
+    outline: none;
+    letter-spacing: -0.02em;
   }
-  #search { width: 100%; padding: 1rem 1rem 1rem 3.5rem; border: none; background: transparent; color: var(--text); font-size: 1.1rem; outline: none; }
   #clear-search {
-    position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; display: none; padding: 5px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: none;
+    padding: 5px;
   }
-  .engine-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+
+  .engine-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
   .web-btn {
-    padding: 1.25rem 0.5rem; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); font-size: 0.9rem; font-weight: 600;
-    cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; transition: all 0.15s;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 1.5rem;
+    font-weight: 300;
+    cursor: pointer;
+    text-align: left;
+    transition: opacity 0.2s;
+    letter-spacing: -0.02em;
   }
-  .web-btn:hover { background: var(--bg); border-color: var(--text-muted); }
-  .web-btn:active { transform: scale(0.97); }
-  .web-btn svg { width: 24px; height: 24px; opacity: 0.8; }
+  .web-btn:hover {
+    opacity: 0.7;
+  }
+  .web-btn:active {
+    opacity: 0.5;
+  }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="search-input-wrap">
-    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" stroke-linecap="round"/></svg>
-    <input autocomplete="off" id="search" placeholder="Search the web..." type="text"/>
+    <input autocomplete="off" id="search" placeholder="Search" type="text"/>
     <button id="clear-search" aria-label="Clear">&times;</button>
   </div>
   <div class="engine-grid">
-    <button class="web-btn" data-engine="ddg"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20"/></svg>DuckDuckGo</button>
-    <button class="web-btn" data-engine="google"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 12L21 7.5"/></svg>Google</button>
-    <button class="web-btn" data-engine="perplexity"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m12 3-2 6-6 2 6 2 2 6 2-6 6-2-6-2-2-6Z"/></svg>Perplexity</button>
-    <button class="web-btn" data-engine="grok"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Grok</button>
-    <button class="web-btn" data-engine="maps"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/></svg>Maps</button>
+    <button class="web-btn" data-engine="ddg">DuckDuckGo</button>
+    <button class="web-btn" data-engine="perplexity">Perplexity</button>
+    <button class="web-btn" data-engine="grok">Grok</button>
+    <button class="web-btn" data-engine="maps">Maps</button>
   </div>
 </div>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const search = document.getElementById('search');
     const clearBtn = document.getElementById('clear-search');
+    const isIOS = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
     const doSearch = (engine) => {
       const q = search.value.trim();
       if (!q) { search.focus(); return; }
       const enc = encodeURIComponent(q);
       const urls = {
-        'ddg': 'https://duckduckgo.com/?q=' + enc,
-        'google': 'https://www.google.com/search?q=' + enc,
+        'ddg': 'https://html.duckduckgo.com/html/?q=' + enc,
         'perplexity': 'https://www.perplexity.ai/search?q=' + enc,
         'grok': 'https://grok.com/?q=' + enc,
         'maps': 'https://maps.google.com/maps?q=' + enc
       };
       let url = urls[engine] || urls['ddg'];
-      if (engine === 'maps' && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        window.location.href = 'comgooglemaps://?q=' + enc;
+      if (engine === 'maps' && isIOS) {
+        const appUrl = /iPhone|iPad|iPod/.test(navigator.userAgent) ? 'comgooglemaps://?q=' + enc : 'geo:0,0?q=' + enc;
+        window.location.href = appUrl;
         setTimeout(() => { if (document.visibilityState !== 'hidden') window.open(url, '_blank'); }, 1500);
         return;
       }
       window.open(url, '_blank');
     };
-    document.querySelectorAll('.web-btn').forEach(btn => btn.addEventListener('click', () => doSearch(btn.dataset.engine)));
-    search.addEventListener('input', () => { clearBtn.style.display = search.value ? 'block' : 'none'; });
-    clearBtn.addEventListener('click', () => { search.value = ''; search.focus(); clearBtn.style.display = 'none'; });
-    search.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch('ddg'); });
+
+    document.querySelectorAll('.web-btn').forEach(btn => {
+      btn.addEventListener('click', () => doSearch(btn.dataset.engine));
+    });
+
+    search.addEventListener('input', () => {
+      clearBtn.style.display = search.value ? 'block' : 'none';
+    });
+
+    clearBtn.addEventListener('click', () => {
+      search.value = '';
+      search.focus();
+      clearBtn.style.display = 'none';
+    });
+
+    search.addEventListener('keydown', e => {
+      if (e.key === 'Enter') doSearch('ddg');
+    });
+    
     const q = new URLSearchParams(window.location.search).get('q');
-    if (q) { search.value = q; clearBtn.style.display = 'block'; }
+    if (q) {
+      search.value = q;
+      clearBtn.style.display = 'block';
+    }
+    
     if (!('ontouchstart' in window)) search.focus();
   });
 </script>
