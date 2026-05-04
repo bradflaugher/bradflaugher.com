@@ -476,8 +476,18 @@
     search.focus();
   });
   
+  // Handle query params after model loads
   const qParam = new URLSearchParams(window.location.search).get('q');
-  if (qParam) performRoute(qParam, true);
+  if (qParam) {
+    const routeWhenReady = () => {
+      if (modelReady) {
+        performRoute(qParam, true);
+      } else {
+        setTimeout(routeWhenReady, 100);
+      }
+    };
+    routeWhenReady();
+  }
 
   // Initialize model
   initModel();
