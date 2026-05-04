@@ -299,18 +299,24 @@
     if (isInitializing) return;
     isInitializing = true;
     
+    // Ensure loading overlay is visible
+    loadingOverlay.classList.add('active');
+    
     try {
       console.log('Search router: Initializing model...');
       
       // Load pre-calculated embeddings and model in parallel
       const [embeddingsResponse, model] = await Promise.all([
-        fetch('/search-embeddings.json'),
+        fetch('./search-embeddings.json'),
         pipeline('feature-extraction', 'sentence-transformers/all-MiniLM-L6-v2', {
           dtype: 'fp32',
         })
       ]);
 
-      if (!embeddingsResponse.ok) throw new Error('Failed to load search-embeddings.json');
+      if (!embeddingsResponse.ok) {
+        throw new Error(`Failed to load search-embeddings.json: ${embeddingsResponse.status} ${embeddingsResponse.statusText}`);
+      }
+      
       routeVectors = await embeddingsResponse.json();
       extractor = model;
       
@@ -318,15 +324,16 @@
       status.classList.add('ready');
       status.title = "Embedding Model Ready";
       
+      console.log('Search router: Semantic model loaded');
+      
       if (!isRedirecting) {
         loadingOverlay.classList.remove('active');
       }
       
-      console.log('Search router: Semantic model loaded');
       updateHint();
     } catch (err) {
       console.error('Search router: Failed to load model', err);
-      status.title = "Embedding Model Failed";
+      status.title = "Embedding Model Failed: " + err.message;
       status.style.background = "#ff0000";
       loadingOverlay.classList.remove('active');
     } finally {
@@ -520,13 +527,19 @@
   // Handle query params after model loads
   const qParam = new URLSearchParams(window.location.search).get('q');
   if (qParam) {
-    loadingOverlay.classList.add('active');
+    isRedirecting = true;
     const routeWhenReady = async () => {
-      if (modelReady) {
-        // Do not remove loadingOverlay here, performRoute will handle or redirect will happen
-        await performRoute(qParam, true);
-      } else {
-        setTimeout(routeWhenReady, 100);
+      try {
+        if (modelReady) {
+          await performRoute(qParam, true);
+        } else if (status.title.startsWith('Embedding Model Failed')) {
+          loadingOverlay.classList.remove('active');
+        } else {
+          setTimeout(routeWhenReady, 100);
+        }
+      } catch (err) {
+        console.error('Redirect failed', err);
+        loadingOverlay.classList.remove('active');
       }
     };
     routeWhenReady();
