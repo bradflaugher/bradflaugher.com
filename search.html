@@ -156,6 +156,52 @@
     opacity: 0.6;
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
   }
+  .scores-panel {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    font-size: 0.7rem;
+    font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
+    color: var(--text-muted);
+    opacity: 0;
+    transform: translateY(5px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 50;
+    line-height: 1.6;
+    pointer-events: none;
+  }
+  .scores-panel.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .scores-panel .score-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .scores-panel .score-bar {
+    width: 60px;
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .scores-panel .score-fill {
+    height: 100%;
+    background: var(--text-muted);
+    transition: width 0.3s ease;
+  }
+  .scores-panel .score-fill.best {
+    background: var(--text);
+  }
+  .scores-panel .score-label {
+    width: 70px;
+    text-align: right;
+  }
+  .scores-panel .score-val {
+    width: 35px;
+    text-align: right;
+  }
 </style>
 </head>
 <body>
@@ -173,6 +219,8 @@
 </div>
 
 <div class="status-dot" id="status" title="Embedding Model Loading..."></div>
+
+<div class="scores-panel" id="scores"></div>
 
 <script type="module">
   import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.2.4';
@@ -256,59 +304,9 @@
     return isNaN(similarity) ? 0 : similarity;
   }
 
-  const getEngineKeyLegacy = (q) => {
-    const query = q.toLowerCase().trim();
-    const words = query.split(/\s+/);
-
-    // Specialized Detectors (High Confidence)
-    const videoOnly = ['trailer', 'movie', 'vlog', 'gameplay', 'highlights', 'music video', 'tutorial'];
-    if (videoOnly.some(v => query.includes(v))) return 'youtube';
-    if (query.startsWith('how to')) return 'youtube';
-
-    const mapPhrases = ['near me', 'directions to', 'how to get to', 'address of', 'nearest', 'nearby'];
-    if (mapPhrases.some(p => query.includes(p))) return 'maps';
-
-    // Wolfram high-confidence phrases (before general keyword scoring)
-    const wolframDistancePhrases = ['distance to ', 'distance from ', 'distance between '];
-    if (wolframDistancePhrases.some(p => query.startsWith(p))) return 'wolfram';
-
-    const wolframPhrases = ['integral of', 'derivative of', 'solve for x', 'plot ', 'convert '];
-    if (wolframPhrases.some(p => query.startsWith(p))) return 'wolfram';
-
-    const scores = { ddg: 2, maps: 0, grok: 0, perplexity: 0, youtube: 0, amazon: 0, 'bing-images': 0, github: 0, wolfram: 0 };
-
-    const mapKeywords = ['restaurant', 'hotel', 'park', 'cafe', 'pizza', 'airport', 'museum', 'st', 'ave', 'rd', 'street', 'city', 'address', 'map'];
-    words.forEach(w => { if (mapKeywords.includes(w)) scores.maps += 10; });
-
-    const grokKeywords = ['elon', 'musk', 'openai', 'trending', 'viral', 'news', 'latest', 'happened'];
-    words.forEach(w => { if (grokKeywords.includes(w)) scores.grok += 15; });
-
-    const resKeywords = ['explain', 'research', 'summarize', 'difference', 'history', 'science', 'impact', 'theory'];
-    words.forEach(w => { if (resKeywords.includes(w)) scores.perplexity += 15; });
-
-    const imgKeywords = ['image', 'pic', 'photo', 'gif', 'svg', 'png', 'jpg', 'wallpaper'];
-    words.forEach(w => { if (imgKeywords.includes(w)) scores['bing-images'] += 20; });
-
-    const shopKeywords = ['buy', 'price', 'shop', 'amazon', 'order', 'deal', 'sale'];
-    words.forEach(w => { if (shopKeywords.includes(w)) scores.amazon += 20; });
-
-    const githubKeywords = ['github', 'repo', 'repository', 'npm', 'source code', 'clone', 'git'];
-    words.forEach(w => { if (githubKeywords.includes(w)) scores.github += 25; });
-
-    const wolframKeywords = ['mass', 'conversion', 'integral', 'math', 'formula', 'constant', 'weather history'];
-    words.forEach(w => { if (wolframKeywords.includes(w)) scores.wolfram += 15; });
-
-    let winner = 'ddg';
-    let maxScore = 0;
-    for (const [engine, score] of Object.entries(scores)) {
-      if (score > maxScore) { maxScore = score; winner = engine; }
-    }
-    return winner;
-  };
-
   const getEngineKey = async (q) => {
     const query = q.toLowerCase().trim();
-    if (!query) return 'ddg';
+    if (!query) return { key: 'ddg', scores: [] };
 
     // 1. Absolute Overrides (Bangs)
     if (query.startsWith('!')) {
@@ -322,12 +320,12 @@
         'w': 'wolfram', 'wa': 'wolfram',
         'd': 'ddg', 'ddg': 'ddg'
       };
-      if (cmdMap[cmd]) return cmdMap[cmd];
+      if (cmdMap[cmd]) return { key: cmdMap[cmd], scores: [] };
     }
     
     // Direct Link detection
-    if (/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,10}(:[0-9]{1,5})?(\/.*)?$/i.test(query) && !query.includes(' ')) return 'direct';
-    if (/^localhost(:[0-9]{1,5})?(\/.*)?$/i.test(query) && !query.includes(' ')) return 'direct';
+    if (/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,10}(:[0-9]{1,5})?(\/.*)?$/i.test(query) && !query.includes(' ')) return { key: 'direct', scores: [] };
+    if (/^localhost(:[0-9]{1,5})?(\/.*)?$/i.test(query) && !query.includes(' ')) return { key: 'direct', scores: [] };
 
     // 2. Semantic Routing (if ready)
     if (modelReady) {
@@ -337,45 +335,69 @@
         
         let bestKey = 'ddg';
         let maxScore = -1;
+        const allScores = [];
         
         for (const rv of routeVectors) {
+          let routeMax = -1;
           for (const v of rv.vectors) {
             const score = cosineSimilarity(qVector, v);
-            if (score > maxScore) {
-              maxScore = score;
-              bestKey = rv.key;
-            }
+            if (score > routeMax) routeMax = score;
+          }
+          allScores.push({ key: rv.key, score: routeMax });
+          if (routeMax > maxScore) {
+            maxScore = routeMax;
+            bestKey = rv.key;
           }
         }
         
-        if (maxScore > 0.30) return bestKey;
+        allScores.sort((a, b) => b.score - a.score);
+        
+        if (maxScore > 0.30) return { key: bestKey, scores: allScores };
+        return { key: 'ddg', scores: allScores };
       } catch (e) {
         console.error('Inference error', e);
       }
     }
 
-    // 3. Fallback to Legacy
-    return getEngineKeyLegacy(q);
+    // 3. Fallback to default
+    return { key: 'ddg', scores: [] };
   };
+
+  const scoresPanel = document.getElementById('scores');
 
   const updateHint = async () => {
     const q = search.value.trim();
     if (!q) {
       hint.classList.remove('active');
       document.documentElement.style.setProperty('--engine-color', 'transparent');
+      scoresPanel.classList.remove('active');
+      scoresPanel.innerHTML = '';
       return;
     }
-    const key = await getEngineKey(q);
-    const engine = engines[key];
+    const result = await getEngineKey(q);
+    const engine = engines[result.key];
     hint.textContent = engine.name;
     hint.classList.add('active');
     document.documentElement.style.setProperty('--engine-color', engine.color);
+    
+    // Render scores
+    if (result.scores.length > 0) {
+      scoresPanel.innerHTML = result.scores.map(s => {
+        const isBest = s.key === result.key;
+        const pct = Math.round(s.score * 100);
+        return `<div class="score-row"><span class="score-label">${engines[s.key].name}</span><div class="score-bar"><div class="score-fill ${isBest ? 'best' : ''}" style="width:${pct}%"></div></div><span class="score-val">${pct}%</span></div>`;
+      }).join('');
+      scoresPanel.classList.add('active');
+    } else {
+      scoresPanel.classList.remove('active');
+      scoresPanel.innerHTML = '';
+    }
   };
 
   const performRoute = async (q, immediate = false) => {
     if (!q) return;
-    const key = await getEngineKey(q);
-    const target = engines[key];
+    const result = await getEngineKey(q);
+    const target = engines[result.key];
     
     let finalQuery = q;
     if (q.trim().startsWith('!')) {
