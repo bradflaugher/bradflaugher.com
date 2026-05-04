@@ -182,7 +182,7 @@
     const query = q.toLowerCase().trim();
     if (!query) return 'ddg';
 
-    // 1. Bang Override (Highest Priority)
+    // 1. Absolute Overrides
     if (query.startsWith('!')) {
       const cmd = query.split(' ')[0].slice(1);
       const cmdMap = {
@@ -194,92 +194,75 @@
       };
       if (cmdMap[cmd]) return cmdMap[cmd];
     }
-
-    // 2. Direct URL Detection
     if (/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,10}(:[0-9]{1,5})?(\/.*)?$/i.test(query) && !query.includes(' ')) return 'direct';
-
-    // 3. Scoring Engine
-    const scores = {
-        ddg: 1,
-        maps: 0,
-        grok: 0,
-        perplexity: 0,
-        wolfram: 0,
-        youtube: 0,
-        amazon: 0,
-        github: 0,
-        'bing-images': 0
-    };
 
     const words = query.split(/\s+/);
 
-    // --- MAPS SCORING ---
-    const mapPhrases = ['near me', 'directions to', 'how to get to', 'where is', 'address of', 'nearest'];
-    const mapKeywords = ['restaurant', 'hotel', 'park', 'address', 'city', 'map', 'located', 'cafe', 'pizza', 'airport', 'station', 'st', 'ave', 'rd', 'blvd', 'drive', 'lane', 'street', 'avenue', 'road', 'boulevard', 'theater', 'mall', 'hospital', 'library', 'nearest', 'next to'];
-    const commonCities = ['philly', 'philadelphia', 'nyc', 'york', 'london', 'paris', 'tokyo', 'seattle', 'boston', 'chicago', 'austin', 'miami', 'vegas', 'la', 'angeles', 'sf', 'francisco', 'berlin', 'rome', 'madrid', 'dubai'];
+    // 2. Specialized Detectors (High Confidence)
     
-    mapPhrases.forEach(p => { if (query.includes(p)) scores.maps += 20; });
-    words.forEach(w => { 
-        if (mapKeywords.includes(w)) scores.maps += 12;
-        if (commonCities.includes(w)) scores.maps += 12;
-        if (w === 'in' || w === 'at') scores.maps += 2;
-    });
-    if (/\d+\s+[a-z]+/.test(query)) scores.maps += 15;
+    // Math/Computation (Wolfram)
+    const isMath = /^[\d\s\+\-\*\/\(\)\=\.\^\%x]+$/.test(query) && /[\+\-\*\/\=\^\(\)\%]/.test(query);
+    const mathFuncs = ['sqrt', 'sin', 'cos', 'tan', 'log', 'integral', 'derivative', 'factorial', 'calc', 'solve'];
+    if (isMath || mathFuncs.some(f => query.includes(f))) return 'wolfram';
+    
+    // Units/Conversions/Time (Wolfram)
+    const units = ['miles', 'km', 'kg', 'lb', 'grams', 'ounce', 'liters', 'gallon', 'feet', 'cm', 'meters', 'fahrenheit', 'celsius', 'atomic'];
+    if (words.includes('convert') || (units.some(u => words.includes(u)) && words.includes('to'))) return 'wolfram';
+    if (words.includes('time') && words.includes('in') && words.length < 6) return 'wolfram';
 
-    // --- GROK SCORING (News/Trends/Social) ---
-    const grokPhrases = ['whats the latest', 'what happened with', 'what is happening', 'thoughts on', 'who is', 'hot goss', 'the tea on', 'latest with', 'people saying', 'talking about'];
-    const grokKeywords = ['elon', 'musk', 'openai', 'trial', 'trump', 'biden', 'politics', 'crypto', 'bitcoin', 'eth', 'trending', 'viral', 'reddit', 'tiktok', 'instagram', 'twitter', 'x', 'goss', 'drama', 'breaking', 'news', 'opinion', 'reaction', 'scandal', 'leak', 'election', 'court', 'case'];
-    
+    // Video (YouTube)
+    const videoOnly = ['trailer', 'movie', 'vlog', 'gameplay', 'highlights', 'music video'];
+    if (videoOnly.some(v => query.includes(v))) return 'youtube';
+    if (query.includes('how to') && (words.includes('fix') || words.includes('build') || words.includes('install') || words.includes('video'))) return 'youtube';
+
+    // Navigation/Local (Maps)
+    const mapPhrases = ['near me', 'directions to', 'how to get to', 'address of', 'nearest', 'nearby'];
+    if (mapPhrases.some(p => query.includes(p))) return 'maps';
+    if (/\d+\s+[a-z]+/.test(query) && (query.includes(' st') || query.includes(' street') || query.includes(' ave'))) return 'maps';
+
+    // Developer (GitHub)
+    const devOnly = ['npm package', 'github repo', 'api docs', 'source code for'];
+    if (devOnly.some(d => query.includes(d))) return 'github';
+
+    // 3. Weighted Scoring (Nuanced Intent)
+    const scores = { ddg: 2, maps: 0, grok: 0, perplexity: 0, wolfram: 0, youtube: 0, amazon: 0, github: 0, 'bing-images': 0 };
+
+    // Maps Scoring
+    const mapKeywords = ['restaurant', 'hotel', 'park', 'cafe', 'pizza', 'airport', 'museum', 'st', 'ave', 'rd', 'street', 'road', 'city', 'philly', 'london', 'nyc'];
+    words.forEach(w => { if (mapKeywords.includes(w)) scores.maps += 10; });
+
+    // Grok Scoring (Hot Goss / Trends)
+    const grokPhrases = ['whats the latest', 'what happened', 'happening', 'hot goss', 'the tea', 'people saying', 'talking about', 'rumors', 'drama', 'breaking news', 'latest with'];
+    const grokKeywords = ['elon', 'musk', 'openai', 'trump', 'biden', 'politics', 'crypto', 'trending', 'viral', 'reddit', 'tiktok', 'instagram', 'twitter', 'x', 'scandal', 'leak', 'election'];
     grokPhrases.forEach(p => { if (query.includes(p)) scores.grok += 25; });
     words.forEach(w => { if (grokKeywords.includes(w)) scores.grok += 15; });
 
-    // --- PERPLEXITY SCORING (Research) ---
-    const researchPhrases = ['explain', 'research', 'deep dive', 'summarize', 'difference between', 'how does', 'why does', 'history of', 'science of'];
-    const researchKeywords = ['relationship', 'between', 'impact', 'consequences', 'theory', 'study'];
-    researchPhrases.forEach(p => { if (query.includes(p)) scores.perplexity += 20; });
-    words.forEach(w => { if (researchKeywords.includes(w)) scores.perplexity += 10; });
-    if (query.length > 80) scores.perplexity += 10;
-    if (words.length > 12) scores.perplexity += 10;
-    if (query.includes('?')) scores.perplexity += 10;
-    if (query.includes(' vs ')) scores.perplexity += 25;
+    // Perplexity Scoring (Research)
+    const resPhrases = ['explain', 'research', 'deep dive', 'summarize', 'difference between', 'how does', 'why does', 'history of', 'science of', 'biography of'];
+    const resKeywords = ['relationship', 'impact', 'theory', 'study', 'process', 'mechanism', 'evolution', 'discovery'];
+    resPhrases.forEach(p => { if (query.includes(p)) scores.perplexity += 25; });
+    words.forEach(w => { if (resKeywords.includes(w)) scores.perplexity += 15; });
+    if (query.includes(' vs ')) scores.perplexity += 20;
+    if (query.length > 80 || words.length > 12 || query.includes('?')) scores.perplexity += 10;
 
-    // --- WOLFRAM SCORING (Computation) ---
-    const mathKeywords = ['calc', 'math', 'solve', 'equation', 'integral', 'sqrt', 'derivative', 'convert', 'units', 'plus', 'minus', 'times', 'divided', 'sin', 'cos', 'tan', 'log'];
-    words.forEach(w => { if (mathKeywords.includes(w)) scores.wolfram += 25; });
-    if (/^[\d\s\+\-\*\/\(\)\=\.x\^a-z]+$/.test(query) && /[\+\-\*\/\=\^\(\)]/.test(query) && (/\d/.test(query) || mathKeywords.some(mw => query.includes(mw)))) scores.wolfram += 30;
+    // Bing Images
+    const imgKeywords = ['image', 'pic', 'photo', 'gif', 'svg', 'png', 'jpg', 'wallpaper', 'logo'];
+    words.forEach(w => { if (imgKeywords.includes(w)) scores['bing-images'] += 20; });
 
-    // --- YOUTUBE SCORING ---
-    const videoKeywords = ['video', 'youtube', 'trailer', 'movie', 'tutorial', 'clip', 'watch', 'music video', 'vlog', 'gameplay', 'highlights'];
-    words.forEach(w => { if (videoKeywords.includes(w)) scores.youtube += 25; });
-    if (query.includes('how to')) scores.youtube += 15;
+    // Shopping (Amazon)
+    const shopKeywords = ['buy', 'price', 'shop', 'amazon', 'order', 'deal', 'sale'];
+    words.forEach(w => { if (shopKeywords.includes(w)) scores.amazon += 20; });
 
-    // --- AMAZON SCORING ---
-    const shopKeywords = ['buy', 'price', 'shop', 'amazon', 'order', 'cost', 'review', 'sale', 'deal'];
-    words.forEach(w => { if (shopKeywords.includes(w)) scores.amazon += 25; });
-
-    // --- GITHUB SCORING ---
-    const devKeywords = ['github', 'npm', 'repo', 'git', 'source', 'api', 'documentation', 'library', 'package', 'framework'];
-    words.forEach(w => { if (devKeywords.includes(w)) scores.github += 25; });
-
-    // --- BING IMAGES ---
-    const imageKeywords = ['image', 'pic', 'photo', 'gif', 'svg', 'png', 'jpg', 'wallpaper', 'logo', 'icon', 'portrait', 'background'];
-    words.forEach(w => { if (imageKeywords.includes(w)) scores['bing-images'] += 25; });
-
-    // Find highest score
+    // Winner detection
     let winner = 'ddg';
     let maxScore = 0;
     for (const [engine, score] of Object.entries(scores)) {
-        if (score > maxScore) {
-            maxScore = score;
-            winner = engine;
-        }
+      if (score > maxScore) { maxScore = score; winner = engine; }
     }
     
-    // Specific check for very short math/bang/direct
-    if (scores.wolfram > 20 || scores.direct > 0) return winner;
-
-    // Default to DDG if it's just a simple 1-2 word query with no strong intent
-    if (maxScore < 5 && words.length <= 2) return 'ddg';
+    // Safety
+    if (words.length === 1 && (words[0] === 'reddit' || words[0] === 'twitter' || words[0] === 'x')) return 'ddg';
+    if (maxScore < 10) return 'ddg';
 
     return winner;
   };
