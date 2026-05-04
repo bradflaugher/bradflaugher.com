@@ -172,9 +172,7 @@
     'grok': { name: 'Grok', color: '#ffffff', url: q => `https://grok.com/?q=${q}` },
     'maps': { name: 'Google Maps', color: '#4285F4', url: q => `https://maps.google.com/maps?q=${q}` },
     'youtube': { name: 'YouTube', color: '#FF0000', url: q => `https://www.youtube.com/results?search_query=${q}` },
-    'wolfram': { name: 'WolframAlpha', color: '#F9690E', url: q => `https://www.wolframalpha.com/input?i=${q}` },
     'amazon': { name: 'Amazon', color: '#FF9900', url: q => `https://www.amazon.com/s?k=${q}` },
-    'github': { name: 'GitHub', color: '#6e5494', url: q => `https://github.com/search?q=${q}` },
     'direct': { name: 'Direct Link', color: '#00ff00', url: q => q.startsWith('http') ? q : `https://${q}` }
   };
 
@@ -186,8 +184,8 @@
     if (query.startsWith('!')) {
       const cmd = query.split(' ')[0].slice(1);
       const cmdMap = {
-        'yt': 'youtube', 'y': 'youtube', 'w': 'wolfram', 'wa': 'wolfram',
-        'a': 'amazon', 'amz': 'amazon', 'gh': 'github', 'git': 'github',
+        'yt': 'youtube', 'y': 'youtube',
+        'a': 'amazon', 'amz': 'amazon',
         'm': 'maps', 'map': 'maps', 'i': 'bing-images', 'img': 'bing-images',
         'p': 'perplexity', 'px': 'perplexity', 'g': 'grok', 'gr': 'grok',
         'd': 'ddg', 'ddg': 'ddg'
@@ -197,61 +195,66 @@
     if (/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,10}(:[0-9]{1,5})?(\/.*)?$/i.test(query) && !query.includes(' ')) return 'direct';
 
     const words = query.split(/\s+/);
+    const isLong = query.length > 50 || words.length > 8;
 
     // 2. Specialized Detectors (High Confidence)
     
-    // Math/Computation (Wolfram)
-    const isMath = /^[\d\s\+\-\*\/\(\)\=\.\^\%x]+$/.test(query) && /[\+\-\*\/\=\^\(\)\%]/.test(query);
-    const mathFuncs = ['sqrt', 'sin', 'cos', 'tan', 'log', 'integral', 'derivative', 'factorial', 'calc', 'solve'];
-    if (isMath || mathFuncs.some(f => query.includes(f))) return 'wolfram';
-    
-    // Units/Conversions/Time (Wolfram)
-    const units = ['miles', 'km', 'kg', 'lb', 'grams', 'ounce', 'liters', 'gallon', 'feet', 'cm', 'meters', 'fahrenheit', 'celsius', 'atomic'];
-    if (words.includes('convert') || (units.some(u => words.includes(u)) && words.includes('to'))) return 'wolfram';
-    if (words.includes('time') && words.includes('in') && words.length < 6) return 'wolfram';
-
     // Video (YouTube)
-    const videoOnly = ['trailer', 'movie', 'vlog', 'gameplay', 'highlights', 'music video'];
+    const videoOnly = ['trailer', 'movie', 'vlog', 'gameplay', 'highlights', 'music video', 'tutorial'];
     if (videoOnly.some(v => query.includes(v))) return 'youtube';
-    if (query.includes('how to') && (words.includes('fix') || words.includes('build') || words.includes('install') || words.includes('video'))) return 'youtube';
+    if (query.startsWith('how to') || (query.includes('how to') && (words.includes('fix') || words.includes('build') || words.includes('install') || words.includes('video') || words.includes('make') || words.includes('bake')))) return 'youtube';
 
     // Navigation/Local (Maps)
-    const mapPhrases = ['near me', 'directions to', 'how to get to', 'address of', 'nearest', 'nearby'];
+    const mapPhrases = ['near me', 'directions to', 'how to get to', 'address of', 'nearest', 'nearby', 'distance to', 'where is'];
     if (mapPhrases.some(p => query.includes(p))) return 'maps';
-    if (/\d+\s+[a-z]+/.test(query) && (query.includes(' st') || query.includes(' street') || query.includes(' ave'))) return 'maps';
-
-    // Developer (GitHub)
-    const devOnly = ['npm package', 'github repo', 'api docs', 'source code for'];
-    if (devOnly.some(d => query.includes(d))) return 'github';
+    if (words.includes('address')) return 'maps';
+    if (words.includes('in') && words.length > 2 && (words.indexOf('in') === words.length - 2 || words.indexOf('in') === words.length - 3)) {
+       const locations = ['london', 'nyc', 'new york', 'sf', 'san francisco', 'philly', 'paris', 'tokyo', 'berlin', 'rome', 'madrid'];
+       if (locations.some(l => query.includes(l))) return 'maps';
+    }
+    if (/\d+\s+[a-z]+/.test(query) && (query.includes(' st') || query.includes(' street') || query.includes(' ave') || query.includes(' rd'))) return 'maps';
 
     // 3. Weighted Scoring (Nuanced Intent)
-    const scores = { ddg: 2, maps: 0, grok: 0, perplexity: 0, wolfram: 0, youtube: 0, amazon: 0, github: 0, 'bing-images': 0 };
+    const scores = { ddg: 2, maps: 0, grok: 0, perplexity: 0, youtube: 0, amazon: 0, 'bing-images': 0 };
 
     // Maps Scoring
-    const mapKeywords = ['restaurant', 'hotel', 'park', 'cafe', 'pizza', 'airport', 'museum', 'st', 'ave', 'rd', 'street', 'road', 'city', 'philly', 'london', 'nyc'];
+    const mapKeywords = ['restaurant', 'hotel', 'park', 'cafe', 'pizza', 'airport', 'museum', 'st', 'ave', 'rd', 'street', 'road', 'city', 'bar', 'pub', 'food', 'address', 'map', 'directions'];
     words.forEach(w => { if (mapKeywords.includes(w)) scores.maps += 10; });
 
-    // Grok Scoring (Hot Goss / Trends)
-    const grokPhrases = ['whats the latest', 'what happened', 'happening', 'hot goss', 'the tea', 'people saying', 'talking about', 'rumors', 'drama', 'breaking news', 'latest with'];
-    const grokKeywords = ['elon', 'musk', 'openai', 'trump', 'biden', 'politics', 'crypto', 'trending', 'viral', 'reddit', 'tiktok', 'instagram', 'twitter', 'x', 'scandal', 'leak', 'election'];
+    // Grok Scoring (Hot Goss / Trends / Timeliness)
+    const grokPhrases = ['whats the latest', 'what happened', 'happening', 'hot goss', 'the tea', 'people saying', 'talking about', 'rumors', 'drama', 'breaking news', 'latest with', 'just happened', 'last night', 'this morning'];
+    const grokKeywords = ['elon', 'musk', 'openai', 'trump', 'biden', 'politics', 'crypto', 'trending', 'viral', 'reddit', 'tiktok', 'instagram', 'twitter', 'x', 'scandal', 'leak', 'election', 'score', 'game', 'news', 'yesterday', 'today', 'tonight'];
     grokPhrases.forEach(p => { if (query.includes(p)) scores.grok += 25; });
     words.forEach(w => { if (grokKeywords.includes(w)) scores.grok += 15; });
+    if (query.includes('latest')) scores.grok += 20;
 
     // Perplexity Scoring (Research)
     const resPhrases = ['explain', 'research', 'deep dive', 'summarize', 'difference between', 'how does', 'why does', 'history of', 'science of', 'biography of'];
-    const resKeywords = ['relationship', 'impact', 'theory', 'study', 'process', 'mechanism', 'evolution', 'discovery'];
+    const resKeywords = ['relationship', 'impact', 'theory', 'study', 'process', 'mechanism', 'evolution', 'discovery', 'meaning', 'concept', 'best', 'compare', 'comparison', 'implementation', 'code', 'npm', 'github'];
     resPhrases.forEach(p => { if (query.includes(p)) scores.perplexity += 25; });
     words.forEach(w => { if (resKeywords.includes(w)) scores.perplexity += 15; });
     if (query.includes(' vs ')) scores.perplexity += 20;
-    if (query.length > 80 || words.length > 12 || query.includes('?')) scores.perplexity += 10;
+    if (query.includes('?')) scores.perplexity += 10;
+    if (query.startsWith('who is')) scores.perplexity += 40;
+    if (query.startsWith('what is') && isLong) scores.perplexity += 30;
+
+    // AI Boost for long queries
+    if (isLong) {
+      if (scores.grok > scores.perplexity) {
+        scores.grok += 30;
+      } else {
+        scores.perplexity += 30;
+      }
+    }
 
     // Bing Images
-    const imgKeywords = ['image', 'pic', 'photo', 'gif', 'svg', 'png', 'jpg', 'wallpaper', 'logo'];
+    const imgKeywords = ['image', 'pic', 'photo', 'gif', 'svg', 'png', 'jpg', 'wallpaper', 'logo', 'images', 'pics', 'photos'];
     words.forEach(w => { if (imgKeywords.includes(w)) scores['bing-images'] += 20; });
 
     // Shopping (Amazon)
-    const shopKeywords = ['buy', 'price', 'shop', 'amazon', 'order', 'deal', 'sale'];
+    const shopKeywords = ['buy', 'price', 'shop', 'amazon', 'order', 'deal', 'sale', 'purchase'];
     words.forEach(w => { if (shopKeywords.includes(w)) scores.amazon += 20; });
+    if (query.startsWith('buy')) scores.amazon += 30;
 
     // Winner detection
     let winner = 'ddg';
@@ -260,9 +263,9 @@
       if (score > maxScore) { maxScore = score; winner = engine; }
     }
     
-    // Safety
+    // Safety & Refinement
     if (words.length === 1 && (words[0] === 'reddit' || words[0] === 'twitter' || words[0] === 'x')) return 'ddg';
-    if (maxScore < 10) return 'ddg';
+    if (maxScore < 10 && !isLong) return 'ddg';
 
     return winner;
   };
