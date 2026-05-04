@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -12,66 +11,101 @@
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Bookmarks" name="apple-mobile-web-app-title"/>
 <meta content="#000000" name="theme-color"/>
-<link rel="stylesheet" href="shared.css?v={{SHARED_CSS_HASH}}">
-<script>
-  var isMobile = window.matchMedia("(max-width: 600px)").matches || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  window.APP_CATEGORY_ORDER = isMobile
-    ? ['listen', 'news', 'health']
-    : ['listen', 'news', 'health'];
-  window.APP_CUSTOM_ORDER = {
-    'news': ['the economist', 'x', 'nytimes', 'polymarket'],
-    'listen': ['spotify', 'classical', 'kobo', 'libby'],
-    'health': ['oura ring', 'clublocker', 'solidcore']
-  };
-</script>
 <style>
-  /* Page-scoped bookmarks category colors, inspired by leading apps in each group */
-  .bookmark-item[data-category="listen"] { background: #1DB954; } /* Spotify green */
-  .bookmark-item[data-category="news"] { background: #E3120B; } /* Economist red */
-  .bookmark-item[data-category="health"] { background: #2664F5; } /* Solidcore-inspired blue */
+  /* Base Reset & Variables */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #000000; --surface: #1a1a1a; --border: #333333;
+    --text: #ffffff; --text-muted: #888;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #ffffff; --surface: #f2f2f2; --border: #cccccc; --text: #000000; --text-muted: #666; }
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100dvh; display: flex; flex-direction: column;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
+  }
+  .container { width: 100%; max-width: 900px; margin: 0 auto; padding: 1.25rem 1.5rem; flex: 1; }
+  @media (max-width: 900px) { .container { padding: 1rem; } }
+
+  /* Grid & Bookmarks */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 0.5rem; }
+  .bookmark-item {
+    position: relative; transition: filter 0.15s, transform 0.1s; display: flex; align-items: stretch;
+    overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+  }
+  .bookmark-item[data-category="listen"] { background: #1DB954; }
+  .bookmark-item[data-category="news"] { background: #E3120B; }
+  .bookmark-item[data-category="health"] { background: #2664F5; }
+  
+  .bookmark-item:hover { filter: brightness(1.1); transform: scale(0.98); }
+  .bookmark-item:active { transform: scale(0.95); }
+  .bookmark-item > a.main-link {
+    display: flex; align-items: center; flex: 1; padding: 0.75rem;
+    color: #ffffff !important; text-decoration: none; font-size: 0.85rem; font-weight: 600;
+  }
+  .bookmark-item a .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bookmark-item > a.access-link {
+    flex: 0 0 auto; display: flex; align-items: center; justify-content: center; min-width: 3.35rem; padding: 0 0.5rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.45); background: rgba(0, 0, 0, 0.16);
+    color: #ffffff !important; text-decoration: none; font-size: 0.58rem; font-weight: 700; text-transform: uppercase;
+  }
+  .ctx-icon { width: 20px; height: 20px; margin-right: 0.5rem; color: #ffffff !important; }
+
+  @media (max-width: 900px) {
+    .bookmark-item > a.main-link { flex-direction: column; align-items: flex-start; justify-content: flex-end; padding: 1rem; font-size: 1.1rem; }
+    .ctx-icon { width: 32px; height: 32px; margin-right: 0; margin-bottom: auto; }
+    .bookmark-item > a.access-link { position: absolute; top: 0.35rem; right: 0.35rem; border: 1px solid rgba(255, 255, 255, 0.65); background: rgba(0, 0, 0, 0.18); }
+  }
+  @media (max-width: 900px) and (orientation: portrait) { .grid { grid-template-columns: repeat(2, 1fr); } }
 </style>
 </head>
 <body>
-<svg aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
-<defs>
-<lineargradient id="both-grad" x1="0" x2="1" y1="0" y2="1">
-<stop offset="45%" stop-color="var(--accent)"></stop>
-<stop offset="55%" stop-color="var(--personal)"></stop>
-</lineargradient>
-</defs>
-</svg>
 <div class="container">
-<header>
-<div class="search-area">
-<div class="search-filter-unit">
-<div class="search-input-wrap">
-<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-<input autocomplete="off" id="search" placeholder="Search bookmarks or the web..." type="text"/>
-</div>
-<div class="web-search-row">
-<button class="web-btn" data-engine="ddg-html"><svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>Web</button>
-<button class="web-btn" data-engine="bing-images"><svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12"><rect height="18" rx="2" width="18" x="3" y="3"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>Images</button>
-<button class="web-btn" data-engine="maps"><svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"></path><circle cx="12" cy="10" r="3"></circle></svg>Maps</button>
-<button class="web-btn" data-engine="perplexity"><svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg>Agent</button>
-<button class="web-btn" data-engine="grok"><svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>Social</button>
-</div>
-</div>
-</div>
-</header>
-
 <div class="grid" id="grid">
-<div class="bookmark-item" data-category="health" data-ctx="personal"><a class="main-link" data-app-url="clublocker://" href="https://clublocker.com/organizations/829/reservations/"><svg aria-hidden="true" class="ctx-icon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><ellipse cx="12" cy="5" rx="3.5" ry="4.5"></ellipse><line x1="9.5" y1="5" x2="14.5" y2="5" stroke-width="0.8"></line><line x1="12" y1="2" x2="12" y2="8" stroke-width="0.8"></line><line x1="10.5" y1="3" x2="13.5" y2="7" stroke-width="0.8"></line><line x1="13.5" y1="3" x2="10.5" y2="7" stroke-width="0.8"></line><line x1="12" y1="9.5" x2="12" y2="15"></line><line x1="12" y1="15" x2="12" y2="21" stroke-width="2.5"></line></g><g transform="rotate(-45 12 12)"><ellipse cx="12" cy="5" rx="3.5" ry="4.5"></ellipse><line x1="9.5" y1="5" x2="14.5" y2="5" stroke-width="0.8"></line><line x1="12" y1="2" x2="12" y2="8" stroke-width="0.8"></line><line x1="10.5" y1="3" x2="13.5" y2="7" stroke-width="0.8"></line><line x1="13.5" y1="3" x2="10.5" y2="7" stroke-width="0.8"></line><line x1="12" y1="9.5" x2="12" y2="15"></line><line x1="12" y1="15" x2="12" y2="21" stroke-width="2.5"></line></g><circle cx="12" cy="18" r="1.2" fill="currentColor" stroke="none"></circle></svg><span class="name">RCOP</span></a></div>
-<div class="bookmark-item" data-category="health" data-ctx="personal"><a class="main-link" data-app-url="oura://" href="https://cloud.ouraring.com/dashboard"><svg aria-hidden="true" class="ctx-icon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="15" r="7"/><line x1="5" y1="4" x2="19" y2="4"/></svg><span class="name">Oura Ring</span></a></div>
-<div class="bookmark-item" data-category="health" data-ctx="personal"><a class="main-link" data-app-url="com.solidcore.app://" href="https://www.solidcore.co/book-a-class/"><svg aria-hidden="true" class="ctx-icon" fill="none" stroke="currentColor" stroke-linecap="square" stroke-linejoin="miter" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 3h5M4 3v18M4 21h5"></path><path d="M20 3h-5M20 3v18M20 21h-5"></path></svg><span class="name">Solidcore</span></a></div>
-<div class="bookmark-item" data-category="listen" data-ctx="personal"><a class="main-link" data-app-url="spotify://" href="https://open.spotify.com/"><svg aria-hidden="true" class="ctx-icon" fill="currentColor" stroke="none" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"></path></svg><span class="name">Spotify</span></a></div>
-<div class="bookmark-item" data-category="listen" data-ctx="personal"><a class="main-link" data-app-url="classical://" href="https://music.apple.com/us/curator/apple-music-classical/976439532"><svg aria-hidden="true" class="ctx-icon" fill="currentColor" stroke="none" viewBox="0 0 24 24"><path d="M23.994 6.124a9.23 9.23 0 00-.24-2.19c-.317-1.31-1.062-2.31-2.18-3.043a5.022 5.022 0 00-1.877-.726 10.496 10.496 0 00-1.564-.15c-.04-.003-.083-.01-.124-.013H5.986c-.152.01-.303.017-.455.026-.747.043-1.49.123-2.193.4-1.336.53-2.3 1.452-2.865 2.78-.192.448-.292.925-.363 1.408-.056.392-.088.785-.1 1.18 0 .032-.007.062-.01.093v12.223c.01.14.017.283.027.424.05.815.154 1.624.497 2.373.65 1.42 1.738 2.353 3.234 2.801.42.127.856.187 1.293.228.555.053 1.11.06 1.667.06h11.03a12.5 12.5 0 001.57-.1c.822-.106 1.596-.35 2.295-.81a5.046 5.046 0 001.88-2.207c.186-.42.293-.87.37-1.324.113-.675.138-1.358.137-2.04-.002-3.8 0-7.595-.003-11.393zm-6.423 3.99v5.712c0 .417-.058.827-.244 1.206-.29.59-.76.962-1.388 1.14-.35.1-.706.157-1.07.173-.95.045-1.773-.6-1.943-1.536a1.88 1.88 0 011.038-2.022c.323-.16.67-.25 1.018-.324.378-.082.758-.153 1.134-.24.274-.063.457-.23.51-.516a.904.904 0 00.02-.193c0-1.815 0-3.63-.002-5.443a.725.725 0 00-.026-.185c-.04-.15-.15-.243-.304-.234-.16.01-.318.035-.475.066-.76.15-1.52.303-2.28.456l-2.325.47-1.374.278c-.016.003-.032.01-.048.013-.277.077-.377.203-.39.49-.002.042 0 .086 0 .13-.002 2.602 0 5.204-.003 7.805 0 .42-.047.836-.215 1.227-.278.64-.77 1.04-1.434 1.233-.35.1-.71.16-1.075.172-.96.036-1.755-.6-1.92-1.544-.14-.812.23-1.685 1.154-2.075.357-.15.73-.232 1.108-.31.287-.06.575-.116.86-.177.383-.083.583-.323.6-.714v-.15c0-2.96 0-5.922.002-8.882 0-.123.013-.25.042-.37.07-.285.273-.448.546-.518.255-.066.515-.112.774-.165.733-.15 1.466-.296 2.2-.444l2.27-.46c.67-.134 1.34-.27 2.01-.403.22-.043.442-.088.663-.106.31-.025.523.17.554.482.008.073.012.148.012.223.002 1.91.002 3.822 0 5.732z"/></svg><span class="name">Classical</span></a></div>
-<div class="bookmark-item" data-category="listen" data-ctx="personal"><a class="main-link" data-app-url="kobo://" href="https://www.kobo.com/us/en/plus"><svg aria-hidden="true" class="ctx-icon" fill="currentColor" stroke="none" viewBox="0 0 24 24"><path d="M0 13.192h.874v3.115l1.21-1.432h1.047l-1.385 1.619 1.51 2.125H2.21L.889 16.732H.874v1.887H0zm3.177 3.555c0-1.227.575-1.957 1.653-1.957 1.077 0 1.655.73 1.655 1.957s-.575 1.957-1.651 1.957-1.652-.731-1.652-1.957zm1.653 1.341c.627 0 .722-.643.722-1.344 0-.7-.095-1.343-.722-1.343-.628 0-.722.646-.722 1.346s.091 1.341.722 1.341m2.999-2.764h.016a1.09 1.09 0 0 1 .967-.535c.898 0 1.29.763 1.29 1.957 0 1.045-.362 1.957-1.581 1.957-.978 0-1.564-.559-1.564-1.678v-3.83h.872zm.699 2.767c.56 0 .653-.73.653-1.344 0-.676-.07-1.398-.653-1.398-.527 0-.699.771-.699 1.398 0 .935.14 1.344.699 1.344m2.011-1.344c0-1.227.573-1.957 1.65-1.957 1.078 0 1.653.731 1.653 1.957s-.575 1.957-1.653 1.957c-1.077 0-1.65-.73-1.65-1.957m1.655 1.341c.629 0 .724-.643.724-1.344 0-.7-.095-1.343-.724-1.343s-.723.643-.723 1.343c0 .701.094 1.344.723 1.344m7.126-6.807L5.956 12.439 4.8 11.281zM6.141 6.604h.903v3.935h-.903v-.17c-.245.174-.538.27-.839.272-1.018 0-1.791-.928-1.791-2.067s.773-2.068 1.791-2.068c.301.003.594.098.839.273zm-.839 3.088c.502 0 .857-.493.857-1.118s-.355-1.118-.857-1.118-.868.494-.868 1.118c0 .623.366 1.118.868 1.118m8.006-3.088h.894v3.935h-.894v-.14a1.37 1.37 0 0 1-.759.242c-.951 0-1.599-.773-1.599-1.723V6.604h.893v2.314c0 .434.297.801.732.801s.733-.367.733-.801zm8.332 3.935h-.897V6.61h.897v.14c.224-.155.489-.239.761-.244.95 0 1.599.773 1.599 1.723v2.31h-.893v-2.31c0-.434-.298-.8-.733-.8-.434 0-.734.366-.734.8zm-20.705 0H.013V5.627H1.55c.927.006 1.686.77 1.686 1.697 0 .546-.264 1.06-.707 1.378l1.384 1.837H2.741L1.592 9.017H.935zm0-3.982v1.525h.642a.767.767 0 0 0 .764-.763.77.77 0 0 0-.764-.763l-.032.001zm15.679 3.054v.003l.588.785a1.8 1.8 0 0 1-.875.245 1.353 1.353 0 0 1-1.331-1.346l.002-.059v-1.7h-.473v-.935h.473v-.978h.894v.978h.768v.935h-.765v1.686l-.002.043c0 .234.187.43.422.441a.54.54 0 0 0 .299-.098m-7.352-1.16 1.78 2.092H9.789L8.47 8.925v1.618h-.922V5.296h.922v2.68l1.073-1.372h1.253zm9.416-1.947c1.014 0 1.934.931 1.713 2.345h-2.577c.118.9 1.137 1.358 1.748.457l.79.456c-.508.72-1.113.882-1.584.882-.935 0-1.866-.85-1.866-2.07 0-1.16.742-2.07 1.776-2.07m.782 1.561c-.175-.979-1.423-.923-1.612 0z"/></svg><span class="name">Kobo</span></a></div>
-<div class="bookmark-item" data-category="listen" data-ctx="personal"><a class="main-link" data-app-url="dewey-oauth://" href="#"><svg aria-hidden="true" class="ctx-icon" fill="currentColor" stroke="none" viewBox="0 0 24 24"><circle cx="12" cy="6.5" r="5.5"/><path d="M14.5 3l.8-2 .7 2.5-.6.8z"/><path d="M12 13c-4.5 0-8 1.5-9.5 3.5-.5.7-.5 1.2-.5 1.5v1c0 .6.4 1 1 1h3.5L12 17l5.5 3H21c.6 0 1-.4 1-1v-1c0-.3 0-.8-.5-1.5C20 14.5 16.5 13 12 13z"/></svg><span class="name">Libby</span></a></div>
-<div class="bookmark-item" data-category="news" data-ctx="personal"><a class="main-link" data-app-url="com.economist.lamarr://home" href="https://www.economist.com/"><svg aria-hidden="true" class="ctx-icon" fill="currentColor" stroke="none" viewBox="38 -714 543 714"><g transform="scale(1,-1)"><path d="M38 0V42H51Q84 42 108.5 53.5Q133 65 133 109V600Q133 647 109.0 659.5Q85 672 51 672H38V714H542L547 539H495L490 582Q486 615 466.5 639.5Q447 664 402 664H234V398H475V349H234V50H427Q474 50 495.5 74.5Q517 99 522 132L529 175H581L574 0Z"/></g></svg><span class="name">The Economist</span></a></div>
-<div class="bookmark-item" data-category="news" data-ctx="personal"><a class="main-link" data-app-url="twitter://timeline" href="https://x.com/home"><svg aria-hidden="true" class="ctx-icon" fill="currentColor" stroke="none" viewBox="0 0 24 24"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"></path></svg><span class="name">X</span></a></div>
-<div class="bookmark-item" data-category="news" data-ctx="personal"><a class="main-link" data-app-url="nytimes://home" href="https://www.nytimes.com/"><svg aria-hidden="true" class="ctx-icon" fill="currentColor" stroke="none" viewBox="0 0 13.9 18.6"><path d="M13.9,2.5C13.9.5,12,0,10.5,0V.3c.9,0,1.6.3,1.6,1a1.05872,1.05872,0,0,1-1.2,1,12.95853,12.95853,0,0,1-3.3-.8A13.27527,13.27527,0,0,0,4.1.7,3.27043,3.27043,0,0,0,.7,3.9,2.31777,2.31777,0,0,0,2.2,6.1l.1-.2a1.05381,1.05381,0,0,1-.6-1A1.26593,1.26593,0,0,1,3.1,3.8a14.776,14.776,0,0,1,3.7.9,28.25773,28.25773,0,0,0,3.7.8V8.6L9,9.9V10l1.5,1.3v4.3a4.6179,4.6179,0,0,1-2.5.6,4.92913,4.92913,0,0,1-3.9-1.6l4.1-2v-7l-5,2.2A6.68515,6.68515,0,0,1,5.8,4.9l-.1-.2A7.47133,7.47133,0,0,0,0,11.6a7.01948,7.01948,0,0,0,7,7,6.50532,6.50532,0,0,0,6.6-6.5h-.2a6.69748,6.69748,0,0,1-2.6,3.1V11.1l1.6-1.3V9.7L10.9,8.4v-3A2.85791,2.85791,0,0,0,13.9,2.5Zm-8.7,11L4,14.1a5.93247,5.93247,0,0,1-1.1-3.8,7.10647,7.10647,0,0,1,.3-2.1l2.1-.9Z"/></svg><span class="name">NYT</span></a><a class="access-link" href="https://libwww.freelibrary.org/elecres/NYTimesRemote.cfm" aria-label="Access The New York Times through the Free Library">FREE</a></div>
+  <div class="bookmark-item" data-category="health"><a class="main-link" data-app-url="clublocker://" href="https://clublocker.com/organizations/829/reservations/"><svg class="ctx-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg><span class="name">RCOP</span></a></div>
+  <div class="bookmark-item" data-category="health"><a class="main-link" data-app-url="oura://" href="https://cloud.ouraring.com/dashboard"><svg class="ctx-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg><span class="name">Oura Ring</span></a></div>
+  <div class="bookmark-item" data-category="health"><a class="main-link" data-app-url="com.solidcore.app://" href="https://www.solidcore.co/book-a-class/"><svg class="ctx-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg><span class="name">Solidcore</span></a></div>
+  <div class="bookmark-item" data-category="listen"><a class="main-link" data-app-url="spotify://" href="https://open.spotify.com/"><svg class="ctx-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0z"/></svg><span class="name">Spotify</span></a></div>
+  <div class="bookmark-item" data-category="listen"><a class="main-link" data-app-url="classical://" href="https://music.apple.com/us/curator/apple-music-classical/976439532"><svg class="ctx-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg><span class="name">Classical</span></a></div>
+  <div class="bookmark-item" data-category="listen"><a class="main-link" data-app-url="kobo://" href="https://www.kobo.com/"><svg class="ctx-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21l-8-3V7l8 3 8-3v11l-8 3z"/></svg><span class="name">Kobo</span></a></div>
+  <div class="bookmark-item" data-category="news"><a class="main-link" data-app-url="com.economist.lamarr://home" href="https://www.economist.com/"><svg class="ctx-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M0 0h24v24H0z"/></svg><span class="name">The Economist</span></a></div>
+  <div class="bookmark-item" data-category="news"><a class="main-link" data-app-url="twitter://timeline" href="https://x.com/home"><svg class="ctx-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M18.2 3H21L14.7 10.1 22 21H16.4L10.8 12.5 4.5 21H1.8L8.6 13 1.5 3H7.3L12.4 11 18.2 3z"/></svg><span class="name">X</span></a></div>
+  <div class="bookmark-item" data-category="news"><a class="main-link" data-app-url="nytimes://home" href="https://www.nytimes.com/"><svg class="ctx-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z"/></svg><span class="name">NYT</span></a><a class="access-link" href="https://libwww.freelibrary.org/elecres/NYTimesRemote.cfm">FREE</a></div>
 </div>
 </div>
-<script src="bookmarks.js?v={{BOOKMARKS_JS_HASH}}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('grid');
+    const items = Array.from(document.querySelectorAll('.bookmark-item'));
+    const CAT_ORDER = ['listen', 'news', 'health'];
+    const CUSTOM = { 'news': ['the economist', 'x', 'nytimes'], 'listen': ['spotify'], 'health': ['oura ring', 'clublocker', 'solidcore'] };
+
+    items.sort((a, b) => {
+      let cA = CAT_ORDER.indexOf(a.dataset.category), cB = CAT_ORDER.indexOf(b.dataset.category);
+      if (cA !== cB) return cA - cB;
+      let nA = a.querySelector('.name').textContent.trim().toLowerCase(), nB = b.querySelector('.name').textContent.trim().toLowerCase();
+      let cat = a.dataset.category;
+      if (CUSTOM[cat]) {
+        let iA = CUSTOM[cat].indexOf(nA), iB = CUSTOM[cat].indexOf(nB);
+        if (iA !== -1 && iB !== -1) return iA - iB;
+      }
+      return nA.localeCompare(nB);
+    });
+    items.forEach(item => grid.appendChild(item));
+
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      grid.addEventListener('click', e => {
+        const a = e.target.closest('a[data-app-url]');
+        if (!a) return;
+        e.preventDefault();
+        window.location.href = a.dataset.appUrl;
+        const web = a.getAttribute('href');
+        if (web && web !== '#') setTimeout(() => { if (document.visibilityState !== 'hidden') window.location.href = web; }, 1500);
+      });
+    }
+  });
+</script>
 </body>
 </html>

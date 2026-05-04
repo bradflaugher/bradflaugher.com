@@ -16,22 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Build assets (Cache Busting)
-        run: |
-          # Calculate hashes
-          SHARED_CSS_HASH=$(sha256sum shared.css | cut -c1-8)
-          BOOKMARKS_CSS_HASH=$(sha256sum bookmarks.css | cut -c1-8)
-          SEARCH_CSS_HASH=$(sha256sum search.css | cut -c1-8)
-          BOOKMARKS_JS_HASH=$(sha256sum bookmarks.js | cut -c1-8)
-          SEARCH_JS_HASH=$(sha256sum search.js | cut -c1-8)
-          
-          # Inject hashes into HTML files
-          sed -i "s/{{SHARED_CSS_HASH}}/$SHARED_CSS_HASH/g" bookmarks.html search.html
-          sed -i "s/{{BOOKMARKS_CSS_HASH}}/$BOOKMARKS_CSS_HASH/g" bookmarks.html
-          sed -i "s/{{SEARCH_CSS_HASH}}/$SEARCH_CSS_HASH/g" search.html
-          sed -i "s/{{BOOKMARKS_JS_HASH}}/$BOOKMARKS_JS_HASH/g" bookmarks.html
-          sed -i "s/{{SEARCH_JS_HASH}}/$SEARCH_JS_HASH/g" search.html
-
       - name: Publish to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
