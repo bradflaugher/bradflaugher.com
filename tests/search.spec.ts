@@ -182,20 +182,26 @@ test.describe('search router — semantic routing', () => {
 
 test.describe('search router — cancel button', () => {
   test('cancel stops the redirect and refocuses the input', async ({ page }) => {
-    await page.goto(PATH);
-
-    // Patch out the redirect so a slow Playwright click can't lose the race
-    // with the 1.5s timer. We're testing the cancel UX, not navigation.
-    await page.evaluate(() => {
+    // Drop the 1500 ms route timer entirely so a slow Playwright click
+    // can't race it. We test the cancel UX, not the actual navigation.
+    // Patching setTimeout is more robust than stubbing location.replace,
+    // which Chromium's Location interface treats as non-overridable in
+    // some contexts.
+    await page.addInitScript(() => {
+      const origSetTimeout = window.setTimeout;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).location.replace = () => {};
+      (window as any).setTimeout = (fn: TimerHandler, ms?: number, ...args: any[]) => {
+        if (ms === 1500) return 0;          // route timer — skip
+        return origSetTimeout(fn, ms, ...args);
+      };
     });
+    await page.goto(PATH);
 
     const search = page.locator('#search');
     await search.fill('!yt lofi');
     await search.press('Enter');
 
-    // Auto-waits for the cancel button to be visible (overlay shown).
+    // Overlay appears synchronously after Enter; click cancel.
     await page.locator('#cancel').click();
 
     await expect(page.locator('#overlay')).toBeHidden();
@@ -203,9 +209,39 @@ test.describe('search router — cancel button', () => {
     await expect(search).toHaveValue('!yt lofi');
     await expect(search).toBeFocused();
 
-    // Give the now-stubbed timer a moment to "fire" — the test should
-    // remain on the search page.
+    // Confirm no late navigation slips through.
     await page.waitForTimeout(2_000);
     expect(page.url()).toMatch(/\/search\.html$/);
+  });
+});
+
+test.describe('search router — mobile keyboard awareness', () => {
+  // Headless Playwright doesn't pop a real soft keyboard, so we simulate
+  // it by dispatching a synthetic visualViewport resize event and assert
+  // that the --keyboard-inset CSS variable propagates to .scores-panel's
+  // computed `bottom` offset.
+  test('--keyboard-inset lifts scores panel above the simulated keyboard', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });   // iPhone 14
+    await page.goto(PATH);
+    await waitForModelReady(page);
+
+    await page.locator('#search').fill('how do I bake bread');
+    await expect(page.locator('#scores')).toHaveClass(/active/);
+
+    const baseline = await page.locator('#scores').evaluate(el =>
+      parseFloat(getComputedStyle(el).bottom)
+    );
+
+    // Simulate the keyboard taking the bottom 350 px.
+    await page.evaluate(() => {
+      const vv = window.visualViewport!;
+      Object.defineProperty(vv, 'height',    { configurable: true, value: window.innerHeight - 350 });
+      Object.defineProperty(vv, 'offsetTop', { configurable: true, value: 0 });
+      vv.dispatchEvent(new Event('resize'));
+    });
+
+    await expect.poll(async () =>
+      page.locator('#scores').evaluate(el => parseFloat(getComputedStyle(el).bottom))
+    ).toBeGreaterThan(baseline + 300);
   });
 });
