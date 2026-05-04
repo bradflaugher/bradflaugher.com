@@ -224,9 +224,14 @@
     const imageKeywords = ['image', 'pic', 'photo', 'gif', 'svg', 'png', 'jpg', 'wallpaper', 'logo'];
     if (words.some(w => imageKeywords.includes(w))) return 'bing-images';
     
-    // Maps
-    const mapKeywords = ['near me', 'restaurant', 'hotel', 'park', 'address', 'city', 'map', 'directions', 'located', 'cafe', 'pizza', 'airport', 'station'];
-    if (words.some(w => mapKeywords.includes(w)) || /\d+\s+[a-z]+/.test(query) || query.includes(' street') || query.includes(' ave')) return 'maps';
+    // Google Maps: Locations/Directions
+    const mapPhrases = ['near me', 'at ', 'in ', 'directions to', 'how to get to', 'where is'];
+    const mapKeywords = ['restaurant', 'hotel', 'park', 'address', 'city', 'map', 'located', 'cafe', 'pizza', 'airport', 'station', 'st', 'ave', 'rd', 'blvd', 'drive', 'lane', 'street', 'avenue', 'road', 'boulevard'];
+    const commonCities = ['philly', 'philadelphia', 'nyc', 'york', 'london', 'paris', 'tokyo', 'seattle', 'boston', 'chicago', 'austin', 'miami', 'vegas', 'la', 'angeles', 'sf', 'francisco'];
+    
+    if (mapPhrases.some(p => query.includes(p)) || 
+        words.some(w => mapKeywords.includes(w) || commonCities.includes(w)) || 
+        /\d+\s+[a-z]+/.test(query)) return 'maps';
     
     // Grok
     const socialKeywords = ['news', 'opinion', 'social', 'twitter', 'x', 'trending', 'politics', 'crypto', 'viral', 'reddit', 'tiktok'];
