@@ -245,7 +245,7 @@
     'bing-images': { name: 'Bing Images', color: '#008373', url: q => `https://www.bing.com/images/search?q=${q}` },
     'perplexity': { name: 'Perplexity', color: '#20B2AA', url: q => `https://www.perplexity.ai/search?q=${q}` },
     'grok': { name: 'Grok', color: '#ffffff', url: q => `https://grok.com/?q=${q}` },
-    'maps': { name: 'Maps', color: '#4285F4', url: q => `https://maps.google.com/maps?q=${q}` },
+    'maps': { name: 'Google Maps', color: '#4285F4', url: q => `https://maps.google.com/maps?q=${q}` },
     'youtube': { name: 'YouTube', color: '#FF0000', url: q => `https://www.youtube.com/results?search_query=${q}` },
     'amazon': { name: 'Amazon', color: '#FF9900', url: q => `https://www.amazon.com/s?k=${q}` },
     'github': { name: 'GitHub', color: '#333', url: q => `https://github.com/search?q=${q}` },
@@ -450,13 +450,19 @@
 
   let debounceTimer;
   let inferenceAbort = null;
+  let isProcessing = false;
   search.addEventListener('input', () => {
     clearTimeout(debounceTimer);
     if (inferenceAbort) {
       inferenceAbort.aborted = true;
       inferenceAbort = null;
     }
-    debounceTimer = setTimeout(updateHint, 150);
+    debounceTimer = setTimeout(() => {
+      if (!isProcessing) {
+        isProcessing = true;
+        updateHint().finally(() => { isProcessing = false; });
+      }
+    }, 150);
   });
 
   search.addEventListener('keydown', e => {
