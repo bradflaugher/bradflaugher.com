@@ -1,0 +1,61 @@
+name: Search Stability Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'search.html'
+      - 'search-embeddings.json'
+      - '.github/workflows/search-tests.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'search.html'
+      - 'search-embeddings.json'
+      - '.github/workflows/search-tests.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Verify Embeddings Integrity
+      run: |
+        node -e "
+        const fs = require('fs');
+        const data = JSON.parse(fs.readFileSync('search-embeddings.json', 'utf8'));
+        if (!Array.isArray(data)) throw new Error('Embeddings must be an array');
+        if (data.length === 0) throw new Error('Embeddings array is empty');
+        data.forEach(route => {
+          if (!route.key || !Array.isArray(route.vectors)) throw new Error('Invalid route object: ' + JSON.stringify(route.key));
+          if (route.vectors.length === 0) throw new Error('No vectors for route: ' + route.key);
+          if (route.vectors[0].length !== 384) throw new Error('Invalid vector dimension for: ' + route.key);
+        });
+        console.log('Embeddings integrity verified: ' + data.length + ' categories found.');
+        "
+
+    - name: Verify search.html Logic
+      run: |
+        node -e "
+        const fs = require('fs');
+        const html = fs.readFileSync('search.html', 'utf8');
+        const requirements = [
+          { name: 'Model Path', regex: /sentence-transformers\/all-MiniLM-L6-v2/ },
+          { name: 'Quantized Dtype', regex: /dtype: 'q8'/ },
+          { name: 'Embeddings Fetch', regex: /fetch\('\/search-embeddings\.json'\)/ },
+          { name: 'Correct Math (na)', regex: /na \+= a\[i\] \* a\[i\]/ },
+          { name: 'Correct Math (nb)', regex: /nb \+= b\[i\] \* b\[i\]/ },
+          { name: 'Fallback logic', regex: /engines\['ddg'\]/ }
+        ];
+        requirements.forEach(req => {
+          if (!req.regex.test(html)) throw new Error('Requirement failed: ' + req.name);
+          console.log('✓ ' + req.name);
+        });
+        "

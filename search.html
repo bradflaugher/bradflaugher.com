@@ -307,9 +307,9 @@
       
       // Load pre-calculated embeddings and model in parallel
       const [embeddingsResponse, model] = await Promise.all([
-        fetch('./search-embeddings.json'),
+        fetch('/search-embeddings.json'),
         pipeline('feature-extraction', 'sentence-transformers/all-MiniLM-L6-v2', {
-          dtype: 'fp32',
+          dtype: 'q8',
         })
       ]);
 
@@ -320,11 +320,15 @@
       routeVectors = await embeddingsResponse.json();
       extractor = model;
       
+      if (!routeVectors || routeVectors.length === 0) {
+        throw new Error('Embeddings file is empty or invalid');
+      }
+
       modelReady = true;
       status.classList.add('ready');
       status.title = "Embedding Model Ready";
       
-      console.log('Search router: Semantic model loaded');
+      console.log(`Search router: Semantic model loaded with ${routeVectors.length} categories`);
       
       if (!isRedirecting) {
         loadingOverlay.classList.remove('active');
@@ -332,7 +336,7 @@
       
       updateHint();
     } catch (err) {
-      console.error('Search router: Failed to load model', err);
+      console.error('Search router: Initialization failed', err);
       status.title = "Embedding Model Failed: " + err.message;
       status.style.background = "#ff0000";
       loadingOverlay.classList.remove('active');
@@ -533,7 +537,10 @@
         if (modelReady) {
           await performRoute(qParam, true);
         } else if (status.title.startsWith('Embedding Model Failed')) {
-          loadingOverlay.classList.remove('active');
+          console.warn('Falling back to DuckDuckGo due to model failure');
+          // If model fails, we still want the query param to work, so fall back to default
+          const target = engines['ddg'];
+          window.location.replace(target.url(encodeURIComponent(qParam.trim())));
         } else {
           setTimeout(routeWhenReady, 100);
         }
