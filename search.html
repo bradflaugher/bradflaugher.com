@@ -11,6 +11,8 @@
 <meta content="yes" name="mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="#000000" name="theme-color" id="theme-color"/>
+<meta name="robots" content="noindex"/>
+<meta name="referrer" content="no-referrer"/>
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   :root {
@@ -20,6 +22,10 @@
     --accent: #ffffff;
     --engine-color: transparent;
     --keyboard-inset: 0px;
+    /* Single source of truth for the "redirecting…" countdown. JS reads
+       this back via getPropertyValue when arming the route timer, so the
+       visual fill and the actual setTimeout always agree. */
+    --route-delay-ms: 1500ms;
   }
   @media (prefers-color-scheme: light) {
     :root {
@@ -186,7 +192,7 @@
     top: 0; left: 0; bottom: 0;
     width: 0%;
     background: var(--text);
-    transition: width 1.5s linear;
+    transition: width var(--route-delay-ms) linear;
   }
   /*
    * --keyboard-inset is set from JS via the visualViewport API and reflects
@@ -371,12 +377,32 @@
     line-height: 1.4;
   }
   .error-banner.active { display: block; }
+  .error-banner .retry-link {
+    display: inline-block;
+    margin-left: 0.4rem;
+    color: inherit;
+    background: transparent;
+    border: none;
+    padding: 0;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .error-banner .retry-link:focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 2px;
+  }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="input-wrap">
-    <input autocomplete="off" id="search" placeholder="Type to search..." type="text" autofocus/>
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           spellcheck="false" enterkeyhint="search"
+           aria-label="Search query"
+           id="search" placeholder="Type to search..." type="text" autofocus/>
     <div class="engine-hint" id="hint">DuckDuckGo</div>
   </div>
 </div>
@@ -418,10 +444,24 @@
 
   const MODEL_ID = 'sentence-transformers/all-MiniLM-L6-v2';
   const MODEL_DTYPE = 'q8';
-  const EMBEDDINGS_URL = '/search-embeddings.json';
+  // Versioned URL: bump when search-embeddings.json content changes so
+  // any client (especially iOS Safari) can't serve a stale cached body
+  // alongside a freshly-fetched search.html. The number must match the
+  // committed file's content; see _headers for the fallback short TTL.
+  const EMBEDDINGS_VERSION = '1';
+  const EMBEDDINGS_URL = `/search-embeddings.json?v=${EMBEDDINGS_VERSION}`;
   const SIMILARITY_THRESHOLD = 0.30;   // below this, fall back to DuckDuckGo
-  const ROUTE_DELAY_MS = 1500;         // user-cancelable delay before redirect (Enter)
   const INPUT_DEBOUNCE_MS = 150;
+  const FETCH_TIMEOUT_MS = 30_000;     // give up on stalled embeddings fetch
+  // Read the route-delay countdown from CSS so the visual progress bar
+  // and the redirect setTimeout can never drift out of sync.
+  const ROUTE_DELAY_MS = (() => {
+    const v = getComputedStyle(document.documentElement)
+      .getPropertyValue('--route-delay-ms').trim();
+    const n = parseFloat(v);
+    if (!Number.isFinite(n) || n <= 0) return 1500;
+    return v.endsWith('ms') ? n : n * 1000;       // s → ms
+  })();
 
   const engines = {
     'ddg':         { name: 'DuckDuckGo',    color: '#DE5833', url: q => `https://html.duckduckgo.com/html/?q=${q}` },
@@ -498,58 +538,140 @@
   let modelReady = false;
   let modelFailed = false;
   let routeTimer = null;
+  /** @type {Promise<boolean>}  Resolves true on success, false on failure;
+   *  never rejects. ?q= redirect awaits this instead of polling. */
+  let modelLoadPromise = null;
   const qParam = new URLSearchParams(location.search).get('q');
   const isRedirecting = qParam !== null;
 
   // ───────────────────────────────────────────────────────────────────────
   // Model + embeddings loader
+  //
+  // Returns a never-rejecting Promise<boolean> so callers can `await` it
+  // without try/catch. On failure, the page falls back to DuckDuckGo
+  // (every code path checks `modelReady` before reaching the embedder).
   // ───────────────────────────────────────────────────────────────────────
-  async function initModel() {
-    loadingOverlay.classList.add('active');
+  async function fetchEmbeddings() {
+    const ctl = new AbortController();
+    const t = setTimeout(() => ctl.abort(), FETCH_TIMEOUT_MS);
     try {
-      console.log('Search router: initializing…');
-
-      const [embeddingsResp, model] = await Promise.all([
-        fetch(EMBEDDINGS_URL),
-        pipeline('feature-extraction', MODEL_ID, { dtype: MODEL_DTYPE })
-      ]);
-
-      if (!embeddingsResp.ok) {
-        throw new Error(`Failed to load embeddings (${embeddingsResp.status})`);
-      }
-      const raw = await embeddingsResp.json();
+      const resp = await fetch(EMBEDDINGS_URL, {
+        signal: ctl.signal,
+        // Cache busting: rely on URL versioning + `_headers`; avoid
+        // `cache: 'no-store'` because that defeats the browser cache
+        // entirely and forces a 3.5 MB download on every visit.
+        cache: 'default',
+        credentials: 'omit',
+      });
+      if (!resp.ok) throw new Error(`embeddings HTTP ${resp.status}`);
+      const raw = await resp.json();
       if (!Array.isArray(raw) || raw.length === 0) {
-        throw new Error('Embeddings file is empty or malformed');
+        throw new Error('embeddings empty or malformed');
       }
-
-      // Convert to typed arrays once. Vectors are L2-normalized at build
-      // time, so cosine similarity == dot product (no per-query sqrt).
-      routes = raw.map(r => ({
-        key: r.key,
-        vectors: r.vectors.map(v => Float32Array.from(v))
-      }));
-      extractor = model;
-      modelReady = true;
-
-      statusDot.classList.add('ready');
-      statusDot.dataset.state = 'ready';
-      statusDot.title = 'Embedding Model Ready';
-
-      const total = routes.reduce((n, r) => n + r.vectors.length, 0);
-      console.log(`Search router: ready (${routes.length} routes, ${total} vectors)`);
-
-      if (!isRedirecting) loadingOverlay.classList.remove('active');
-      updateHint();
-    } catch (err) {
-      modelFailed = true;
-      statusDot.classList.add('failed');
-      statusDot.dataset.state = 'failed';
-      statusDot.title = 'Embedding Model Failed: ' + err.message;
-      errorBanner.textContent = 'Semantic routing unavailable — falling back to DuckDuckGo. (' + err.message + ')';
-      errorBanner.classList.add('active');
-      console.error('Search router: init failed', err);
-      loadingOverlay.classList.remove('active');
+      return raw;
+    } finally {
+      clearTimeout(t);
     }
+  }
+
+  function setStatus(state, title) {
+    statusDot.dataset.state = state;
+    statusDot.title = title;
+    statusDot.classList.toggle('ready', state === 'ready');
+    statusDot.classList.toggle('failed', state === 'failed');
+  }
+
+  function showError(message) {
+    // Build via DOM nodes (no innerHTML — message can include err.message).
+    errorBanner.replaceChildren();
+    errorBanner.appendChild(document.createTextNode(
+      'Semantic routing unavailable — Enter still works (DuckDuckGo). ' +
+      '(' + message + ') '
+    ));
+    const retry = document.createElement('button');
+    retry.type = 'button';
+    retry.className = 'retry-link';
+    retry.id = 'error-retry';
+    retry.textContent = 'Retry';
+    retry.addEventListener('click', retryModelLoad);
+    errorBanner.appendChild(retry);
+    errorBanner.classList.add('active');
+  }
+
+  function hideError() {
+    errorBanner.classList.remove('active');
+    errorBanner.replaceChildren();
+  }
+
+  /**
+   * Best-effort cache nuke. iOS Safari occasionally serves a half-cached
+   * model or stale embeddings; "Retry" clears every cache the page
+   * controls, then full-reloads. We can't blow away service-worker
+   * caches we don't own, but we don't have a SW so this is exhaustive.
+   */
+  async function clearAppCaches() {
+    try {
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+    } catch (e) { console.warn('caches.keys()/delete failed', e); }
+    try {
+      if ('indexedDB' in window && indexedDB.databases) {
+        const dbs = await indexedDB.databases();
+        await Promise.all((dbs || []).map(db => new Promise(r => {
+          if (!db.name) return r(undefined);
+          const req = indexedDB.deleteDatabase(db.name);
+          req.onsuccess = req.onerror = req.onblocked = () => r(undefined);
+        })));
+      }
+    } catch (e) { console.warn('indexedDB.databases()/delete failed', e); }
+  }
+
+  async function retryModelLoad() {
+    hideError();
+    await clearAppCaches();
+    // Hard reload bypasses HTTP cache; the cleared caches/IDB above
+    // ensure transformers.js can't re-hydrate from a corrupt local copy.
+    location.reload();
+  }
+
+  function initModel() {
+    if (modelLoadPromise) return modelLoadPromise;
+    loadingOverlay.classList.add('active');
+    setStatus('loading', 'Embedding Model Loading…');
+    modelLoadPromise = (async () => {
+      try {
+        console.log('Search router: initializing…');
+        const [raw, model] = await Promise.all([
+          fetchEmbeddings(),
+          pipeline('feature-extraction', MODEL_ID, { dtype: MODEL_DTYPE }),
+        ]);
+        // Convert to typed arrays once. Vectors are L2-normalized at
+        // build time, so cosine == dot product (no per-query sqrt).
+        routes = raw.map(r => ({
+          key: r.key,
+          vectors: r.vectors.map(v => Float32Array.from(v)),
+        }));
+        extractor = model;
+        modelReady = true;
+        setStatus('ready', 'Embedding Model Ready');
+        const total = routes.reduce((n, r) => n + r.vectors.length, 0);
+        console.log(`Search router: ready (${routes.length} routes, ${total} vectors)`);
+        if (!isRedirecting) loadingOverlay.classList.remove('active');
+        updateHint();
+        return true;
+      } catch (err) {
+        modelFailed = true;
+        const msg = (err && err.message) || String(err);
+        setStatus('failed', 'Embedding Model Failed: ' + msg);
+        showError(msg);
+        console.error('Search router: init failed', err);
+        loadingOverlay.classList.remove('active');
+        return false;
+      }
+    })();
+    return modelLoadPromise;
   }
 
   // ───────────────────────────────────────────────────────────────────────
@@ -697,7 +819,12 @@
   }
 
   async function performRoute(rawQuery, immediate = false) {
-    if (!rawQuery) return;
+    if (!rawQuery || !rawQuery.trim()) return;
+    // Defensive: if a previous route was already armed (rapid double
+    // Enter, or Enter while a redirect is pending), cancel it first so
+    // we don't stack timers / redirect twice.
+    if (routeTimer) { clearTimeout(routeTimer); routeTimer = null; }
+
     const result = await classify(rawQuery);
     const url = buildTargetUrl(rawQuery, result.key);
 
@@ -708,6 +835,9 @@
     display.textContent = engines[result.key].name;
     overlay.style.display = 'flex';
     search.blur();
+    // Reset width to 0 first so the transition has somewhere to go even
+    // if the bar was previously filled by a cancelled route.
+    progress.style.width = '0%';
     requestAnimationFrame(() => { progress.style.width = '100%'; });
     routeTimer = setTimeout(() => location.replace(url), ROUTE_DELAY_MS);
   }
@@ -725,12 +855,20 @@
     if (e.key === 'Enter' && search.value.trim()) performRoute(search.value);
   });
 
-  cancel.addEventListener('click', () => {
-    clearTimeout(routeTimer);
-    routeTimer = null;
+  function cancelRoute() {
+    if (routeTimer) { clearTimeout(routeTimer); routeTimer = null; }
     overlay.style.display = 'none';
     progress.style.width = '0%';
     search.focus();
+  }
+  cancel.addEventListener('click', cancelRoute);
+  // Escape while the redirect overlay is up should cancel it too. Plain
+  // keyboard accessibility — useful on desktop, no harm on mobile.
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.style.display === 'flex') {
+      e.preventDefault();
+      cancelRoute();
+    }
   });
 
   // Rotating placeholder (decorative)
@@ -749,29 +887,31 @@
 
   // ───────────────────────────────────────────────────────────────────────
   // ?q=… auto-redirect entry point
+  //
+  // Order matters: we kick off `initModel()` immediately so the network
+  // fetch starts in parallel with the rest of script init, then await
+  // it from the redirect path. No polling — exactly one resolution.
   // ───────────────────────────────────────────────────────────────────────
+  const initPromise = initModel();
+
   if (qParam !== null) {
     const trimmed = qParam.trim();
     if (!trimmed) {
-      // Empty query → just show the page.
+      // Empty query → just show the page; nothing to redirect to.
       loadingOverlay.classList.remove('active');
     } else {
       search.value = trimmed;
-      const tryRoute = () => {
-        if (modelReady) {
+      (async () => {
+        const ok = await initPromise;
+        if (ok) {
           performRoute(trimmed, true);
-        } else if (modelFailed) {
+        } else {
           console.warn('Search router: model failed, falling back to DuckDuckGo');
           location.replace(engines.ddg.url(encodeURIComponent(trimmed)));
-        } else {
-          setTimeout(tryRoute, 80);
         }
-      };
-      tryRoute();
+      })();
     }
   }
-
-  initModel();
 </script>
 </body>
 </html>
