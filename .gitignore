@@ -1,6 +1,9 @@
 # pdf dist folder
 extras/dist/**
 
+# Locally generated PDF resume
+Brad_Flaugher_Resume.pdf
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
