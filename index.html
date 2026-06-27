@@ -43,21 +43,236 @@
       justify-content: center;
       min-height: 100vh;
       background:
-        linear-gradient(90deg,
-          rgba(15,5,2,1) 0%,
-          rgba(45,20,12,1) 12%,
-          rgba(30,12,6,1) 25%,
-          rgba(50,22,14,1) 38%,
-          rgba(25,10,5,1) 50%,
-          rgba(48,20,12,1) 62%,
-          rgba(32,14,8,1) 75%,
-          rgba(42,18,10,1) 88%,
-          rgba(15,5,2,1) 100%
+        /* Top: Subtle edge vignette for surface depth */
+        radial-gradient(
+          ellipse at 50% 50%,
+          transparent 30%,
+          rgba(10,4,2,0.6) 85%,
+          rgba(5,2,1,0.9) 100%
+        ),
+        /* Per-board color drift: 5 planks with subtle tonal variation */
+        linear-gradient(
+          180deg,
+          transparent 0%,
+          transparent 20%,
+          rgba(75,35,18,0.06) 20%,
+          rgba(75,35,18,0.06) 40%,
+          transparent 40%,
+          transparent 60%,
+          rgba(25,10,5,0.05) 60%,
+          rgba(25,10,5,0.05) 80%,
+          transparent 80%,
+          transparent 100%
+        ),
+        /* Plank seams: thin dark shadow lines between boards */
+        linear-gradient(
+          180deg,
+          transparent 0%,
+          transparent 19.8%,
+          rgba(5,2,1,0.5) 19.8%,
+          rgba(12,5,2,0.15) 20.2%,
+          transparent 20.2%,
+          transparent 39.8%,
+          rgba(5,2,1,0.5) 39.8%,
+          rgba(12,5,2,0.15) 40.2%,
+          transparent 40.2%,
+          transparent 59.8%,
+          rgba(5,2,1,0.5) 59.8%,
+          rgba(12,5,2,0.15) 60.2%,
+          transparent 60.2%,
+          transparent 79.8%,
+          rgba(5,2,1,0.5) 79.8%,
+          rgba(12,5,2,0.15) 80.2%,
+          transparent 80.2%,
+          transparent 100%
+        ),
+        /* Micro grain: irregular fine texture lines at varying angles */
+        repeating-linear-gradient(
+          3deg,
+          transparent 0px,
+          rgba(55,24,12,0.05) 1px,
+          transparent 2px,
+          rgba(40,16,8,0.03) 4px,
+          transparent 5px,
+          rgba(50,20,10,0.04) 7px,
+          transparent 8px
+        ),
+        /* Long-grain streaks: wider irregular bands for natural walnut look */
+        repeating-linear-gradient(
+          177deg,
+          transparent 0px,
+          rgba(60,28,14,0.08) 3px,
+          transparent 6px,
+          transparent 14px,
+          rgba(45,18,8,0.06) 14px,
+          transparent 18px,
+          transparent 28px,
+          rgba(55,24,12,0.1) 28px,
+          transparent 32px,
+          transparent 44px,
+          rgba(50,22,10,0.07) 44px,
+          transparent 48px,
+          transparent 58px,
+          rgba(40,16,8,0.09) 58px,
+          transparent 62px,
+          transparent 72px
+        ),
+        /* Subtle diagonal sheen overlay */
+        repeating-linear-gradient(
+          12deg,
+          transparent 0px,
+          transparent 40px,
+          rgba(180,120,80,0.015) 40px,
+          transparent 42px,
+          transparent 80px,
+          rgba(180,120,80,0.01) 80px,
+          transparent 82px,
+          transparent 120px
+        ),
+        /* Base: warm walnut color sweep across the plank */
+        linear-gradient(
+          7deg,
+          #1a0a05 0%,
+          #3b1c0e 12%,
+          #281006 25%,
+          #4a2614 40%,
+          #301408 55%,
+          #3d1e0e 68%,
+          #2c1208 82%,
+          #1a0a05 100%
         );
       background-color: #1a0a05;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        /* Knot 1 — large, upper-right: concentric rings */
+        radial-gradient(
+          ellipse 40% 18% at 72% 42%,
+          rgba(10,3,1,0.35) 0%,
+          rgba(15,5,2,0.2) 8%,
+          rgba(40,16,8,0.12) 14%,
+          rgba(60,30,16,0.06) 20%,
+          transparent 35%
+        ),
+        radial-gradient(
+          ellipse 35% 15% at 72% 42%,
+          transparent 0%,
+          rgba(10,3,1,0.15) 5%,
+          transparent 10%,
+          rgba(40,18,8,0.08) 16%,
+          transparent 22%,
+          transparent 38%
+        ),
+        /* Grain deflection around knot 1 */
+        radial-gradient(
+          ellipse 50% 22% at 72% 42%,
+          rgba(70,36,20,0.08) 0%,
+          rgba(50,24,12,0.04) 10%,
+          transparent 30%
+        ),
+        radial-gradient(
+          ellipse 55% 25% at 72% 42%,
+          transparent 0%,
+          rgba(40,16,8,0.03) 15%,
+          transparent 35%
+        ),
+        /* Knot 2 — smaller, lower-left: concentric rings */
+        radial-gradient(
+          ellipse 25% 10% at 25% 72%,
+          rgba(10,3,1,0.3) 0%,
+          rgba(20,8,3,0.18) 6%,
+          rgba(50,22,12,0.1) 12%,
+          rgba(65,32,18,0.04) 18%,
+          transparent 30%
+        ),
+        radial-gradient(
+          ellipse 22% 8% at 25% 72%,
+          transparent 0%,
+          rgba(10,3,1,0.12) 4%,
+          transparent 8%,
+          rgba(45,20,10,0.06) 14%,
+          transparent 20%,
+          transparent 32%
+        ),
+        /* Grain deflection around knot 2 */
+        radial-gradient(
+          ellipse 35% 14% at 25% 72%,
+          rgba(65,32,18,0.07) 0%,
+          rgba(45,20,10,0.03) 10%,
+          transparent 25%
+        ),
+        /* Light sapwood streak — upper-left */
+        radial-gradient(
+          ellipse 50% 6% at 30% 25%,
+          rgba(110,65,40,0.08) 0%,
+          rgba(100,55,32,0.04) 30%,
+          transparent 60%
+        ),
+        /* Light sapwood streak — lower-right */
+        radial-gradient(
+          ellipse 40% 5% at 70% 85%,
+          rgba(110,65,40,0.06) 0%,
+          rgba(100,55,32,0.03) 25%,
+          transparent 50%
+        ),
+        /* Subtle lighter heartwood streak — center */
+        radial-gradient(
+          ellipse 60% 8% at 50% 30%,
+          rgba(90,50,30,0.06) 0%,
+          transparent 60%
+        ),
+        /* Curved grain deflection around knots */
+        repeating-linear-gradient(
+          175deg,
+          transparent 0px,
+          transparent 60px,
+          rgba(60,28,14,0.03) 60px,
+          transparent 62px,
+          transparent 120px,
+          rgba(50,22,10,0.02) 120px,
+          transparent 122px,
+          transparent 180px,
+          rgba(60,28,14,0.025) 180px,
+          transparent 182px,
+          transparent 240px
+        );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      opacity: 0.045;
+      background-image:
+        /* Satin sheen: subtle diagonal light sweep */
+        repeating-linear-gradient(
+          15deg,
+          transparent 0px,
+          transparent 100px,
+          rgba(200,160,120,0.015) 100px,
+          transparent 110px,
+          transparent 220px,
+          rgba(200,160,120,0.01) 220px,
+          transparent 230px,
+          transparent 350px
+        ),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 100%, 400px 400px;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .card {
+      position: relative;
+      z-index: 1;
       width: 94vw;
       max-width: 580px;
       aspect-ratio: 1.75 / 1;

@@ -130,8 +130,17 @@ test.describe('search router — bang shortcuts', () => {
       const navPromise = page.waitForURL(url => {
         const u = new URL(url.toString());
         if (!c.host.test(u.hostname)) return false;
-        const qs = u.searchParams.get(c.qParam) ?? '';
-        return decodeURIComponent(qs).includes(c.qFragment);
+        let qs = u.searchParams.get(c.qParam);
+        if (qs === null && u.hostname.startsWith('consent.')) {
+          const cont = u.searchParams.get('continue');
+          if (cont) {
+            try {
+              const contUrl = new URL(cont);
+              qs = contUrl.searchParams.get(c.qParam);
+            } catch (e) {}
+          }
+        }
+        return decodeURIComponent(qs ?? '').includes(c.qFragment);
       }, { timeout: 15_000 });
       await search.press('Enter');
       await navPromise;
