@@ -142,3 +142,6 @@ test-search-router.mjs
 install-test-deps.sh
 package.json
 package-lock.json
+
+# middle-manager state directory
+.middle-manager/

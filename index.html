@@ -39,9 +39,11 @@
     body {
       font-family: 'Garamond Classico SC', 'Times New Roman', Georgia, serif;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
+      gap: 24px;
       background:
         /* Top: Subtle edge vignette for surface depth */
         radial-gradient(
@@ -453,6 +455,27 @@
         padding: 14px 18px;
       }
     }
+
+    .x-link {
+      color: rgba(240, 232, 220, 0.7);
+      text-decoration: none;
+      font-size: 16px;
+      letter-spacing: 0.1em;
+      transition: opacity 0.2s;
+      z-index: 1;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .x-link:hover {
+      opacity: 0.6;
+      color: rgba(240, 232, 220, 1);
+    }
+
+    @media (max-width: 520px) {
+      .x-link {
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -477,5 +500,6 @@
       <a href="mailto:brad@elcanotek.com">Brad@ElcanoTek.com</a>
     </div>
   </div>
+  <a href="https://x.com/BradFlaugher" class="x-link" target="_blank" rel="noopener">x.com/BradFlaugher</a>
 </body>
 </html>
