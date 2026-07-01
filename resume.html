@@ -426,8 +426,8 @@
         <section class="section">
           <h2>Professional Summary</h2>
           <p>
-            I operate as a high-impact advisor and hands-on builder for AI-native products, agent harness design and implementation, and secure platform architecture. 
-            With a multi-disciplinary toolkit spanning code, data, commerce, economic insight, and historical context, I design composable systems that move from strategy to production quickly. 
+            I operate as a high-impact advisor and hands-on builder for AI-native products, agent platforms, and secure architecture — I design agent harnesses, then ship and run them in production.
+            With a multi-disciplinary toolkit spanning code, data, commerce, economic insight, and historical context, I build composable systems that move from strategy to production quickly and put the right model in the right seat.
             No fluff: focused problem-solving, fast iteration, and durable execution with teams that need results.
           </p>
         </section>
@@ -473,8 +473,9 @@
               <div class="responsibilities">
                 <ul>
                   <li>Set technology strategy and shipped agentic infrastructure for supply-side curation, translating programmatic advertising workflows into autonomous, auditable systems for deal analysis, reporting, activation, and optimization.</li>
-                  <li>Built the Victoria agent stack: Go-based orchestration, pull-based task runners, ephemeral Podman execution, one-shot and multi-turn agent runtimes, MCP tool integrations, and persistent execution history designed to minimize inbound attack surface.</li>
-                  <li>Standardized a composable, multi-modal architecture that decouples persona, prompts, protocols, and skills from runtime targets across Elcano infrastructure, chat, voice, and virtual API deployments.</li>
+                  <li>Created and open-sourced <a href="https://github.com/ElcanoTek/fleet" target="_blank">fleet</a>, the agent platform behind Elcano's Victoria: one process boots a unified agent runtime, execution sandbox, scheduler, and worker pool, serving interactive chat, terminal, and scheduled-operations surfaces from the same governed core.</li>
+                  <li>Designed fleet's trust model for governed, auditable delegation: every tool call — bash, Python, file I/O, MCP — executes in an ephemeral rootless-Podman sandbox with no fast path around it, every turn is metered against a cost ceiling, and credentials are brokered host-side so they never enter the sandbox.</li>
+                  <li>Kept agent IP portable by design — model-agnostic loop that picks the best model per task, with persona, prompts, protocols, and skills packaged as client-config bundles decoupled from runtime targets across chat, voice, and virtual API deployments.</li>
                   <li>Led agent harness design and implementation engagements for publicly traded ad-tech companies, including platform-agnostic integrations across SSPs, data warehouses, email/reporting pipelines, and browser-only vendor workflows. Visit <a href="https://www.elcanotek.com" target="_blank">elcanotek.com</a> to learn more.</li>
                 </ul>
               </div>
@@ -489,7 +490,7 @@
                     <ul>
                         <li>Negotiated Bread Factory merger and became CTO for the combined firm.</li>
                         <li>Integrated a 100-person engineering organization and scaled to 240 engineers across North America, Europe, Latin America, and Asia, including structured <a href="https://inoxoft.com/blog/innovative-machine-learning-projects-in-python-from-inoxoft-students/" target="_blank">ML bootcamp programs</a>.</li>
-                        <li>Served enterprise and startup clients, including Procter & Gamble advertising pipeline optimization with 40 % BigQuery cost reduction and ReFuelrs on-demand fuel delivery product design (<a href="https://inoxoft.com/casestudy/an-on-demand-delivery-app-of-essential-home-fuels/" target="_blank">Case Study</a>).</li>
+                        <li>Served enterprise and startup clients, including Procter & Gamble advertising pipeline optimization with 40% BigQuery cost reduction and ReFuelrs on-demand fuel delivery product design (<a href="https://inoxoft.com/casestudy/an-on-demand-delivery-app-of-essential-home-fuels/" target="_blank">Case Study</a>).</li>
                     </ul>
                 </div>
             </div>
@@ -599,7 +600,9 @@
             <div class="responsibilities">
                 <ul>
                     <li>Published <a href="https://a.co/d/2BAlait" target="_blank"><em>AI Harmony</em></a> (2023), endorsed by leaders from YouTube, Wharton School, and Silver Lake.</li>
-                    <li>Maintain public agent infrastructure repos including <a href="https://github.com/bradflaugher/LFG" target="_blank">LFG</a> (Go terminal agent with rootless Podman task sandboxes), <a href="https://github.com/bradflaugher/LFA" target="_blank">LFA</a> (scheduled automation dashboard), <a href="https://github.com/bradflaugher/LFE" target="_blank">LFE</a> (privacy-first Android agent), and <a href="https://github.com/bradflaugher/box" target="_blank">box</a> (Fedora agent runtime image).</li>
+                    <li>Built <a href="https://github.com/bradflaugher/LFG" target="_blank">LFG</a> — private, on-device AI agents for Android that run entirely offline: local models with device-level skills, no accounts, no telemetry, works in airplane mode.</li>
+                    <li>Built <a href="https://github.com/bradflaugher/middle-manager" target="_blank">middle-manager</a> — a micromanaged multi-agent coding loop that chains heterogeneous coding CLIs (Claude Code, Codex, Grok, and others) through a discover → execute → verify → commit factory, putting the right model in the right seat for each step's budget and trust level.</li>
+                    <li>Built <a href="https://github.com/bradflaugher/divid3" target="_blank">divid3</a> — private, in-browser semantic search routing (<a href="https://divid3.com" target="_blank">divid3.com</a>): a local embedding model reads query intent and routes to the engine you choose — 98.9% accuracy on a held-out benchmark, no server, no query stream for anyone to monetize.</li>
                     <li>Member, <a href="https://ai-analytics.wharton.upenn.edu/" target="_blank">Wharton AI & Analytics Initiative</a>, and lifetime member, <a href="https://member.acm.org/~flaugherb" target="_blank">ACM</a>.</li>
                 </ul>
             </div>
