@@ -275,8 +275,13 @@
     .desk {
       position: relative;
       z-index: 1;
+      /* Card is 3.5in wide, so 1in = card-w / 3.5 (165.7px at full size).
+         Real mug rim ~3.15in = 0.9 card-w; small Post-it 1.875in = 0.53 card-w.
+         The vw/vh terms shrink them on desktops too narrow for true scale. */
       --card-w: min(94vw, 580px);
-      --cup: calc(var(--card-w) * 0.42);
+      --corner-x: clamp(36px, 5vw, 110px);
+      --cup: min(calc(var(--card-w) * 0.9), calc(50vw - var(--card-w) * 0.5 - var(--corner-x) - 24px), 62vh);
+      --sticky: min(calc(var(--card-w) * 0.53), calc(50vw - var(--card-w) * 0.5 - var(--corner-x) - 24px), 40vh);
       width: var(--card-w);
     }
 
@@ -444,7 +449,7 @@
     .coffee-link {
       display: none;
       position: fixed;
-      right: clamp(36px, 5vw, 110px);
+      right: var(--corner-x);
       bottom: clamp(30px, 6vh, 96px);
       text-decoration: none;
       transform: rotate(3deg);
@@ -670,9 +675,9 @@
     .paper-link {
       display: none;
       position: fixed;
-      top: -74px;
-      left: -48px;
-      transform: rotate(-8deg);
+      top: -104px;
+      left: -74px;
+      transform: rotate(-7deg);
       text-decoration: none;
       filter: drop-shadow(4px 6px 12px rgba(0, 0, 0, 0.4));
     }
@@ -684,40 +689,80 @@
 
     .paper-sheet {
       position: relative;
-      width: 212px;
-      height: 274px;
+      width: 280px;
+      height: 362px;
       background: linear-gradient(
         155deg,
-        #ece4d8 0%,
-        #f3ebde 45%,
-        #e8e0d3 100%
+        #ebe3d6 0%,
+        #f4ecdf 40%,
+        #eee6d9 70%,
+        #e6ded1 100%
       );
-      box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.05);
+      box-shadow: inset 0 0 26px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
       transition: filter 0.3s ease;
     }
 
     .paper-sheet::before {
       content: '';
       position: absolute;
-      top: 38%;
-      left: 16%;
-      width: 44%;
-      height: 7px;
-      background: rgba(26, 26, 26, 0.5);
+      inset: 0;
+      opacity: 0.05;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23p)'/%3E%3C/svg%3E");
+      background-size: 240px 240px;
+      pointer-events: none;
     }
 
     .paper-sheet::after {
       content: '';
       position: absolute;
-      top: 48%;
-      left: 16%;
-      right: 15%;
-      bottom: 11%;
-      background: repeating-linear-gradient(
-        180deg,
-        rgba(26, 26, 26, 0.26) 0 2px,
-        transparent 2px 13px
+      right: 0;
+      bottom: 0;
+      width: 42%;
+      height: 32%;
+      background: linear-gradient(
+        315deg,
+        rgba(0, 0, 0, 0.06) 0%,
+        transparent 55%
       );
+      pointer-events: none;
+    }
+
+    /* The sheet's upper-left hangs off-frame, so the visible corner shows
+       mid-page: typeset at letter scale (sheet 280px wide = 8.5in) */
+    .paper-text {
+      position: absolute;
+      top: 112px;
+      left: 82px;
+      right: 26px;
+      bottom: 26px;
+      overflow: hidden;
+      color: #2b2b2b;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .p-heading {
+      font-size: 6.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 600;
+      border-bottom: 0.5px solid rgba(0, 0, 0, 0.4);
+      padding-bottom: 2px;
+      margin: 7px 0 4px;
+    }
+
+    .p-job {
+      font-size: 5.5px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .paper-text p {
+      font-size: 4.5px;
+      line-height: 1.5;
+      margin-bottom: 4px;
+      text-align: justify;
+      color: rgba(20, 20, 20, 0.72);
     }
 
     .paper-link:hover .paper-sheet {
@@ -742,17 +787,33 @@
 
     .sticky-note {
       position: relative;
-      width: 118px;
-      height: 118px;
+      width: var(--sticky);
+      height: var(--sticky);
       background: linear-gradient(
-        168deg,
-        #efe4ae 0%,
-        #e8da9d 62%,
-        #dccb89 100%
+        172deg,
+        #f0e5b0 0%,
+        #ecdfa4 40%,
+        #e5d697 72%,
+        #d9c884 100%
       );
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .sticky-note::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 16%;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.26) 0%,
+        transparent 100%
+      );
+      pointer-events: none;
     }
 
     .sticky-note::after {
@@ -762,15 +823,16 @@
       bottom: 0;
       width: 0;
       height: 0;
-      border-top: 16px solid rgba(74, 58, 24, 0.16);
-      border-right: 16px solid transparent;
+      border-top: calc(var(--sticky) * 0.1) solid rgba(74, 58, 24, 0.16);
+      border-right: calc(var(--sticky) * 0.1) solid transparent;
     }
 
     .octocat {
-      width: 62%;
-      height: 62%;
-      fill: #4c4034;
-      opacity: 0.82;
+      width: 56%;
+      height: 56%;
+      fill: #3d332a;
+      opacity: 0.85;
+      transform: rotate(3deg);
       transition: opacity 0.3s ease;
     }
 
@@ -866,7 +928,21 @@
       class="paper-link"
       aria-label="View Brad Flaugher's resume"
     >
-      <div class="paper-sheet" aria-hidden="true"></div>
+      <div class="paper-sheet" aria-hidden="true">
+        <div class="paper-text">
+          <div class="p-heading">Experience</div>
+          <div class="p-job">Chief Technology Officer — Elcano</div>
+          <p>Leads engineering strategy and applied AI curation across the firm's client portfolio, pairing pragmatic architecture with hands-on delivery. Builds and mentors small senior teams that ship production systems on aggressive timelines.</p>
+          <p>Advises founders and operators on data infrastructure, model evaluation, and the boundary between automation and judgment. Frequent speaker and workshop lead on practical machine intelligence.</p>
+          <div class="p-job">Principal Engineer — Independent Consulting</div>
+          <p>Designed and delivered analytics platforms, forecasting engines, and integration layers for clients in finance, healthcare, and logistics. Reduced reporting cycles from weeks to hours while cutting infrastructure spend.</p>
+          <div class="p-heading">Education</div>
+          <div class="p-job">University of Pennsylvania</div>
+          <p>Studies in economics and computer science with coursework in statistics, systems design, and organizational behavior. Ongoing independent research in applied machine learning.</p>
+          <div class="p-heading">Selected Work</div>
+          <p>Open-source tooling for reproducible model pipelines; long-form writing on software economics; annual technical field guide for non-technical executives.</p>
+        </div>
+      </div>
     </a>
     <a
       href="https://github.com/bradflaugher"
@@ -879,8 +955,11 @@
         <svg class="octocat" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <filter id="ink-wobble" x="-20%" y="-20%" width="140%" height="140%">
-              <feTurbulence type="fractalNoise" baseFrequency="0.18" numOctaves="1" seed="4" result="noise"/>
-              <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.5"/>
+              <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="1" seed="4" result="warp"/>
+              <feDisplacementMap in="SourceGraphic" in2="warp" scale="1.5" result="warped"/>
+              <feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" seed="9" result="jitter"/>
+              <feDisplacementMap in="warped" in2="jitter" scale="0.55" result="sketch"/>
+              <feGaussianBlur in="sketch" stdDeviation="0.04"/>
             </filter>
           </defs>
           <path filter="url(#ink-wobble)" d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
