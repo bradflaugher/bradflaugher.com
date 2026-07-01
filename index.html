@@ -272,9 +272,14 @@
       z-index: 0;
     }
 
-    .card {
+    .desk {
       position: relative;
       z-index: 1;
+      padding: 0 36px 52px 0;
+    }
+
+    .card {
+      position: relative;
       width: 94vw;
       max-width: 580px;
       aspect-ratio: 1.75 / 1;
@@ -457,11 +462,12 @@
     }
 
     .coffee-link {
-      position: relative;
-      z-index: 1;
+      position: absolute;
+      bottom: -8px;
+      left: calc(100% - 92px);
       display: block;
       text-decoration: none;
-      margin-top: 4px;
+      transform: rotate(7deg);
       transition: transform 0.4s ease, filter 0.4s ease;
       filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.42));
     }
@@ -482,7 +488,7 @@
     }
 
     .coffee-link:hover {
-      transform: translateY(-3px) scale(1.03);
+      transform: rotate(7deg) translateY(-3px) scale(1.03);
       filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.52));
     }
 
@@ -742,41 +748,12 @@
     }
 
     @media (max-width: 520px) {
-      .coffee-top {
-        width: 96px;
-        height: 96px;
+      .desk {
+        padding: 0;
       }
 
-      .cup-rim {
-        width: 58px;
-        height: 58px;
-        box-shadow:
-          0 0 0 6px #ebe3d7,
-          inset 0 3px 8px rgba(0, 0, 0, 0.22),
-          inset 0 -2px 4px rgba(255, 255, 255, 0.25),
-          0 2px 5px rgba(0, 0, 0, 0.2);
-      }
-
-      .coffee-surface {
-        inset: 8px;
-      }
-
-      .handle {
-        right: 5px;
-        width: 17px;
-        height: 28px;
-        border-width: 4px;
-      }
-
-      .latte-art {
-        width: 18px;
-        height: 18px;
-      }
-
-      .latte-art::before,
-      .latte-art::after {
-        width: 16px;
-        height: 3px;
+      .coffee-link {
+        display: none;
       }
     }
 
@@ -793,48 +770,50 @@
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="top-row embossed">
-      <div class="phone">
-        <a href="tel:+12159396027">215 939 6027</a>
-      </div>
-      <div class="company">
-        <div class="company-name"><a href="https://www.elcanotek.com/" target="_blank" rel="noopener">Elcano</a></div>
-        <div class="company-tagline"><a href="https://www.elcanotek.com/" target="_blank" rel="noopener">Curation</a></div>
-      </div>
-    </div>
-
-    <div class="center embossed">
-      <div class="name">Brad <span class="name-last">FLAUGHER</span></div>
-      <div class="title">Chief Technology Officer</div>
-    </div>
-
-    <div class="bottom-row embossed">
-      <a href="https://www.openstreetmap.org/way/335293055#map=19/39.950838/-75.178066" target="_blank" rel="noopener">2212 Walnut St, Philadelphia, PA</a>
-      <a href="mailto:brad@elcanotek.com">Brad@ElcanoTek.com</a>
-    </div>
-  </div>
-  <a
-    href="https://x.com/BradFlaugher"
-    class="coffee-link"
-    target="_blank"
-    rel="noopener"
-    aria-label="Follow Brad Flaugher on X"
-  >
-    <div class="coffee-top" aria-hidden="true">
-      <div class="saucer"></div>
-      <div class="cup-rim">
-        <div class="coffee-surface">
-          <span class="latte-art"></span>
+  <div class="desk">
+    <div class="card">
+      <div class="top-row embossed">
+        <div class="phone">
+          <a href="tel:+12159396027">215 939 6027</a>
+        </div>
+        <div class="company">
+          <div class="company-name"><a href="https://www.elcanotek.com/" target="_blank" rel="noopener">Elcano</a></div>
+          <div class="company-tagline"><a href="https://www.elcanotek.com/" target="_blank" rel="noopener">Curation</a></div>
         </div>
       </div>
-      <div class="handle"></div>
-      <div class="steam">
-        <span></span>
-        <span></span>
-        <span></span>
+
+      <div class="center embossed">
+        <div class="name">Brad <span class="name-last">FLAUGHER</span></div>
+        <div class="title">Chief Technology Officer</div>
+      </div>
+
+      <div class="bottom-row embossed">
+        <a href="https://www.openstreetmap.org/way/335293055#map=19/39.950838/-75.178066" target="_blank" rel="noopener">2212 Walnut St, Philadelphia, PA</a>
+        <a href="mailto:brad@elcanotek.com">Brad@ElcanoTek.com</a>
       </div>
     </div>
-  </a>
+    <a
+      href="https://x.com/BradFlaugher"
+      class="coffee-link"
+      target="_blank"
+      rel="noopener"
+      aria-label="Follow Brad Flaugher on X"
+    >
+      <div class="coffee-top" aria-hidden="true">
+        <div class="saucer"></div>
+        <div class="cup-rim">
+          <div class="coffee-surface">
+            <span class="latte-art"></span>
+          </div>
+        </div>
+        <div class="handle"></div>
+        <div class="steam">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </a>
+  </div>
 </body>
 </html>
