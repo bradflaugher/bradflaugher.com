@@ -275,12 +275,12 @@
     .desk {
       position: relative;
       z-index: 1;
-      /* Card is 3.5in wide, so 1in = card-w / 3.5 (165.7px at full size).
+      /* Card is 3.5in wide, so 1in = card-w / 3.5 (148.6px at full size).
          Desk objects are fixed at real size — mug rim 3.15in, small Post-it
          1.875in — and each simply disappears below the viewport width where
          it would crowd the centered card (see the media queries at the end). */
-      --card-w: min(94vw, 580px);
-      --corner-x: clamp(36px, 5vw, 110px);
+      --card-w: min(94vw, 520px);
+      --corner-x: clamp(32px, 3vw, 72px);
       --cup: calc(var(--card-w) * 0.9);
       --sticky: calc(var(--card-w) * 0.53);
       width: var(--card-w);
@@ -676,8 +676,8 @@
     .paper-link {
       display: none;
       position: fixed;
-      top: -252px;
-      left: -148px;
+      top: -1214px;
+      left: -1094px;
       transform: rotate(-12deg);
       text-decoration: none;
       filter: drop-shadow(4px 6px 12px rgba(0, 0, 0, 0.4));
@@ -688,10 +688,12 @@
       outline-offset: 8px;
     }
 
+    /* True letter scale: 8.5in x 11in at 148.6px/in, hung almost entirely
+       off-frame so only an askew bottom-right corner sliver is visible */
     .paper-sheet {
       position: relative;
-      width: 280px;
-      height: 362px;
+      width: 1264px;
+      height: 1634px;
       background: linear-gradient(
         155deg,
         #ebe3d6 0%,
@@ -719,8 +721,8 @@
       position: absolute;
       right: 0;
       bottom: 0;
-      width: 42%;
-      height: 32%;
+      width: 340px;
+      height: 280px;
       background: linear-gradient(
         315deg,
         rgba(0, 0, 0, 0.06) 0%,
@@ -729,12 +731,11 @@
       pointer-events: none;
     }
 
-    /* The sheet hangs almost entirely off-frame; only its bottom-right
-       corner peeks in, so the page ends here: bottom-aligned final lines
-       typeset at letter scale (sheet 280px wide = 8.5in), then margin. */
+    /* 1in page margins; type at scene scale so it matches the card's.
+       Bottom-aligned: the page ends in the visible corner. */
     .paper-text {
       position: absolute;
-      inset: 26px;
+      inset: 149px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -744,25 +745,25 @@
     }
 
     .p-job {
-      font-size: 5.5px;
+      font-size: 21px;
       font-weight: 700;
-      margin-bottom: 2px;
+      margin-bottom: 8px;
     }
 
     .paper-text p {
-      font-size: 5px;
+      font-size: 20px;
       line-height: 1.5;
-      margin-bottom: 4px;
+      margin-bottom: 16px;
       text-align: justify;
-      color: rgba(20, 20, 20, 0.72);
+      color: rgba(20, 20, 20, 0.78);
     }
 
     .p-close {
-      font-size: 5px;
+      font-size: 20px;
       font-style: italic;
       text-align: center;
-      margin-top: 6px;
-      color: rgba(20, 20, 20, 0.66);
+      margin-top: 20px;
+      color: rgba(20, 20, 20, 0.7);
     }
 
     .paper-link:hover .paper-sheet {
@@ -837,13 +838,13 @@
       }
     }
 
-    @media (min-width: 1340px) {
+    @media (min-width: 1260px) {
       .sticky-link {
         display: block;
       }
     }
 
-    @media (min-width: 1850px) and (min-height: 640px) {
+    @media (min-width: 1640px) and (min-height: 600px) {
       .coffee-link {
         display: block;
       }
