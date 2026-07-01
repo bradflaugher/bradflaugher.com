@@ -276,7 +276,7 @@
       position: relative;
       z-index: 1;
       --card-w: min(94vw, 580px);
-      --cup: calc(var(--card-w) * 0.26);
+      --cup: calc(var(--card-w) * 0.42);
       --cup-gap: max(14px, calc(var(--card-w) * 0.04));
       width: var(--card-w);
       padding-bottom: calc(var(--cup) + var(--cup-gap));
@@ -466,8 +466,8 @@
 
     .coffee-link {
       position: absolute;
-      top: calc(100% + var(--cup-gap));
-      left: calc(50% + var(--card-w) * 0.1);
+      top: calc(100% - var(--cup));
+      left: calc(50% - var(--card-w) * 0.055);
       display: block;
       text-decoration: none;
       transform: rotate(3deg);
@@ -478,7 +478,7 @@
     .coffee-link::before {
       content: '';
       position: absolute;
-      inset: 12% -6% -14%;
+      inset: 12% -26% -14% -6%;
       border-radius: 50%;
       background: radial-gradient(
         ellipse 86% 50% at 48% 55%,
@@ -551,6 +551,44 @@
       pointer-events: none;
     }
 
+    /* Handle seen from above: a rounded tab reaching out from under the rim */
+    .cup-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: calc(var(--cup) * 0.86);
+      height: calc(var(--cup) * 0.24);
+      transform-origin: left center;
+      transform: translateY(-50%) rotate(22deg);
+      border-radius: calc(var(--cup) * 0.04) calc(var(--cup) * 0.13) calc(var(--cup) * 0.13) calc(var(--cup) * 0.04);
+      background: linear-gradient(
+        160deg,
+        #f0e8dc 0%,
+        #e2dace 55%,
+        #cfc7bb 100%
+      );
+      box-shadow:
+        inset 0 2px 3px rgba(255, 255, 255, 0.5),
+        inset 0 -3px 5px rgba(0, 0, 0, 0.22),
+        2px 3px 7px rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+    }
+
+    .cup-handle::after {
+      content: '';
+      position: absolute;
+      top: 22%;
+      right: 9%;
+      width: 34%;
+      height: 56%;
+      border-radius: 50%;
+      background: radial-gradient(
+        ellipse at 40% 40%,
+        rgba(255, 255, 255, 0.35) 0%,
+        transparent 70%
+      );
+    }
+
     .coffee-surface {
       position: absolute;
       inset: calc(var(--cup) * 0.11);
@@ -604,7 +642,7 @@
       overflow: visible;
     }
 
-    .x-bar {
+    .x-mark {
       fill: url(#x-foam-fill);
       filter: url(#x-foam-soft);
     }
@@ -721,6 +759,7 @@
       aria-label="Follow Brad Flaugher on X"
     >
       <div class="coffee-top" aria-hidden="true">
+        <div class="cup-handle"></div>
         <div class="cup-rim">
           <div class="coffee-surface">
             <svg class="latte-art" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -731,15 +770,14 @@
                   <stop offset="100%" stop-color="#e6d4bc"/>
                 </linearGradient>
                 <filter id="x-foam-soft" x="-30%" y="-30%" width="160%" height="160%">
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="0.35" result="blur"/>
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="0.18" result="blur"/>
                   <feMerge>
                     <feMergeNode in="blur"/>
                     <feMergeNode in="SourceGraphic"/>
                   </feMerge>
                 </filter>
               </defs>
-              <rect class="x-bar" x="10.25" y="3.5" width="3.5" height="17" rx="1.75" transform="rotate(45 12 12)"/>
-              <rect class="x-bar" x="10.25" y="3.5" width="3.5" height="17" rx="1.75" transform="rotate(-45 12 12)"/>
+              <path class="x-mark" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
             </svg>
           </div>
         </div>
