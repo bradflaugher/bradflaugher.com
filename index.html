@@ -276,12 +276,13 @@
       position: relative;
       z-index: 1;
       /* Card is 3.5in wide, so 1in = card-w / 3.5 (165.7px at full size).
-         Real mug rim ~3.15in = 0.9 card-w; small Post-it 1.875in = 0.53 card-w.
-         The vw/vh terms shrink them on desktops too narrow for true scale. */
+         Desk objects are fixed at real size — mug rim 3.15in, small Post-it
+         1.875in — and each simply disappears below the viewport width where
+         it would crowd the centered card (see the media queries at the end). */
       --card-w: min(94vw, 580px);
       --corner-x: clamp(36px, 5vw, 110px);
-      --cup: min(calc(var(--card-w) * 0.9), calc(50vw - var(--card-w) * 0.5 - var(--corner-x) - 24px), 62vh);
-      --sticky: min(calc(var(--card-w) * 0.53), calc(50vw - var(--card-w) * 0.5 - var(--corner-x) - 24px), 40vh);
+      --cup: calc(var(--card-w) * 0.9);
+      --sticky: calc(var(--card-w) * 0.53);
       width: var(--card-w);
     }
 
@@ -675,9 +676,9 @@
     .paper-link {
       display: none;
       position: fixed;
-      top: -104px;
-      left: -74px;
-      transform: rotate(-7deg);
+      top: -252px;
+      left: -148px;
+      transform: rotate(-12deg);
       text-decoration: none;
       filter: drop-shadow(4px 6px 12px rgba(0, 0, 0, 0.4));
     }
@@ -728,27 +729,18 @@
       pointer-events: none;
     }
 
-    /* The sheet's upper-left hangs off-frame, so the visible corner shows
-       mid-page: typeset at letter scale (sheet 280px wide = 8.5in) */
+    /* The sheet hangs almost entirely off-frame; only its bottom-right
+       corner peeks in, so the page ends here: bottom-aligned final lines
+       typeset at letter scale (sheet 280px wide = 8.5in), then margin. */
     .paper-text {
       position: absolute;
-      top: 112px;
-      left: 82px;
-      right: 26px;
-      bottom: 26px;
+      inset: 26px;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
       color: #2b2b2b;
       font-family: Georgia, 'Times New Roman', serif;
-    }
-
-    .p-heading {
-      font-size: 6.5px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      font-weight: 600;
-      border-bottom: 0.5px solid rgba(0, 0, 0, 0.4);
-      padding-bottom: 2px;
-      margin: 7px 0 4px;
     }
 
     .p-job {
@@ -758,11 +750,19 @@
     }
 
     .paper-text p {
-      font-size: 4.5px;
+      font-size: 5px;
       line-height: 1.5;
       margin-bottom: 4px;
       text-align: justify;
       color: rgba(20, 20, 20, 0.72);
+    }
+
+    .p-close {
+      font-size: 5px;
+      font-style: italic;
+      text-align: center;
+      margin-top: 6px;
+      color: rgba(20, 20, 20, 0.66);
     }
 
     .paper-link:hover .paper-sheet {
@@ -816,17 +816,6 @@
       pointer-events: none;
     }
 
-    .sticky-note::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      width: 0;
-      height: 0;
-      border-top: calc(var(--sticky) * 0.1) solid rgba(74, 58, 24, 0.16);
-      border-right: calc(var(--sticky) * 0.1) solid transparent;
-    }
-
     .octocat {
       width: 56%;
       height: 56%;
@@ -840,11 +829,22 @@
       opacity: 1;
     }
 
-    /* Desk easter eggs are desktop-only; mobile keeps just the card */
+    /* Each easter egg appears only when it fits at real size beside the
+       centered card; below its threshold it disappears rather than scales */
     @media (min-width: 1200px) {
-      .coffee-link,
-      .paper-link,
+      .paper-link {
+        display: block;
+      }
+    }
+
+    @media (min-width: 1340px) {
       .sticky-link {
+        display: block;
+      }
+    }
+
+    @media (min-width: 1850px) and (min-height: 640px) {
+      .coffee-link {
         display: block;
       }
     }
@@ -930,17 +930,11 @@
     >
       <div class="paper-sheet" aria-hidden="true">
         <div class="paper-text">
-          <div class="p-heading">Experience</div>
-          <div class="p-job">Chief Technology Officer — Elcano</div>
-          <p>Leads engineering strategy and applied AI curation across the firm's client portfolio, pairing pragmatic architecture with hands-on delivery. Builds and mentors small senior teams that ship production systems on aggressive timelines.</p>
-          <p>Advises founders and operators on data infrastructure, model evaluation, and the boundary between automation and judgment. Frequent speaker and workshop lead on practical machine intelligence.</p>
-          <div class="p-job">Principal Engineer — Independent Consulting</div>
-          <p>Designed and delivered analytics platforms, forecasting engines, and integration layers for clients in finance, healthcare, and logistics. Reduced reporting cycles from weeks to hours while cutting infrastructure spend.</p>
-          <div class="p-heading">Education</div>
-          <div class="p-job">University of Pennsylvania</div>
-          <p>Studies in economics and computer science with coursework in statistics, systems design, and organizational behavior. Ongoing independent research in applied machine learning.</p>
-          <div class="p-heading">Selected Work</div>
-          <p>Open-source tooling for reproducible model pipelines; long-form writing on software economics; annual technical field guide for non-technical executives.</p>
+          <p>Designed and delivered analytics platforms, forecasting engines, and integration layers for clients in finance, healthcare, and logistics. Reduced reporting cycles from weeks to hours while cutting infrastructure spend across every engagement.</p>
+          <div class="p-job">Selected Work</div>
+          <p>Open-source tooling for reproducible model pipelines; long-form writing on software economics; an annual technical field guide written for non-technical executives navigating applied machine intelligence.</p>
+          <p>Frequent speaker and workshop lead on pragmatic architecture, data infrastructure, and the boundary between automation and judgment.</p>
+          <div class="p-close">References available upon request.</div>
         </div>
       </div>
     </a>
