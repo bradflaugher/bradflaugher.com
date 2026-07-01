@@ -277,7 +277,7 @@
       z-index: 1;
       --card-w: min(94vw, 580px);
       --cup: calc(var(--card-w) * 0.42);
-      --cup-gap: max(30px, calc(var(--card-w) * 0.08));
+      --cup-gap: max(40px, calc(var(--card-w) * 0.1));
       width: var(--card-w);
       padding-bottom: calc(var(--cup) * 1.18 + var(--cup-gap));
     }
@@ -450,7 +450,6 @@
       display: block;
       text-decoration: none;
       transform: rotate(3deg);
-      transition: transform 0.4s ease, filter 0.4s ease;
       filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.38));
     }
 
@@ -467,11 +466,6 @@
       );
       z-index: -1;
       pointer-events: none;
-    }
-
-    .coffee-link:hover {
-      transform: rotate(3deg) translateY(-3px) scale(1.03);
-      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.48));
     }
 
     .coffee-link:focus-visible {
@@ -616,7 +610,7 @@
     }
 
     .coffee-link:hover .latte-art {
-      filter: brightness(1.08) saturate(1.04);
+      filter: brightness(1.2) saturate(1.06);
     }
 
     .steam {
@@ -684,13 +678,28 @@
       }
     }
 
+    /* Wide screens: card sits dead center, cup rests in the corner of the desk */
+    @media (min-width: 1200px) {
+      .desk {
+        padding-bottom: 0;
+      }
+
+      .coffee-link {
+        position: fixed;
+        top: auto;
+        left: auto;
+        right: clamp(36px, 5vw, 110px);
+        bottom: clamp(30px, 6vh, 96px);
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .steam span {
         animation: none;
         opacity: 0.3;
       }
 
-      .coffee-link {
+      .latte-art {
         transition: none;
       }
     }
