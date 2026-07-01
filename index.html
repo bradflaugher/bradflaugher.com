@@ -277,9 +277,9 @@
       z-index: 1;
       --card-w: min(94vw, 580px);
       --cup: calc(var(--card-w) * 0.42);
-      --cup-gap: max(14px, calc(var(--card-w) * 0.04));
+      --cup-gap: max(30px, calc(var(--card-w) * 0.08));
       width: var(--card-w);
-      padding-bottom: calc(var(--cup) + var(--cup-gap));
+      padding-bottom: calc(var(--cup) * 1.18 + var(--cup-gap));
     }
 
     .card {
@@ -359,23 +359,6 @@
       opacity: 0.6;
     }
 
-    .company-tagline {
-      font-size: 13px;
-      letter-spacing: 0.25em;
-      margin-top: 0px;
-      font-weight: 500;
-    }
-
-    .company-tagline a {
-      color: inherit;
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-
-    .company-tagline a:hover {
-      opacity: 0.6;
-    }
-
     .center {
       text-align: center;
     }
@@ -440,10 +423,6 @@
         font-size: 15px;
       }
 
-      .company-tagline {
-        font-size: 10px;
-      }
-
       .name {
         font-size: 22px;
       }
@@ -466,8 +445,8 @@
 
     .coffee-link {
       position: absolute;
-      top: calc(100% - var(--cup));
-      left: calc(50% - var(--card-w) * 0.055);
+      top: calc(100% - var(--cup) * 1.18);
+      left: calc(50% + var(--card-w) * 0.04);
       display: block;
       text-decoration: none;
       transform: rotate(3deg);
@@ -478,7 +457,7 @@
     .coffee-link::before {
       content: '';
       position: absolute;
-      inset: 12% -26% -14% -6%;
+      inset: 12% -9% -24% -6%;
       border-radius: 50%;
       background: radial-gradient(
         ellipse 86% 50% at 48% 55%,
@@ -512,42 +491,33 @@
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      background: linear-gradient(
-        145deg,
-        #f0e8dc 0%,
-        #e2dace 45%,
-        #d4ccc0 100%
+      background: radial-gradient(
+        circle at 36% 30%,
+        #f8f1e6 0%,
+        #ece4d7 46%,
+        #ddd5c8 74%,
+        #c9c1b4 100%
       );
       box-shadow:
-        0 0 0 calc(var(--cup) * 0.07) #ebe3d7,
-        inset 0 3px 10px rgba(0, 0, 0, 0.22),
-        inset 0 -2px 4px rgba(255, 255, 255, 0.25),
-        0 2px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .cup-rim::before {
-      content: '';
-      position: absolute;
-      inset: 4%;
-      border-radius: 50%;
-      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
-      pointer-events: none;
+        inset 2px 3px 6px rgba(255, 255, 255, 0.55),
+        inset -2px -4px 8px rgba(0, 0, 0, 0.14),
+        0 2px 8px rgba(0, 0, 0, 0.25);
     }
 
     .cup-rim::after {
       content: '';
       position: absolute;
-      top: 8%;
-      left: 14%;
-      width: 32%;
-      height: 15%;
+      top: 5%;
+      left: 16%;
+      width: 34%;
+      height: 12%;
       border-radius: 50%;
       background: radial-gradient(
         ellipse,
-        rgba(255, 255, 255, 0.55) 0%,
+        rgba(255, 255, 255, 0.4) 0%,
         transparent 75%
       );
-      transform: rotate(-25deg);
+      transform: rotate(-28deg);
       pointer-events: none;
     }
 
@@ -556,10 +526,10 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: calc(var(--cup) * 0.86);
-      height: calc(var(--cup) * 0.24);
+      width: calc(var(--cup) * 0.72);
+      height: calc(var(--cup) * 0.26);
       transform-origin: left center;
-      transform: translateY(-50%) rotate(22deg);
+      transform: translateY(-50%) rotate(45deg);
       border-radius: calc(var(--cup) * 0.04) calc(var(--cup) * 0.13) calc(var(--cup) * 0.13) calc(var(--cup) * 0.04);
       background: linear-gradient(
         160deg,
@@ -591,43 +561,35 @@
 
     .coffee-surface {
       position: absolute;
-      inset: calc(var(--cup) * 0.11);
+      inset: calc(var(--cup) * 0.09);
       border-radius: 50%;
-      background:
-        radial-gradient(
-          circle at 42% 38%,
-          #7a5240 0%,
-          #5c3a28 32%,
-          #4a2c1c 58%,
-          #3a2218 100%
-        );
+      background: radial-gradient(
+        circle at 40% 34%,
+        #744c36 0%,
+        #5a3822 42%,
+        #482a1a 74%,
+        #3a2113 100%
+      );
+      box-shadow:
+        inset 0 5px 14px rgba(0, 0, 0, 0.4),
+        inset 0 -2px 5px rgba(255, 255, 255, 0.05);
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
     }
 
-    .coffee-surface::before {
-      content: '';
-      position: absolute;
-      inset: 8%;
-      border-radius: 50%;
-      border: 1.5px solid rgba(160, 110, 75, 0.32);
-      box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.22);
-      pointer-events: none;
-    }
-
     .coffee-surface::after {
       content: '';
       position: absolute;
-      top: 14%;
-      left: 22%;
-      width: 28%;
-      height: 18%;
+      top: 12%;
+      left: 20%;
+      width: 32%;
+      height: 20%;
       border-radius: 50%;
       background: radial-gradient(
         ellipse,
-        rgba(255, 240, 220, 0.12) 0%,
+        rgba(255, 240, 220, 0.09) 0%,
         transparent 70%
       );
       pointer-events: none;
@@ -640,6 +602,12 @@
       height: 58%;
       transition: filter 0.35s ease;
       overflow: visible;
+    }
+
+    .x-halo {
+      fill: #f0e2cc;
+      opacity: 0.4;
+      filter: url(#x-foam-halo);
     }
 
     .x-mark {
@@ -737,7 +705,6 @@
         </div>
         <div class="company">
           <div class="company-name"><a href="https://www.elcanotek.com/" target="_blank" rel="noopener">Elcano</a></div>
-          <div class="company-tagline"><a href="https://www.elcanotek.com/" target="_blank" rel="noopener">Curation</a></div>
         </div>
       </div>
 
@@ -765,19 +732,22 @@
             <svg class="latte-art" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <linearGradient id="x-foam-fill" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#fffdf8"/>
-                  <stop offset="45%" stop-color="#f7ebda"/>
-                  <stop offset="100%" stop-color="#e6d4bc"/>
+                  <stop offset="0%" stop-color="#fdf7ec"/>
+                  <stop offset="45%" stop-color="#f3e6d2"/>
+                  <stop offset="100%" stop-color="#e2cfb4"/>
                 </linearGradient>
                 <filter id="x-foam-soft" x="-30%" y="-30%" width="160%" height="160%">
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="0.18" result="blur"/>
-                  <feMerge>
-                    <feMergeNode in="blur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
+                  <feTurbulence type="fractalNoise" baseFrequency="0.2" numOctaves="1" seed="7" result="noise"/>
+                  <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.7" result="wobble"/>
+                  <feGaussianBlur in="wobble" stdDeviation="0.28"/>
                 </filter>
+                <filter id="x-foam-halo" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="1.4"/>
+                </filter>
+                <path id="x-glyph" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
               </defs>
-              <path class="x-mark" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              <use href="#x-glyph" class="x-halo"/>
+              <use href="#x-glyph" class="x-mark"/>
             </svg>
           </div>
         </div>
