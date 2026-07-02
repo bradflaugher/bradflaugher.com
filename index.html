@@ -26,6 +26,14 @@
       font-display: swap;
     }
 
+    @font-face {
+      font-family: 'Caveat';
+      src: url('./fonts/Caveat-SemiBold.ttf') format('truetype');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -841,12 +849,13 @@
     /* Handwritten to-do scrawled above the doodle, in the same pen.
        The ink-outline wobble filter roughs up whatever font renders. */
     .sticky-scribble {
-      font-family: 'Segoe Print', 'Bradley Hand', 'Marker Felt', 'Comic Sans MS', 'Comic Neue', cursive;
+      font-family: 'Caveat', 'Segoe Print', 'Bradley Hand', 'Marker Felt', 'Comic Sans MS', cursive;
+      font-weight: 600;
       color: #33281b;
       opacity: 0.88;
-      font-size: calc(var(--sticky) * 0.092);
-      line-height: 1.2;
-      letter-spacing: 0.01em;
+      font-size: calc(var(--sticky) * 0.125);
+      line-height: 1.05;
+      letter-spacing: 0.015em;
       transform: rotate(-2.5deg);
       filter: url(#ink-outline);
       transition: opacity 0.3s ease;
