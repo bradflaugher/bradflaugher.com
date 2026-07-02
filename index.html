@@ -636,6 +636,20 @@
       filter: brightness(1.2) saturate(1.06);
     }
 
+    /* The whole pour sways gently, as if the cup was just set down */
+    @keyframes foam-drift {
+      0%, 100% {
+        transform: rotate(-1.2deg) translate(-0.4%, 0.3%);
+      }
+      50% {
+        transform: rotate(1.3deg) translate(0.5%, -0.3%);
+      }
+    }
+
+    .latte-art {
+      animation: foam-drift 13s ease-in-out infinite;
+    }
+
     .steam {
       position: absolute;
       inset: 10%;
@@ -817,8 +831,30 @@
         #d9c884 100%
       );
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: calc(var(--sticky) * 0.015);
+      padding: calc(var(--sticky) * 0.05) 0;
+    }
+
+    /* Handwritten to-do scrawled above the doodle, in the same pen.
+       The ink-outline wobble filter roughs up whatever font renders. */
+    .sticky-scribble {
+      font-family: 'Segoe Print', 'Bradley Hand', 'Marker Felt', 'Comic Sans MS', 'Comic Neue', cursive;
+      color: #33281b;
+      opacity: 0.88;
+      font-size: calc(var(--sticky) * 0.092);
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+      transform: rotate(-2.5deg);
+      filter: url(#ink-outline);
+      transition: opacity 0.3s ease;
+    }
+
+    .scribble-title {
+      text-decoration: underline;
+      text-underline-offset: 0.12em;
     }
 
     .sticky-note::before {
@@ -837,8 +873,8 @@
     }
 
     .octocat {
-      width: 60%;
-      height: 60%;
+      width: 48%;
+      height: 44%;
       transform: rotate(3deg);
       transition: opacity 0.3s ease;
       opacity: 0.92;
@@ -867,7 +903,8 @@
       filter: url(#ink-outline);
     }
 
-    .sticky-link:hover .octocat {
+    .sticky-link:hover .octocat,
+    .sticky-link:hover .sticky-scribble {
       opacity: 1;
     }
 
@@ -899,6 +936,7 @@
 
       .latte-art {
         transition: none;
+        animation: none;
       }
     }
   </style>
@@ -951,8 +989,12 @@
                      blob and gently re-softened for a creamy antialiased rim. -->
                 <filter id="x-foam" x="-25%" y="-25%" width="150%" height="150%">
                   <feGaussianBlur in="SourceGraphic" stdDeviation="0.55" result="melt"/>
-                  <feTurbulence type="fractalNoise" baseFrequency="0.032 0.042" numOctaves="1" seed="7" result="wave"/>
-                  <feDisplacementMap in="melt" in2="wave" scale="2" result="flow"/>
+                  <feTurbulence type="fractalNoise" baseFrequency="0.032 0.042" numOctaves="1" seed="7" result="wave">
+                    <animate attributeName="baseFrequency" dur="17s" repeatCount="indefinite" values="0.032 0.042;0.036 0.038;0.029 0.045;0.032 0.042"/>
+                  </feTurbulence>
+                  <feDisplacementMap in="melt" in2="wave" scale="2" result="flow">
+                    <animate attributeName="scale" dur="11s" repeatCount="indefinite" values="2;2.5;1.7;2"/>
+                  </feDisplacementMap>
                   <feColorMatrix in="flow" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 10 -3.4" result="goo"/>
                   <feGaussianBlur in="goo" stdDeviation="0.14" result="foam"/>
                   <feTurbulence type="fractalNoise" baseFrequency="0.35" numOctaves="2" seed="3" result="micro"/>
@@ -968,8 +1010,12 @@
                      the rounded contour, dilated slightly and left soft -->
                 <filter id="x-crema-edge" x="-30%" y="-30%" width="160%" height="160%">
                   <feGaussianBlur in="SourceGraphic" stdDeviation="0.55" result="melt"/>
-                  <feTurbulence type="fractalNoise" baseFrequency="0.032 0.042" numOctaves="1" seed="7" result="wave"/>
-                  <feDisplacementMap in="melt" in2="wave" scale="2" result="flow"/>
+                  <feTurbulence type="fractalNoise" baseFrequency="0.032 0.042" numOctaves="1" seed="7" result="wave">
+                    <animate attributeName="baseFrequency" dur="17s" repeatCount="indefinite" values="0.032 0.042;0.036 0.038;0.029 0.045;0.032 0.042"/>
+                  </feTurbulence>
+                  <feDisplacementMap in="melt" in2="wave" scale="2" result="flow">
+                    <animate attributeName="scale" dur="11s" repeatCount="indefinite" values="2;2.5;1.7;2"/>
+                  </feDisplacementMap>
                   <feColorMatrix in="flow" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 10 -3.4" result="goo"/>
                   <feMorphology in="goo" operator="dilate" radius="0.24" result="fat"/>
                   <feGaussianBlur in="fat" stdDeviation="0.5"/>
@@ -978,7 +1024,9 @@
                 <filter id="x-foam-haze" x="-50%" y="-50%" width="200%" height="200%">
                   <feGaussianBlur in="SourceGraphic" stdDeviation="0.6" result="melt"/>
                   <feTurbulence type="fractalNoise" baseFrequency="0.03 0.04" numOctaves="1" seed="12" result="drift"/>
-                  <feDisplacementMap in="melt" in2="drift" scale="3.2" result="spread"/>
+                  <feDisplacementMap in="melt" in2="drift" scale="3.2" result="spread">
+                    <animate attributeName="scale" dur="19s" repeatCount="indefinite" values="3.2;3.9;2.9;3.2"/>
+                  </feDisplacementMap>
                   <feGaussianBlur in="spread" stdDeviation="0.8"/>
                 </filter>
                 <path id="x-glyph" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -1019,6 +1067,11 @@
       aria-label="Brad Flaugher on GitHub"
     >
       <div class="sticky-note" aria-hidden="true">
+        <div class="sticky-scribble">
+          <span class="scribble-title">TODOs:</span><br>
+          &#10003; make coffee<br>
+          &#8594; git push !
+        </div>
         <svg class="octocat" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <!-- Ink bleed: soft halo of ink wicking into the paper fibers -->
@@ -1052,5 +1105,12 @@
       </div>
     </a>
   </div>
+  <script>
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('svg').forEach(function (svg) {
+        if (svg.pauseAnimations) svg.pauseAnimations();
+      });
+    }
+  </script>
 </body>
 </html>
