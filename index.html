@@ -944,34 +944,34 @@
                   <stop offset="100%" stop-color="#e7d4b8"/>
                 </linearGradient>
                 <!-- Foam body. Surface tension makes poured milk smooth and
-                     rounded, so instead of noisy displacement the shape is
-                     "gooified": blurred then alpha-thresholded, which rounds
-                     every sharp corner into a liquid blob. A single-octave,
-                     very low-frequency warp adds gentle pour asymmetry, and
-                     a final soft threshold keeps the edge creamy, not jagged. -->
+                     rounded, so every step keeps the field soft: the shape is
+                     blurred first, the low-frequency pour warp displaces that
+                     smooth gradient (displacing a hard edge stair-steps), and
+                     only then is the alpha thresholded back into a liquid
+                     blob and gently re-softened for a creamy antialiased rim. -->
                 <filter id="x-foam" x="-25%" y="-25%" width="150%" height="150%">
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="0.5" result="melt"/>
-                  <feColorMatrix in="melt" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 12 -4.2" result="goo"/>
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="0.55" result="melt"/>
                   <feTurbulence type="fractalNoise" baseFrequency="0.032 0.042" numOctaves="1" seed="7" result="wave"/>
-                  <feDisplacementMap in="goo" in2="wave" scale="1.8" result="flow"/>
-                  <feGaussianBlur in="flow" stdDeviation="0.16" result="soft"/>
-                  <feColorMatrix in="soft" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 3 -0.9" result="foam"/>
-                  <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="3" seed="3" result="micro"/>
-                  <feColorMatrix in="micro" type="matrix" values="0 0 0 0 0.78  0 0 0 0 0.58  0 0 0 0 0.38  0 0 0 0.22 0" result="mottle"/>
-                  <feComposite in="mottle" in2="foam" operator="in" result="mottleIn"/>
+                  <feDisplacementMap in="melt" in2="wave" scale="2" result="flow"/>
+                  <feColorMatrix in="flow" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 10 -3.4" result="goo"/>
+                  <feGaussianBlur in="goo" stdDeviation="0.14" result="foam"/>
+                  <feTurbulence type="fractalNoise" baseFrequency="0.35" numOctaves="2" seed="3" result="micro"/>
+                  <feColorMatrix in="micro" type="matrix" values="0 0 0 0 0.78  0 0 0 0 0.58  0 0 0 0 0.38  0 0 0 0.18 0" result="mottle"/>
+                  <feGaussianBlur in="mottle" stdDeviation="0.12" result="mottleSoft"/>
+                  <feComposite in="mottleSoft" in2="foam" operator="in" result="mottleIn"/>
                   <feMerge>
                     <feMergeNode in="foam"/>
                     <feMergeNode in="mottleIn"/>
                   </feMerge>
                 </filter>
-                <!-- Wet ring hugging the foam: same goo + wave so it tracks
+                <!-- Wet ring hugging the foam: same smooth warp so it tracks
                      the rounded contour, dilated slightly and left soft -->
                 <filter id="x-crema-edge" x="-30%" y="-30%" width="160%" height="160%">
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="0.5" result="melt"/>
-                  <feColorMatrix in="melt" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 12 -4.2" result="goo"/>
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="0.55" result="melt"/>
                   <feTurbulence type="fractalNoise" baseFrequency="0.032 0.042" numOctaves="1" seed="7" result="wave"/>
-                  <feDisplacementMap in="goo" in2="wave" scale="1.8" result="flow"/>
-                  <feMorphology in="flow" operator="dilate" radius="0.24" result="fat"/>
+                  <feDisplacementMap in="melt" in2="wave" scale="2" result="flow"/>
+                  <feColorMatrix in="flow" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 10 -3.4" result="goo"/>
+                  <feMorphology in="goo" operator="dilate" radius="0.24" result="fat"/>
                   <feGaussianBlur in="fat" stdDeviation="0.5"/>
                 </filter>
                 <!-- Milk haze: wide, drifting, low-opacity spread into the crema -->
