@@ -943,31 +943,43 @@
                   <stop offset="45%" stop-color="#f6ead6"/>
                   <stop offset="100%" stop-color="#e7d4b8"/>
                 </linearGradient>
-                <!-- Foam body: wavy poured edges + microfoam mottling, no soft blur -->
+                <!-- Foam body. Surface tension makes poured milk smooth and
+                     rounded, so instead of noisy displacement the shape is
+                     "gooified": blurred then alpha-thresholded, which rounds
+                     every sharp corner into a liquid blob. A single-octave,
+                     very low-frequency warp adds gentle pour asymmetry, and
+                     a final soft threshold keeps the edge creamy, not jagged. -->
                 <filter id="x-foam" x="-25%" y="-25%" width="150%" height="150%">
-                  <feTurbulence type="fractalNoise" baseFrequency="0.09 0.12" numOctaves="2" seed="7" result="wave"/>
-                  <feDisplacementMap in="SourceGraphic" in2="wave" scale="2.1" result="wobble"/>
-                  <feGaussianBlur in="wobble" stdDeviation="0.09" result="soft"/>
-                  <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="3" result="micro"/>
-                  <feColorMatrix in="micro" type="matrix" values="0 0 0 0 0.76  0 0 0 0 0.55  0 0 0 0 0.36  0 0 0 0.30 0" result="mottle"/>
-                  <feComposite in="mottle" in2="soft" operator="in" result="mottleIn"/>
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="0.5" result="melt"/>
+                  <feColorMatrix in="melt" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 12 -4.2" result="goo"/>
+                  <feTurbulence type="fractalNoise" baseFrequency="0.032 0.042" numOctaves="1" seed="7" result="wave"/>
+                  <feDisplacementMap in="goo" in2="wave" scale="1.8" result="flow"/>
+                  <feGaussianBlur in="flow" stdDeviation="0.16" result="soft"/>
+                  <feColorMatrix in="soft" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 3 -0.9" result="foam"/>
+                  <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="3" seed="3" result="micro"/>
+                  <feColorMatrix in="micro" type="matrix" values="0 0 0 0 0.78  0 0 0 0 0.58  0 0 0 0 0.38  0 0 0 0.22 0" result="mottle"/>
+                  <feComposite in="mottle" in2="foam" operator="in" result="mottleIn"/>
                   <feMerge>
-                    <feMergeNode in="soft"/>
+                    <feMergeNode in="foam"/>
                     <feMergeNode in="mottleIn"/>
                   </feMerge>
                 </filter>
-                <!-- Dark wet ring hugging the foam edge, same wave so it tracks the contour -->
+                <!-- Wet ring hugging the foam: same goo + wave so it tracks
+                     the rounded contour, dilated slightly and left soft -->
                 <filter id="x-crema-edge" x="-30%" y="-30%" width="160%" height="160%">
-                  <feTurbulence type="fractalNoise" baseFrequency="0.09 0.12" numOctaves="2" seed="7" result="wave"/>
-                  <feDisplacementMap in="SourceGraphic" in2="wave" scale="2.1" result="wobble"/>
-                  <feMorphology in="wobble" operator="dilate" radius="0.22" result="fat"/>
-                  <feGaussianBlur in="fat" stdDeviation="0.45"/>
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="0.5" result="melt"/>
+                  <feColorMatrix in="melt" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 12 -4.2" result="goo"/>
+                  <feTurbulence type="fractalNoise" baseFrequency="0.032 0.042" numOctaves="1" seed="7" result="wave"/>
+                  <feDisplacementMap in="goo" in2="wave" scale="1.8" result="flow"/>
+                  <feMorphology in="flow" operator="dilate" radius="0.24" result="fat"/>
+                  <feGaussianBlur in="fat" stdDeviation="0.5"/>
                 </filter>
                 <!-- Milk haze: wide, drifting, low-opacity spread into the crema -->
                 <filter id="x-foam-haze" x="-50%" y="-50%" width="200%" height="200%">
-                  <feTurbulence type="fractalNoise" baseFrequency="0.06 0.08" numOctaves="2" seed="12" result="drift"/>
-                  <feDisplacementMap in="SourceGraphic" in2="drift" scale="3.4" result="spread"/>
-                  <feGaussianBlur in="spread" stdDeviation="0.7"/>
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="0.6" result="melt"/>
+                  <feTurbulence type="fractalNoise" baseFrequency="0.03 0.04" numOctaves="1" seed="12" result="drift"/>
+                  <feDisplacementMap in="melt" in2="drift" scale="3.2" result="spread"/>
+                  <feGaussianBlur in="spread" stdDeviation="0.8"/>
                 </filter>
                 <path id="x-glyph" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
               </defs>
