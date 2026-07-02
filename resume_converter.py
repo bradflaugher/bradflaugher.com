@@ -291,10 +291,10 @@ def compact_content(soup):
 
 def optimize_for_pdf(soup):
     """Optimize HTML content for PDF conversion."""
-    # Remove download section as it's not needed in PDF
-    download_section = soup.select_one('.download-section')
-    if download_section:
-        download_section.decompose()
+    # Remove download button as it's not needed in PDF
+    download_button = soup.select_one('.download-resume')
+    if download_button:
+        download_button.decompose()
     
     # Ensure all links show their URLs in the PDF
     for link in soup.select('a'):
