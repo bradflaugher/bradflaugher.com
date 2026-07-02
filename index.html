@@ -561,13 +561,24 @@
       position: absolute;
       inset: calc(var(--cup) * 0.09);
       border-radius: 50%;
-      background: radial-gradient(
-        circle at 40% 34%,
-        #744c36 0%,
-        #5a3822 42%,
-        #482a1a 74%,
-        #3a2113 100%
-      );
+      /* Crema: caramel-tan espresso surface a latte is poured into */
+      background:
+        /* Faint concentric pour rings in the crema */
+        repeating-radial-gradient(
+          circle at 47% 44%,
+          transparent 0%,
+          transparent 9%,
+          rgba(60, 32, 14, 0.05) 10%,
+          transparent 11.5%,
+          transparent 20%
+        ),
+        radial-gradient(
+          circle at 40% 34%,
+          #a06a3c 0%,
+          #8a5730 40%,
+          #71431f 72%,
+          #5a3114 100%
+        );
       box-shadow:
         inset 0 5px 14px rgba(0, 0, 0, 0.4),
         inset 0 -2px 5px rgba(255, 255, 255, 0.05);
@@ -602,15 +613,23 @@
       overflow: visible;
     }
 
-    .x-halo {
-      fill: #f0e2cc;
-      opacity: 0.4;
-      filter: url(#x-foam-halo);
+    /* Wet edge where the poured foam pushes the crema aside */
+    .x-crema-edge {
+      fill: #3f2008;
+      opacity: 0.42;
+      filter: url(#x-crema-edge);
+    }
+
+    /* Faint milk haze bleeding into the crema around the pour */
+    .x-foam-haze {
+      fill: #e8d5b8;
+      opacity: 0.22;
+      filter: url(#x-foam-haze);
     }
 
     .x-mark {
       fill: url(#x-foam-fill);
-      filter: url(#x-foam-soft);
+      filter: url(#x-foam);
     }
 
     .coffee-link:hover .latte-art {
@@ -818,12 +837,34 @@
     }
 
     .octocat {
-      width: 56%;
-      height: 56%;
-      fill: #3d332a;
-      opacity: 0.85;
+      width: 60%;
+      height: 60%;
       transform: rotate(3deg);
       transition: opacity 0.3s ease;
+      opacity: 0.92;
+      overflow: visible;
+    }
+
+    /* Felt-tip ink soaking into the paper: faint blurred bleed under the mark */
+    .ink-bleed {
+      fill: #443626;
+      opacity: 0.3;
+      filter: url(#ink-bleed);
+    }
+
+    /* Marker fill: wobbly hand, uneven dry-marker coverage */
+    .ink-fill {
+      fill: #33281b;
+      filter: url(#ink-sketch);
+    }
+
+    /* Pen outline retraced over the fill, as a doodler would */
+    .ink-outline {
+      fill: none;
+      stroke: #2b2114;
+      stroke-width: 0.55;
+      stroke-linejoin: round;
+      filter: url(#ink-outline);
     }
 
     .sticky-link:hover .octocat {
@@ -898,21 +939,40 @@
             <svg class="latte-art" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <linearGradient id="x-foam-fill" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#fdf7ec"/>
-                  <stop offset="45%" stop-color="#f3e6d2"/>
-                  <stop offset="100%" stop-color="#e2cfb4"/>
+                  <stop offset="0%" stop-color="#fefaf1"/>
+                  <stop offset="45%" stop-color="#f6ead6"/>
+                  <stop offset="100%" stop-color="#e7d4b8"/>
                 </linearGradient>
-                <filter id="x-foam-soft" x="-30%" y="-30%" width="160%" height="160%">
-                  <feTurbulence type="fractalNoise" baseFrequency="0.2" numOctaves="1" seed="7" result="noise"/>
-                  <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.7" result="wobble"/>
-                  <feGaussianBlur in="wobble" stdDeviation="0.28"/>
+                <!-- Foam body: wavy poured edges + microfoam mottling, no soft blur -->
+                <filter id="x-foam" x="-25%" y="-25%" width="150%" height="150%">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.09 0.12" numOctaves="2" seed="7" result="wave"/>
+                  <feDisplacementMap in="SourceGraphic" in2="wave" scale="2.1" result="wobble"/>
+                  <feGaussianBlur in="wobble" stdDeviation="0.09" result="soft"/>
+                  <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="3" result="micro"/>
+                  <feColorMatrix in="micro" type="matrix" values="0 0 0 0 0.76  0 0 0 0 0.55  0 0 0 0 0.36  0 0 0 0.30 0" result="mottle"/>
+                  <feComposite in="mottle" in2="soft" operator="in" result="mottleIn"/>
+                  <feMerge>
+                    <feMergeNode in="soft"/>
+                    <feMergeNode in="mottleIn"/>
+                  </feMerge>
                 </filter>
-                <filter id="x-foam-halo" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="1.4"/>
+                <!-- Dark wet ring hugging the foam edge, same wave so it tracks the contour -->
+                <filter id="x-crema-edge" x="-30%" y="-30%" width="160%" height="160%">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.09 0.12" numOctaves="2" seed="7" result="wave"/>
+                  <feDisplacementMap in="SourceGraphic" in2="wave" scale="2.1" result="wobble"/>
+                  <feMorphology in="wobble" operator="dilate" radius="0.22" result="fat"/>
+                  <feGaussianBlur in="fat" stdDeviation="0.45"/>
+                </filter>
+                <!-- Milk haze: wide, drifting, low-opacity spread into the crema -->
+                <filter id="x-foam-haze" x="-50%" y="-50%" width="200%" height="200%">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.06 0.08" numOctaves="2" seed="12" result="drift"/>
+                  <feDisplacementMap in="SourceGraphic" in2="drift" scale="3.4" result="spread"/>
+                  <feGaussianBlur in="spread" stdDeviation="0.7"/>
                 </filter>
                 <path id="x-glyph" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
               </defs>
-              <use href="#x-glyph" class="x-halo"/>
+              <use href="#x-glyph" class="x-foam-haze"/>
+              <use href="#x-glyph" class="x-crema-edge"/>
               <use href="#x-glyph" class="x-mark"/>
             </svg>
           </div>
@@ -949,15 +1009,33 @@
       <div class="sticky-note" aria-hidden="true">
         <svg class="octocat" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <filter id="ink-wobble" x="-20%" y="-20%" width="140%" height="140%">
-              <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="1" seed="4" result="warp"/>
-              <feDisplacementMap in="SourceGraphic" in2="warp" scale="1.5" result="warped"/>
-              <feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" seed="9" result="jitter"/>
-              <feDisplacementMap in="warped" in2="jitter" scale="0.55" result="sketch"/>
-              <feGaussianBlur in="sketch" stdDeviation="0.04"/>
+            <!-- Ink bleed: soft halo of ink wicking into the paper fibers -->
+            <filter id="ink-bleed" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.05 0.06" numOctaves="2" seed="4" result="warp"/>
+              <feDisplacementMap in="SourceGraphic" in2="warp" scale="1.1" result="warped"/>
+              <feGaussianBlur in="warped" stdDeviation="0.3"/>
             </filter>
+            <!-- Marker fill: low-frequency hand wobble, then dry-marker gaps
+                 punched out of the ink so coverage looks scrubbed-in by hand -->
+            <filter id="ink-sketch" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.05 0.06" numOctaves="2" seed="4" result="warp"/>
+              <feDisplacementMap in="SourceGraphic" in2="warp" scale="1.1" result="warped"/>
+              <feTurbulence type="fractalNoise" baseFrequency="0.55 0.7" numOctaves="3" seed="9" result="grain"/>
+              <feComponentTransfer in="grain" result="gaps">
+                <feFuncA type="discrete" tableValues="0 0 0 0 0 0 0.35 0.6"/>
+              </feComponentTransfer>
+              <feComposite in="warped" in2="gaps" operator="out"/>
+            </filter>
+            <!-- Outline: a second pass of the pen with its own slightly different wobble -->
+            <filter id="ink-outline" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.06 0.05" numOctaves="2" seed="14" result="warp"/>
+              <feDisplacementMap in="SourceGraphic" in2="warp" scale="1.3"/>
+            </filter>
+            <path id="octo-glyph" d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
           </defs>
-          <path filter="url(#ink-wobble)" d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          <use href="#octo-glyph" class="ink-bleed"/>
+          <use href="#octo-glyph" class="ink-fill"/>
+          <use href="#octo-glyph" class="ink-outline"/>
         </svg>
       </div>
     </a>
