@@ -22,3 +22,53 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy ./ --project-name=bradflaugher
+
+      - name: Purge retired resume URLs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          python3 <<'PY'
+          import json, os, urllib.error, urllib.request
+
+          token = os.environ["CLOUDFLARE_API_TOKEN"]
+
+          def req(url, data=None):
+              request = urllib.request.Request(
+                  url,
+                  data=data,
+                  headers={
+                      "Authorization": f"Bearer {token}",
+                      "Content-Type": "application/json",
+                  },
+              )
+              with urllib.request.urlopen(request) as resp:
+                  return json.load(resp)
+
+          try:
+              zones = req("https://api.cloudflare.com/client/v4/zones?name=bradflaugher.com")
+          except urllib.error.HTTPError as err:
+              print("zone lookup failed; skip purge")
+              print(err.read().decode())
+              raise SystemExit(0)
+
+          results = zones.get("result") or []
+          if not results:
+              print("No zone id for bradflaugher.com; skip purge")
+              print(zones)
+              raise SystemExit(0)
+
+          zone_id = results[0]["id"]
+          body = json.dumps({
+              "files": [
+                  "https://bradflaugher.com/resume",
+                  "https://bradflaugher.com/resume/",
+                  "https://bradflaugher.com/resume.html",
+                  "https://bradflaugher.com/Brad_Flaugher_Resume.pdf",
+              ]
+          }).encode()
+          try:
+              print(req(f"https://api.cloudflare.com/client/v4/zones/{zone_id}/purge_cache", data=body))
+          except urllib.error.HTTPError as err:
+              print("purge failed; skip")
+              print(err.read().decode())
+          PY
