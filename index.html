@@ -713,104 +713,6 @@
       }
     }
 
-    /* Resume: a sheet of paper pushed to the far corner of the desk */
-    .paper-link {
-      display: none;
-      position: fixed;
-      top: -1214px;
-      left: -1094px;
-      transform: rotate(-12deg);
-      text-decoration: none;
-      filter: drop-shadow(4px 6px 12px rgba(0, 0, 0, 0.4));
-    }
-
-    .paper-link:focus-visible {
-      outline: 2px solid rgba(240, 232, 220, 0.55);
-      outline-offset: 8px;
-    }
-
-    /* True letter scale: 8.5in x 11in at 148.6px/in, hung almost entirely
-       off-frame so only an askew bottom-right corner sliver is visible */
-    .paper-sheet {
-      position: relative;
-      width: 1264px;
-      height: 1634px;
-      background: linear-gradient(
-        155deg,
-        #ebe3d6 0%,
-        #f4ecdf 40%,
-        #eee6d9 70%,
-        #e6ded1 100%
-      );
-      box-shadow: inset 0 0 26px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-      transition: filter 0.3s ease;
-    }
-
-    .paper-sheet::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      opacity: 0.05;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23p)'/%3E%3C/svg%3E");
-      background-size: 240px 240px;
-      pointer-events: none;
-    }
-
-    .paper-sheet::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      width: 340px;
-      height: 280px;
-      background: linear-gradient(
-        315deg,
-        rgba(0, 0, 0, 0.06) 0%,
-        transparent 55%
-      );
-      pointer-events: none;
-    }
-
-    /* 1in page margins; type at scene scale so it matches the card's.
-       Bottom-aligned: the page ends in the visible corner. */
-    .paper-text {
-      position: absolute;
-      inset: 149px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      color: #2b2b2b;
-      font-family: Georgia, 'Times New Roman', serif;
-    }
-
-    .p-job {
-      font-size: 21px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .paper-text p {
-      font-size: 20px;
-      line-height: 1.5;
-      margin-bottom: 16px;
-      text-align: justify;
-      color: rgba(20, 20, 20, 0.78);
-    }
-
-    .p-close {
-      font-size: 20px;
-      font-style: italic;
-      text-align: center;
-      margin-top: 20px;
-      color: rgba(20, 20, 20, 0.7);
-    }
-
-    .paper-link:hover .paper-sheet {
-      filter: brightness(1.05);
-    }
-
     /* GitHub: a sticky note with an Octocat doodle */
     .sticky-link {
       display: none;
@@ -919,12 +821,6 @@
 
     /* Each easter egg appears only when it fits at real size beside the
        centered card; below its threshold it disappears rather than scales */
-    @media (min-width: 1200px) {
-      .paper-link {
-        display: block;
-      }
-    }
-
     @media (min-width: 1260px) {
       .sticky-link {
         display: block;
@@ -1050,21 +946,6 @@
           <span></span>
           <span></span>
           <span></span>
-        </div>
-      </div>
-    </a>
-    <a
-      href="/resume"
-      class="paper-link"
-      aria-label="View Brad Flaugher's resume"
-    >
-      <div class="paper-sheet" aria-hidden="true">
-        <div class="paper-text">
-          <p>Designed and delivered analytics platforms, forecasting engines, and integration layers for clients in finance, healthcare, and logistics. Reduced reporting cycles from weeks to hours while cutting infrastructure spend across every engagement.</p>
-          <div class="p-job">Selected Work</div>
-          <p>Open-source tooling for reproducible model pipelines; long-form writing on software economics; an annual technical field guide written for non-technical executives navigating applied machine intelligence.</p>
-          <p>Frequent speaker and workshop lead on pragmatic architecture, data infrastructure, and the boundary between automation and judgment.</p>
-          <div class="p-close">References available upon request.</div>
         </div>
       </div>
     </a>
