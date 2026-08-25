@@ -10,11 +10,6 @@ Things worth knowing before changing anything:
   Its layout, fixed pixel sizes, and desktop-only link objects are
   intentional — don't restyle, rescale, or "improve" it without being
   asked.
-- **The resume PDF is generated in CI, not committed.** The deploy
-  workflow (`.github/workflows/deploy.yml`) runs `resume_converter.py`
-  on `resume.html` with WeasyPrint to produce `Brad_Flaugher_Resume.pdf`
-  before publishing. To change the PDF, edit `resume.html` or the
-  converter's CSS.
 - **Workflow:** open a PR to `main` and merge it immediately
   (`gh pr create`, then `gh pr merge --merge --delete-branch`).
 
