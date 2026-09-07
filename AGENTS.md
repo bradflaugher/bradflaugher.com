@@ -10,8 +10,10 @@ Things worth knowing before changing anything:
   Its layout, fixed pixel sizes, and desktop-only link objects are
   intentional — don't restyle, rescale, or "improve" it without being
   asked.
-- **Workflow:** open a PR to `main` and merge it immediately
-  (`gh pr create`, then `gh pr merge --merge --delete-branch`).
+- **Workflow:** open a PR to `main` and squash-merge it immediately
+  (`gh pr create`, then `gh pr merge --squash --delete-branch`).
+  `main` is the only long-lived branch. Do not keep a `dev` branch or a
+  `CHANGELOG.md`.
 
 Don't add build tooling, and don't grow this file or the README — they're
 intentionally minimal so they don't rot.
