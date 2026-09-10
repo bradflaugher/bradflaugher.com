@@ -5,18 +5,41 @@
   <title>Brad Flaugher</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Brad Flaugher — Chief Technology Officer at Elcano. Based in Philadelphia, PA.">
+  <meta name="theme-color" content="#1a0a05">
+  <link rel="canonical" href="https://bradflaugher.com/">
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/favicon-144x144.png">
+
+  <!-- Preload primary font -->
+  <link rel="preload" href="./fonts/GaramondClassicoSC.ttf" as="font" type="font/ttf" crossorigin>
+
   <!-- Open Graph / Facebook -->
+  <meta property="og:site_name" content="Brad Flaugher">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bradflaugher.com/">
   <meta property="og:title" content="Brad Flaugher — CTO">
   <meta property="og:description" content="Brad Flaugher — Chief Technology Officer at Elcano. Based in Philadelphia, PA.">
   <meta property="og:image" content="https://bradflaugher.com/og-image-twitter.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Ivory business card on dark background displaying Brad Flaugher, Chief Technology Officer at Elcano, with contact information">
+
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@BradFlaugher">
+  <meta name="twitter:creator" content="@BradFlaugher">
   <meta name="twitter:url" content="https://bradflaugher.com/">
   <meta name="twitter:title" content="Brad Flaugher — CTO">
   <meta name="twitter:description" content="Brad Flaugher — Chief Technology Officer at Elcano. Based in Philadelphia, PA.">
   <meta name="twitter:image" content="https://bradflaugher.com/og-image-twitter.png">
+  <meta name="twitter:image:alt" content="Ivory business card on dark background displaying Brad Flaugher, Chief Technology Officer at Elcano, with contact information">
   <style>
     @font-face {
       font-family: 'Garamond Classico SC';
@@ -281,6 +304,7 @@
     }
 
     .desk {
+      display: block;
       position: relative;
       z-index: 1;
       /* Card is 3.5in wide, so 1in = card-w / 3.5 (148.6px at full size).
@@ -416,6 +440,14 @@
 
     .bottom-row a:hover {
       opacity: 0.6;
+    }
+
+    .phone a:focus-visible,
+    .company-name a:focus-visible,
+    .bottom-row a:focus-visible {
+      outline: 2px solid rgba(26, 10, 5, 0.75);
+      outline-offset: 3px;
+      border-radius: 2px;
     }
 
     .separator {
@@ -834,6 +866,10 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+      }
+
       .steam span {
         animation: none;
         opacity: 0.3;
@@ -847,32 +883,32 @@
   </style>
 </head>
 <body>
-  <div class="desk">
+  <main class="desk">
     <div class="card">
       <div class="top-row embossed">
         <div class="phone">
-          <a href="tel:+12159396027">215 939 6027</a>
+          <a href="tel:+12159396027" aria-label="Phone: +1 215 939 6027">215 939 6027</a>
         </div>
         <div class="company">
-          <div class="company-name"><a href="https://www.elcanotek.com/" target="_blank" rel="noopener">Elcano</a></div>
+          <div class="company-name"><a href="https://www.elcanotek.com/" target="_blank" rel="noopener noreferrer" aria-label="Elcano website (opens in new tab)">Elcano</a></div>
         </div>
       </div>
 
       <div class="center embossed">
-        <div class="name">Brad <span class="name-last">FLAUGHER</span></div>
-        <div class="title">Chief Technology Officer</div>
+        <h1 class="name">Brad <span class="name-last">FLAUGHER</span></h1>
+        <p class="title">Chief Technology Officer</p>
       </div>
 
       <div class="bottom-row embossed">
-        <a href="https://www.openstreetmap.org/way/335293055#map=19/39.950838/-75.178066" target="_blank" rel="noopener">2212 Walnut St, Philadelphia, PA</a>
-        <a href="mailto:brad@elcanotek.com">Brad@ElcanoTek.com</a>
+        <a href="https://www.openstreetmap.org/way/335293055#map=19/39.950838/-75.178066" target="_blank" rel="noopener noreferrer" aria-label="Office location: 2212 Walnut St, Philadelphia, PA (opens map in new tab)">2212 Walnut St, Philadelphia, PA</a>
+        <a href="mailto:brad@elcanotek.com" aria-label="Email: brad@elcanotek.com">Brad@ElcanoTek.com</a>
       </div>
     </div>
     <a
       href="https://x.com/BradFlaugher"
       class="coffee-link"
       target="_blank"
-      rel="noopener"
+      rel="noopener noreferrer"
       aria-label="Follow Brad Flaugher on X"
     >
       <div class="coffee-top" aria-hidden="true">
@@ -953,7 +989,7 @@
       href="https://github.com/bradflaugher"
       class="sticky-link"
       target="_blank"
-      rel="noopener"
+      rel="noopener noreferrer"
       aria-label="Brad Flaugher on GitHub"
     >
       <div class="sticky-note" aria-hidden="true">
@@ -994,13 +1030,7 @@
         </svg>
       </div>
     </a>
-  </div>
-  <script>
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.querySelectorAll('svg').forEach(function (svg) {
-        if (svg.pauseAnimations) svg.pauseAnimations();
-      });
-    }
-  </script>
+  </main>
+  <script src="/motion.js" defer></script>
 </body>
 </html>
