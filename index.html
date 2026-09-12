@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Brad Flaugher</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Projects I make: fleet, divid3, CozyGrams, Blauncher. Projects I support: Omarchy, Fedora, Charm.">
+  <meta name="description" content="Projects I make: fleet, divid3, CozyGrams, Blauncher. Projects I support: Omarchy, Fedora, Kalamazoo College.">
   <meta name="theme-color" content="#0f0c0a">
   <meta name="color-scheme" content="dark">
   <link rel="canonical" href="https://bradflaugher.com/">
@@ -26,12 +26,12 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bradflaugher.com/">
   <meta property="og:title" content="Brad Flaugher">
-  <meta property="og:description" content="Projects I make: fleet, divid3, CozyGrams, Blauncher. Projects I support: Omarchy, Fedora, Charm.">
+  <meta property="og:description" content="Projects I make: fleet, divid3, CozyGrams, Blauncher. Projects I support: Omarchy, Fedora, Kalamazoo College.">
   <meta property="og:image" content="https://bradflaugher.com/og.png">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Terminal-style card: brad flaugher. Projects: fleet, divid3, CozyGrams, Blauncher. Supports Omarchy, Fedora, Charm.">
+  <meta property="og:image:alt" content="Terminal-style card: brad flaugher. Projects: fleet, divid3, CozyGrams, Blauncher. Supports Omarchy, Fedora, Kalamazoo College.">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
@@ -39,9 +39,9 @@
   <meta name="twitter:creator" content="@BradFlaugher">
   <meta name="twitter:url" content="https://bradflaugher.com/">
   <meta name="twitter:title" content="Brad Flaugher">
-  <meta name="twitter:description" content="Projects I make: fleet, divid3, CozyGrams, Blauncher. Projects I support: Omarchy, Fedora, Charm.">
+  <meta name="twitter:description" content="Projects I make: fleet, divid3, CozyGrams, Blauncher. Projects I support: Omarchy, Fedora, Kalamazoo College.">
   <meta name="twitter:image" content="https://bradflaugher.com/og.png">
-  <meta name="twitter:image:alt" content="Terminal-style card: brad flaugher. Projects: fleet, divid3, CozyGrams, Blauncher. Supports Omarchy, Fedora, Charm.">
+  <meta name="twitter:image:alt" content="Terminal-style card: brad flaugher. Projects: fleet, divid3, CozyGrams, Blauncher. Supports Omarchy, Fedora, Kalamazoo College.">
 
   <style>
     @font-face {
@@ -305,15 +305,11 @@
       max-width: 78ch; margin: 0 auto;
       display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px;
     }
-    .status .seg { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 1ch; }
-    .status .mode {
-      background: var(--accent); color: var(--bg); font-weight: 700;
-      padding: 0 8px; border-radius: 3px; letter-spacing: 0.04em;
-    }
+    .status .seg { display: inline-flex; align-items: center; gap: 1ch; white-space: nowrap; }
     .status a { color: var(--fg-dim); }
     .status a:hover { color: var(--accent); }
     .status .keys { display: none; }
-    @media (hover: hover) and (pointer: fine) { .status .keys { display: inline-flex; } }
+    @media (hover: hover) and (pointer: fine) and (min-width: 640px) { .status .keys { display: inline-flex; } }
     .status kbd {
       font-family: inherit; font-size: 0.95em;
       border: 1px solid var(--line-hi); border-bottom-width: 2px; border-radius: 3px;
@@ -437,7 +433,7 @@
 
     <!-- ============ support ============ -->
     <section class="pane pane--support" id="support" aria-labelledby="support-title">
-      <h2 class="pane__title" id="support-title"><b>support</b> <span>things I back</span> <span class="count">[4]</span></h2>
+      <h2 class="pane__title" id="support-title"><b>support</b> <span>things I back</span> <span class="count">[3]</span></h2>
       <ol class="list" data-nav>
         <li class="item">
           <a class="item__link" href="https://omarchy.org" rel="noopener">
@@ -462,20 +458,7 @@
               <ul class="item__tags" aria-label="tags"><li>linux</li><li>rpm</li><li>upstream</li></ul>
             </div>
           </a>
-        </li>
-        <li class="item">
-          <a class="item__link" href="https://charm.land" rel="noopener">
-            <div class="item__body">
-              <div class="item__head">
-                <span class="item__name">Charm</span>
-                <span class="item__host">charm.land</span>
-              </div>
-              <p class="item__desc">Bubble Tea, Lip Gloss, Glow, Crush. <strong>The toolkit for terminal UIs.</strong></p>
-              <ul class="item__tags" aria-label="tags"><li>tui</li><li>go</li><li>cli</li></ul>
-            </div>
-          </a>
-        </li>
-        <li class="item">
+        </li><li class="item">
           <a class="item__link" href="https://www.kzoo.edu/news/complex-systems-studies-professor/" rel="noopener">
             <div class="item__body">
               <div class="item__head">
@@ -494,9 +477,9 @@
   <!-- ============ status bar ============ -->
   <footer class="status">
     <div class="status__inner">
-      <span class="seg"><span class="mode">NORMAL</span> <span>bradflaugher.com</span> <span aria-hidden="true">·</span> <a href="https://github.com/bradflaugher/bradflaugher.com" rel="noopener">src</a> <span aria-hidden="true">·</span> <span>gpl-3.0</span></span>
+      <span class="seg"><span>bradflaugher.com</span> <span aria-hidden="true">·</span> <a href="https://github.com/bradflaugher/bradflaugher.com" rel="noopener">src</a></span>
       <span class="seg keys" aria-hidden="true"><kbd>j</kbd><kbd>k</kbd> move <kbd>↵</kbd> open <kbd>?</kbd> help</span>
-      <span class="seg"><a href="https://x.com/BradFlaugher" rel="me noopener">x</a> <span aria-hidden="true">·</span> <a href="https://github.com/bradflaugher" rel="me noopener">github</a> <span aria-hidden="true">·</span> <span>philly</span></span>
+      <span class="seg"><a href="https://x.com/BradFlaugher" rel="me noopener">x</a> <span aria-hidden="true">·</span> <a href="https://github.com/bradflaugher" rel="me noopener">github</a></span>
     </div>
   </footer>
 
