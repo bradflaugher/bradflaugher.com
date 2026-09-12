@@ -163,7 +163,6 @@
     .pane__title b { color: var(--accent); font-weight: 700; }
     .pane__title .count { color: var(--muted); }
     .pane--support .pane__title b { color: var(--sage); }
-    .pane--legacy .pane__title b { color: var(--muted); }
 
     /* ---------- hero ---------- */
     .hero { padding-top: clamp(28px, 6vw, 40px); }
@@ -291,12 +290,6 @@
     .item__more a:hover { color: var(--fg); border-bottom-style: solid; }
 
 
-    .pane--legacy { border-style: dashed; }
-    .pane--legacy .item__name { color: var(--fg-dim); }
-    .pane--legacy .item__link:hover, .pane--legacy .item__link:focus-visible { background: var(--bg-2); }
-    .pane--legacy .item__link:hover::before, .pane--legacy .item__link:focus-visible::before { color: var(--fg-dim); }
-    .pane--legacy .item__link:hover .item__name, .pane--legacy .item__link:focus-visible .item__name { color: var(--fg); }
-    .pane--legacy .item__link:focus-visible { outline-color: var(--line-hi); }
 
     /* ---------- status bar footer ---------- */
     .status {
@@ -489,59 +482,8 @@
                 <span class="item__name">Kalamazoo College</span>
                 <span class="item__host">complex systems studies</span>
               </div>
-              <p class="item__desc">Started the endowed <strong>Interdisciplinary Fund for Complex Systems Studies</strong> with four classmates, in honor of Péter Érdi. BA in computer science and economics, 2009.</p>
-              <ul class="item__tags" aria-label="tags"><li>endowment</li><li>complex systems</li><li>class of 2009</li></ul>
-            </div>
-          </a>
-        </li>
-      </ol>
-    </section>
-
-    <!-- ============ legacy ============ -->
-    <section class="pane pane--legacy" id="legacy" aria-labelledby="legacy-title">
-      <h2 class="pane__title" id="legacy-title"><b>legacy</b> <span>for the record</span> <span class="count">[4]</span></h2>
-      <ol class="list" data-nav>
-        <li class="item">
-          <a class="item__link" href="https://www.amazon.com/dp/B0CHL7R4HT" rel="noopener">
-            <div class="item__body">
-              <div class="item__head">
-                <span class="item__name">AI Harmony</span>
-                <span class="item__host">the book · 2023</span>
-              </div>
-              <p class="item__desc">A book on working with AI, published in 2023.</p>
-            </div>
-          </a>
-        </li>
-        <li class="item">
-          <a class="item__link" href="https://open.spotify.com/episode/0H5ZwCpTu7ddvY7PlrkHd0" rel="noopener">
-            <div class="item__body">
-              <div class="item__head">
-                <span class="item__name">Wharton</span>
-                <span class="item__host">general management program · 2023</span>
-              </div>
-              <p class="item__desc">Executive Education. Later a guest on the Wharton Executive Education podcast.</p>
-            </div>
-          </a>
-        </li>
-        <li class="item">
-          <a class="item__link" href="https://exec.mit.edu/s/blog-post/brad-flaugher-learned-to-embrace-being-a-manager-with-mit-sloan-executive-educat-MCQFLHKCXJZVAEXKGTR7PVWX4TD4" rel="noopener">
-            <div class="item__body">
-              <div class="item__head">
-                <span class="item__name">MIT Sloan</span>
-                <span class="item__host">technology &amp; operations · 2022</span>
-              </div>
-              <p class="item__desc">Executive certificate. MIT Sloan published a short profile.</p>
-            </div>
-          </a>
-        </li>
-        <li class="item">
-          <a class="item__link" href="https://www.fsf.org" rel="noopener">
-            <div class="item__body">
-              <div class="item__head">
-                <span class="item__name">Free Software Foundation</span>
-                <span class="item__host">former member</span>
-              </div>
-              <p class="item__desc">Member and donor for a number of years.</p>
+              <p class="item__desc">Started the endowed <strong>Interdisciplinary Fund for Complex Systems Studies</strong> with four classmates, in honor of Péter Érdi.</p>
+              <ul class="item__tags" aria-label="tags"><li>endowment</li><li>complex systems</li></ul>
             </div>
           </a>
         </li>
