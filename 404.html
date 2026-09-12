@@ -2,39 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Not found — Brad Flaugher</title>
+  <title>404 — Brad Flaugher</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
-  <meta name="theme-color" content="#1a0a05">
+  <meta name="theme-color" content="#0f0c0a">
+  <meta name="color-scheme" content="dark">
   <meta name="description" content="This page does not exist.">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="apple-touch-icon" sizes="144x144" href="/favicon-144x144.png">
   <style>
+    @font-face { font-family: 'JetBrains Mono'; src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Departure Mono'; src: url('/fonts/DepartureMono-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #1a0a05;
-      color: #f0e8dc;
-      font-family: Georgia, 'Times New Roman', serif;
+      min-height: 100vh; min-height: 100dvh;
+      display: flex; align-items: center; justify-content: center;
+      background: #0f0c0a; color: #efe4d2;
+      font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+      font-size: 16px; line-height: 1.6;
+      padding-inline: 16px;
     }
-    p { font-size: 18px; letter-spacing: 0.04em; }
-    a { color: inherit; text-decoration: none; transition: opacity 0.2s; }
-    a:hover { opacity: 0.6; }
-    a:focus-visible {
-      outline: 2px solid rgba(240, 232, 220, 0.6);
-      outline-offset: 4px;
-      border-radius: 2px;
-    }
+    main { max-width: 60ch; width: 100%; }
+    .prompt { color: #7f6f5f; font-size: 0.9em; }
+    .prompt .path { color: #8fc3d6; }
+    .prompt .sym { color: #ff8a4c; }
+    h1 { font-family: 'Departure Mono', 'JetBrains Mono', monospace; font-weight: 400; font-size: clamp(48px, 16vw, 96px); line-height: 1; color: #ff8a4c; margin: 10px 0 6px; }
+    p { color: #bfae98; }
+    .err { color: #efe4d2; }
+    a { color: #efe4d2; text-decoration: none; border-bottom: 1px dotted #4a3d33; }
+    a:hover { color: #ff8a4c; border-color: #ff8a4c; }
+    a:focus-visible { outline: none; box-shadow: 0 0 0 2px #0f0c0a, 0 0 0 4px #ff8a4c; border-radius: 3px; }
+    .back { margin-top: 18px; }
   </style>
 </head>
 <body>
   <main>
-    <p><a href="/" aria-label="Brad Flaugher homepage">Brad Flaugher</a> — page not found.</p>
+    <p class="prompt" aria-hidden="true"><span class="path">~/brad</span> <span class="sym">❯</span> cat <span id="p">this-page</span></p>
+    <h1>404</h1>
+    <p class="err">cat: no such file or directory</p>
+    <p class="back"><a href="/">cd ~</a> <span style="color:#7f6f5f">— back to the projects</span></p>
   </main>
 </body>
 </html>
