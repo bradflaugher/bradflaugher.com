@@ -9,7 +9,8 @@ Things worth knowing before changing anything:
 - **`index.html`** is a project list, not a résumé. Two lists matter:
   things Brad makes and things Brad supports. Keep it small — a short
   bench looks more alive than a complete catalog. No job titles, no
-  company, no phone, no address, no "get in touch". One joke per section.
+  company, no phone, no address, no "get in touch". Copy is matter-of-fact:
+  one or two plain sentences per item, no jokes.
 - **Look:** dark, monospace, TUI-flavored (JetBrains Mono + Departure
   Mono, self-hosted under `fonts/`). Keyboard nav lives in `tui.js` and
   is optional — the page must work with JS off. Check it on a phone.
