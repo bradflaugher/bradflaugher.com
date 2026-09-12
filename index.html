@@ -290,13 +290,6 @@
     }
     .item__more a:hover { color: var(--fg); border-bottom-style: solid; }
 
-    /* quieter list for the bench + legacy */
-    .bench { list-style: none; margin-top: 4px; }
-    .bench li { display: flex; flex-wrap: wrap; gap: 0 1.5ch; padding: 6px 0; color: var(--fg-dim); }
-    .bench li::before { content: '·'; color: var(--muted); }
-    .bench a { color: var(--fg); border-bottom: 1px dotted var(--line-hi); }
-    .bench a:hover { color: var(--accent); border-color: var(--accent); }
-    .bench .sep { color: var(--muted); }
 
     .pane--legacy { border-style: dashed; }
     .pane--legacy .item__name { color: var(--fg-dim); }
@@ -304,7 +297,6 @@
     .pane--legacy .item__link:hover::before, .pane--legacy .item__link:focus-visible::before { color: var(--fg-dim); }
     .pane--legacy .item__link:hover .item__name, .pane--legacy .item__link:focus-visible .item__name { color: var(--fg); }
     .pane--legacy .item__link:focus-visible { outline-color: var(--line-hi); }
-    .aside { color: var(--muted); font-size: 0.85em; margin-top: 10px; }
 
     /* ---------- status bar footer ---------- */
     .status {
@@ -448,16 +440,11 @@
           </a>
         </li>
       </ol>
-
-      <ul class="bench" aria-label="Also on the bench">
-        <li><a href="https://github.com/bradflaugher/b.indicators" rel="noopener">b.indicators</a> <span>Omarchy hover indicators: screenshot, reminders, dictation.</span></li>
-        <li><a href="https://github.com/bradflaugher/bradflaugher.com" rel="noopener">bradflaugher.com</a> <span>this page. plain HTML, no build step, GPL-3.</span></li>
-      </ul>
     </section>
 
     <!-- ============ support ============ -->
     <section class="pane pane--support" id="support" aria-labelledby="support-title">
-      <h2 class="pane__title" id="support-title"><b>support</b> <span>software and schools</span> <span class="count">[8]</span></h2>
+      <h2 class="pane__title" id="support-title"><b>support</b> <span>things I back</span> <span class="count">[4]</span></h2>
       <ol class="list" data-nav>
         <li class="item">
           <a class="item__link" href="https://omarchy.org" rel="noopener">
@@ -502,16 +489,12 @@
                 <span class="item__name">Kalamazoo College</span>
                 <span class="item__host">complex systems studies</span>
               </div>
-              <p class="item__desc">Started the endowed <strong>Interdisciplinary Fund for Complex Systems Studies</strong> with four classmates, in honor of Péter Érdi, the professor who taught us. BA in computer science and economics there, 2009.</p>
-              <ul class="item__tags" aria-label="tags"><li>endowment</li><li>complex systems</li><li>alma mater</li></ul>
+              <p class="item__desc">Started the endowed <strong>Interdisciplinary Fund for Complex Systems Studies</strong> with four classmates, in honor of Péter Érdi. BA in computer science and economics, 2009.</p>
+              <ul class="item__tags" aria-label="tags"><li>endowment</li><li>complex systems</li><li>class of 2009</li></ul>
             </div>
           </a>
         </li>
       </ol>
-
-      <ul class="bench" aria-label="Schools I also give to">
-        <li><span>also give to</span> <span class="sep">·</span> <a href="https://www.caltech.edu" rel="noopener">Caltech</a> <span class="sep">·</span> <a href="https://www.mit.edu" rel="noopener">MIT</a> <span class="sep">·</span> <a href="https://www.wharton.upenn.edu" rel="noopener">Wharton</a> <span class="sep">·</span> <a href="https://www.lse.ac.uk" rel="noopener">LSE</a></li>
-      </ul>
     </section>
 
     <!-- ============ legacy ============ -->
@@ -563,10 +546,6 @@
           </a>
         </li>
       </ol>
-      <ul class="bench" aria-label="Further back">
-        <li><a href="https://link.springer.com/article/10.1007/s11571-008-9054-0" rel="noopener">Cognitive Neurodynamics</a> <span>Computational neuroscience paper, 2008.</span></li>
-      </ul>
-      <p class="aside">git log --before=2024</p>
     </section>
   </main>
 
