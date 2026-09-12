@@ -1,11 +1,7 @@
 {
   "name": "bradflaugher.com",
   "version": "1.0.0",
-  "description": "source code for [bradflaugher.com](https://bradflaugher.com)",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib"
-  },
+  "description": "source for bradflaugher.com — a small list of projects I make and projects I support",
   "scripts": {
     "serve": "npx serve -l 3000 ."
   },
@@ -14,8 +10,8 @@
     "url": "git+https://github.com/bradflaugher/bradflaugher.com.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Brad Flaugher",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/bradflaugher/bradflaugher.com/issues"
   },
