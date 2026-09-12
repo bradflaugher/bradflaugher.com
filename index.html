@@ -31,7 +31,7 @@
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Terminal-style card: brad flaugher, I used to sell software. Now I ship it because it's fun and it should be free. Projects: fleet, divid3, CozyGrams, Blauncher.">
+  <meta property="og:image:alt" content="Terminal-style card: brad flaugher. Projects: fleet, divid3, CozyGrams, Blauncher. Supports Omarchy, Fedora, Charm.">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
@@ -41,7 +41,7 @@
   <meta name="twitter:title" content="Brad Flaugher">
   <meta name="twitter:description" content="Open source advocate who also slaps. fleet, divid3, CozyGrams, Blauncher — and the projects I love: Omarchy, Fedora, Charm.">
   <meta name="twitter:image" content="https://bradflaugher.com/og.png">
-  <meta name="twitter:image:alt" content="Terminal-style card: brad flaugher, I used to sell software. Now I ship it because it's fun and it should be free. Projects: fleet, divid3, CozyGrams, Blauncher.">
+  <meta name="twitter:image:alt" content="Terminal-style card: brad flaugher. Projects: fleet, divid3, CozyGrams, Blauncher. Supports Omarchy, Fedora, Charm.">
 
   <style>
     @font-face {
@@ -73,7 +73,7 @@
       font-display: swap;
     }
 
-    /* ---------- palette: espresso + ember + sage. ours, not a theme pack ---------- */
+    /* ---------- palette: espresso + violet + sage. ours, not a theme pack ---------- */
     :root {
       --bg: #0f0c0a;
       --bg-1: #16120f;
@@ -83,15 +83,15 @@
       --fg: #efe4d2;
       --fg-dim: #bfae98;
       --muted: #7f6f5f;
-      --ember: #ff8a4c;
-      --ember-soft: rgba(255, 138, 76, 0.13);
+      --accent: #b48aff;
+      --accent-soft: rgba(180, 138, 255, 0.14);
       --sage: #a3cf8b;
       --sage-soft: rgba(163, 207, 139, 0.12);
       --sky: #8fc3d6;
       --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
       --pixel: 'Departure Mono', 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
       --gutter: clamp(16px, 4vw, 32px);
-      --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--ember);
+      --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -101,7 +101,7 @@
       min-height: 100%;
       background: var(--bg);
       background-image:
-        radial-gradient(1100px 600px at 12% -10%, rgba(255, 138, 76, 0.10), transparent 60%),
+        radial-gradient(1100px 600px at 12% -10%, rgba(180, 138, 255, 0.11), transparent 60%),
         radial-gradient(800px 500px at 100% 100%, rgba(163, 207, 139, 0.06), transparent 60%);
       background-repeat: no-repeat;
     }
@@ -120,14 +120,14 @@
     }
     @media (min-width: 640px) { body { font-size: 16px; } }
 
-    ::selection { background: var(--ember); color: var(--bg); }
+    ::selection { background: var(--accent); color: var(--bg); }
 
     a { color: inherit; text-decoration: none; }
     a:focus-visible, button:focus-visible { outline: none; box-shadow: var(--focus); border-radius: 3px; }
 
     .skip {
       position: absolute; left: var(--gutter); top: -100px;
-      background: var(--ember); color: var(--bg); padding: 6px 10px; border-radius: 3px; z-index: 10;
+      background: var(--accent); color: var(--bg); padding: 6px 10px; border-radius: 3px; z-index: 10;
     }
     .skip:focus { top: 8px; }
 
@@ -160,7 +160,7 @@
       line-height: 1.5;
       display: inline-flex; gap: 0.8ch; align-items: baseline;
     }
-    .pane__title b { color: var(--ember); font-weight: 700; }
+    .pane__title b { color: var(--accent); font-weight: 700; }
     .pane__title .count { color: var(--muted); }
     .pane--support .pane__title b { color: var(--sage); }
     .pane--legacy .pane__title b { color: var(--muted); }
@@ -174,9 +174,10 @@
       margin-bottom: 14px;
     }
     .prompt .path { color: var(--sky); }
-    .prompt .sym { color: var(--ember); }
+    .prompt .sym { color: var(--accent); }
 
     .name {
+      margin-top: 4px;
       font-family: var(--pixel);
       font-weight: 400;
       font-size: clamp(38px, 10.5vw, 76px);
@@ -184,14 +185,14 @@
       letter-spacing: -0.01em;
       color: var(--fg);
       text-wrap: balance;
-      margin-bottom: 18px;
+      margin-bottom: 10px;
       display: flex; flex-wrap: wrap; column-gap: 0.32em; align-items: baseline;
     }
-    .name .last { color: var(--ember); }
+    .name .last { color: var(--accent); }
     .caret {
       display: inline-block;
       width: 0.5em; height: 0.82em;
-      background: var(--ember);
+      background: var(--accent);
       vertical-align: -0.05em;
       margin-left: 0.08em;
       animation: blink 1.1s steps(1, end) infinite;
@@ -199,14 +200,6 @@
     }
     @keyframes blink { 50% { opacity: 0; } }
 
-    .lede {
-      font-size: clamp(16px, 2.3vw, 19px);
-      line-height: 1.55;
-      max-width: 52ch;
-      color: var(--fg);
-      text-wrap: pretty;
-    }
-    .lede em { font-style: normal; color: var(--ember); }
 
     .socials {
       list-style: none;
@@ -223,28 +216,14 @@
       color: var(--fg);
       transition: border-color .15s, background .15s, transform .15s;
     }
-    .chip:hover { border-color: var(--ember); background: var(--bg-2); transform: translateY(-1px); }
+    .chip:hover { border-color: var(--accent); background: var(--bg-2); transform: translateY(-1px); }
     .chip svg { width: 18px; height: 18px; fill: currentColor; flex: none; }
     .chip .k {
       font-size: 0.8em; color: var(--muted);
       border: 1px solid var(--line); border-radius: 3px; padding: 0 5px; line-height: 1.5;
     }
-    .chip:hover .k { color: var(--ember); border-color: var(--ember); }
+    .chip:hover .k { color: var(--accent); border-color: var(--accent); }
 
-    .fetch {
-      margin-top: 24px;
-      display: grid;
-      grid-template-columns: max-content 1fr;
-      column-gap: 2ch; row-gap: 2px;
-      font-size: 0.9em;
-      color: var(--fg-dim);
-    }
-    .fetch dt { color: var(--muted); }
-    .fetch dt::after { content: ''; }
-    .fetch dd { margin: 0; }
-    .fetch dd b { font-weight: 400; color: var(--fg); }
-    .swatches { display: inline-flex; gap: 4px; vertical-align: middle; margin-left: 2px; }
-    .swatches i { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
 
     /* ---------- lists (bubbletea list vibes) ---------- */
     .list { list-style: none; counter-reset: item; }
@@ -270,9 +249,9 @@
       padding-top: 0.2em;
       transition: color .12s;
     }
-    .item__link:hover, .item__link:focus-visible { background: var(--ember-soft); box-shadow: none; }
-    .item__link:hover::before, .item__link:focus-visible::before { content: '›'; color: var(--ember); font-size: 1.05em; padding-top: 0; }
-    .item__link:focus-visible { outline: 1px solid var(--ember); outline-offset: -1px; }
+    .item__link:hover, .item__link:focus-visible { background: var(--accent-soft); box-shadow: none; }
+    .item__link:hover::before, .item__link:focus-visible::before { content: '›'; color: var(--accent); font-size: 1.05em; padding-top: 0; }
+    .item__link:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
     .pane--support .item__link:hover, .pane--support .item__link:focus-visible { background: var(--sage-soft); }
     .pane--support .item__link:hover::before, .pane--support .item__link:focus-visible::before,
     .pane--support .item__link:focus-visible { color: var(--sage); outline-color: var(--sage); }
@@ -280,7 +259,7 @@
     .item__body { min-width: 0; }
     .item__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 1.4ch; }
     .item__name { font-weight: 700; color: var(--fg); font-size: 1.05em; }
-    .item__link:hover .item__name, .item__link:focus-visible .item__name { color: var(--ember); }
+    .item__link:hover .item__name, .item__link:focus-visible .item__name { color: var(--accent); }
     .pane--support .item__link:hover .item__name, .pane--support .item__link:focus-visible .item__name { color: var(--sage); }
     .item__host { color: var(--muted); font-size: 0.82em; }
     .item__desc { color: var(--fg-dim); margin-top: 4px; text-wrap: pretty; max-width: 62ch; }
@@ -316,7 +295,7 @@
     .bench li { display: flex; flex-wrap: wrap; gap: 0 1.5ch; padding: 6px 0; color: var(--fg-dim); }
     .bench li::before { content: '·'; color: var(--muted); }
     .bench a { color: var(--fg); border-bottom: 1px dotted var(--line-hi); }
-    .bench a:hover { color: var(--ember); border-color: var(--ember); }
+    .bench a:hover { color: var(--accent); border-color: var(--accent); }
     .bench .sep { color: var(--muted); }
 
     .pane--legacy { border-style: dashed; }
@@ -343,11 +322,11 @@
     }
     .status .seg { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 1ch; }
     .status .mode {
-      background: var(--ember); color: var(--bg); font-weight: 700;
+      background: var(--accent); color: var(--bg); font-weight: 700;
       padding: 0 8px; border-radius: 3px; letter-spacing: 0.04em;
     }
     .status a { color: var(--fg-dim); }
-    .status a:hover { color: var(--ember); }
+    .status a:hover { color: var(--accent); }
     .status .keys { display: none; }
     @media (hover: hover) and (pointer: fine) { .status .keys { display: inline-flex; } }
     .status kbd {
@@ -366,7 +345,7 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.6);
     }
     .help::backdrop { background: rgba(6, 4, 3, 0.7); }
-    .help h2 { font-family: var(--pixel); font-weight: 400; font-size: 1.3em; color: var(--ember); margin-bottom: 12px; }
+    .help h2 { font-family: var(--pixel); font-weight: 400; font-size: 1.3em; color: var(--accent); margin-bottom: 12px; }
     .help dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 2ch; }
     .help dt { text-align: right; }
     .help dd { color: var(--fg-dim); }
@@ -385,8 +364,6 @@
     @media (max-width: 360px) {
       .item__link { grid-template-columns: 2.5ch 1fr; }
       .item__more { padding-left: calc(3.5ch + 4px); }
-      .fetch { grid-template-columns: 1fr; row-gap: 0; }
-      .fetch dt { margin-top: 6px; }
     }
   </style>
 </head>
@@ -396,10 +373,8 @@
   <main class="tui">
     <!-- ============ hero ============ -->
     <header class="hero">
-      <p class="prompt" aria-hidden="true"><span class="path">~/brad</span> <span class="sym">❯</span> <span>cat README</span></p>
+      <p class="prompt" aria-hidden="true"><span class="path">~/brad</span> <span class="sym">❯</span> <span>ls</span></p>
       <h1 class="name"><span>brad</span><span class="last">flaugher<span class="caret" aria-hidden="true"></span></span></h1>
-      <p class="lede">I used to sell software. Now I ship it because it's fun and it should be <em>free</em>.</p>
-
       <ul class="socials" aria-label="Elsewhere">
         <li>
           <a class="chip" href="https://x.com/BradFlaugher" rel="me noopener" aria-label="Brad Flaugher on X, @BradFlaugher">
@@ -417,16 +392,6 @@
         </li>
       </ul>
 
-      <dl class="fetch" aria-label="About">
-        <dt>os</dt>
-        <dd><b>omarchy</b> on the laptop · <b>bazzite</b> on the desktop · fedora in the heart</dd>
-        <dt>loc</dt>
-        <dd>philadelphia</dd>
-        <dt>status</dt>
-        <dd>shipping. not for hire.</dd>
-        <dt>colors</dt>
-        <dd><span class="swatches" aria-hidden="true"><i style="background:#ff8a4c"></i><i style="background:#a3cf8b"></i><i style="background:#8fc3d6"></i><i style="background:#efe4d2"></i><i style="background:#7f6f5f"></i></span> espresso &amp; ember</dd>
-      </dl>
     </header>
 
     <!-- ============ projects ============ -->
@@ -535,7 +500,7 @@
 
     <!-- ============ legacy ============ -->
     <section class="pane pane--legacy" id="legacy" aria-labelledby="legacy-title">
-      <h2 class="pane__title" id="legacy-title"><b>legacy</b> <span>formerly</span> <span class="count">[2]</span></h2>
+      <h2 class="pane__title" id="legacy-title"><b>legacy</b> <span>for the record</span> <span class="count">[4]</span></h2>
       <ol class="list" data-nav>
         <li class="item">
           <a class="item__link" href="https://www.amazon.com/dp/B0CHL7R4HT" rel="noopener">
@@ -545,6 +510,28 @@
                 <span class="item__host">the book · 2023</span>
               </div>
               <p class="item__desc">Written before the agents got good. Still on the shelf.</p>
+            </div>
+          </a>
+        </li>
+        <li class="item">
+          <a class="item__link" href="https://open.spotify.com/episode/0H5ZwCpTu7ddvY7PlrkHd0" rel="noopener">
+            <div class="item__body">
+              <div class="item__head">
+                <span class="item__name">Wharton</span>
+                <span class="item__host">general management program · 2023</span>
+              </div>
+              <p class="item__desc">They had me on the Executive Education podcast afterward. I mostly talked about software.</p>
+            </div>
+          </a>
+        </li>
+        <li class="item">
+          <a class="item__link" href="https://exec.mit.edu/s/blog-post/brad-flaugher-learned-to-embrace-being-a-manager-with-mit-sloan-executive-educat-MCQFLHKCXJZVAEXKGTR7PVWX4TD4" rel="noopener">
+            <div class="item__body">
+              <div class="item__head">
+                <span class="item__name">MIT Sloan</span>
+                <span class="item__host">technology &amp; operations · 2022</span>
+              </div>
+              <p class="item__desc">Executive certificate. MIT wrote a profile about it, mostly about learning to be a manager.</p>
             </div>
           </a>
         </li>
@@ -560,6 +547,11 @@
           </a>
         </li>
       </ol>
+      <ul class="bench" aria-label="Further back">
+        <li><a href="https://www.kzoo.edu/news/complex-systems-studies-professor/" rel="noopener">Kalamazoo College</a> <span>BA, computer science + economics, 2009. Endowed a complex-systems scholarship there.</span></li>
+        <li><span>London School of Economics</span> <span class="sep">·</span> <span>MSc economic history, 2010.</span></li>
+        <li><a href="https://link.springer.com/article/10.1007/s11571-008-9054-0" rel="noopener">Cognitive Neurodynamics</a> <span>one computational neuroscience paper, 2008, before it was cool.</span></li>
+      </ul>
       <p class="aside">git log --before=2024. kept for the record, not for the résumé.</p>
     </section>
   </main>
