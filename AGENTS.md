@@ -6,14 +6,11 @@ to `main` deploys.
 
 Things worth knowing before changing anything:
 
-- **`index.html`** is a project list, not a résumé. Two lists matter:
-  things Brad makes and things Brad supports. Keep it small — a short
-  bench looks more alive than a complete catalog. No job titles, no
-  company, no phone, no address, no "get in touch". Copy is matter-of-fact:
-  one or two plain sentences per item, no jokes.
+- **`index.html`** is a name and links, nothing else. Projects live on
+  GitHub (pinned repos). No bio, no job titles, no company, no phone, no
+  address, no "get in touch".
 - **Look:** dark, monospace, TUI-flavored (JetBrains Mono + Departure
-  Mono, self-hosted under `fonts/`). Keyboard nav lives in `tui.js` and
-  is optional — the page must work with JS off. Check it on a phone.
+  Mono, self-hosted under `fonts/`). No JavaScript. Check it on a phone.
 - **`og.png`** is generated from a throwaway HTML render; if the copy on
   the page changes, re-render it so link previews match.
 - **Workflow:** open a PR to `main` and squash-merge it immediately.
