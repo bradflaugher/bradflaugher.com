@@ -1,5 +1,5 @@
 # bradflaugher.com
 
-Personal site: a short list of projects I make and projects I support.
+Personal site: a name, a short bio, and links.
 Plain HTML, no framework, no build step — every push to `main` deploys to
 Cloudflare Pages. GPL-3.0.
