@@ -1,7 +1,7 @@
 {
   "name": "bradflaugher.com",
   "version": "1.0.0",
-  "description": "source for bradflaugher.com — a name, a short bio, and links",
+  "description": "source for bradflaugher.com — a name and links",
   "scripts": {
     "serve": "npx serve -l 3000 ."
   },
