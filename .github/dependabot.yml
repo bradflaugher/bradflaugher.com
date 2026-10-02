@@ -1,0 +1,14 @@
+version: 2
+updates:
+  # The site has no runtime or dev dependencies; the only thing to keep
+  # current is the Actions the deploy workflow uses.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    # Let new releases age a week before proposing them (supply-chain buffer).
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ['*']
