@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  # "Run workflow" button in the Actions tab, for redeploying without a commit.
+  workflow_dispatch:
 
 # Least privilege by default; the job widens only what it needs.
 permissions: {}
@@ -17,6 +19,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # The Cloudflare secrets live in this environment (Settings →
+    # Environments), which only accepts deployments from main.
+    environment:
+      name: production
+      url: https://bradflaugher.com
     permissions:
       contents: read
       deployments: write
@@ -47,9 +54,22 @@ jobs:
           test -f _site/_headers
 
       - name: Publish to Cloudflare Pages
+        id: deploy
         uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4.1.3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           wranglerVersion: '4.146.0'
           command: pages deploy _site --project-name=bradflaugher --branch=main
+
+      - name: Summarize deployment
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          {
+            echo "### Deployed to Cloudflare Pages"
+            echo
+            echo "- Production: https://bradflaugher.com"
+            echo "- This deployment: ${DEPLOYMENT_URL}"
+            echo "- Files: $(find _site -type f | wc -l)"
+          } >> "$GITHUB_STEP_SUMMARY"
