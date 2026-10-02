@@ -168,8 +168,13 @@ function cuesFor(f, t) {
   if (t === "golf") return [...out, TO_GOLF_HAND, TO_GOLF[f]];
   if (f === "golf") out.push(FROM_GOLF_HAND);
   const dp = B.p - A.p;
-  if (dp >= 0.6) out.push(`Change the path: start the head below the ball and swing up. ${A.n} wants you to go down; ${B.n} doesn't.`);
-  else if (dp <= -0.6) out.push(`Stop brushing up. Start high and swing down through the ball, with a ${lc(B.face)} face.`);
+  // The direction comes from the target's own path, not just the difference.
+  if (dp >= 0.6) out.push(B.p >= 0.3 ? `Change the path: start the head below the ball and swing up. ${A.n} wants you to go down; ${B.n} doesn't.`
+    : B.p <= -0.3 ? `Shallower: still high to low, but less chop than ${A.n}.`
+    : "Flatten the path: swing level through the ball, no chopping down.");
+  else if (dp <= -0.6) out.push(B.p <= -0.3 ? `Stop brushing up. Start high and swing down through the ball, with a ${lc(B.face)} face.`
+    : B.p >= 0.3 ? `Flatter: still low to high, but less brush than ${A.n}.`
+    : "Flatten the path: swing level through the ball, no brushing up.");
   const db = B.back - A.back;
   if (db <= -2) out.push("Cut the backswing roughly in half. Prepare early and short.");
   else if (db >= 2) out.push(`Let the backswing grow: ${lc(B.backT)}.`);
@@ -231,7 +236,10 @@ function renderWeek() {
     const note = v && prev && prev !== v ? `<div class="note">Coming from ${S[prev].n}. <strong>${cuesFor(prev, v)[v === "golf" ? 2 : 1] || S[v].cue}</strong></div>` : v ? `<div class="note">${S[v].cue}</div>` : "";
     return `<div class="day"><b>${d}</b><div><select data-d="${i}" aria-label="${d} sport"><option value="">Rest</option>${sportOptions(v)}</select>${note}</div></div>`;
   }).join("");
-  $("#days").querySelectorAll("select").forEach(s => s.onchange = () => { week.days[+s.dataset.d] = s.value; save(); renderWeek(); });
+  $("#days").querySelectorAll("select").forEach(s => s.onchange = () => {
+    week.days[+s.dataset.d] = s.value; save(); renderWeek();
+    $(`#days select[data-d="${s.dataset.d}"]`).focus();
+  });
 }
 
 const tabs = [...document.querySelectorAll("[role=tab]")];

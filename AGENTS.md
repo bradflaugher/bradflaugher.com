@@ -10,7 +10,8 @@ Things worth knowing before changing anything:
   GitHub (pinned repos). No bio, no job titles, no company, no phone, no
   address, no "get in touch".
 - **Look:** dark, monospace, TUI-flavored (Hack + Departure
-  Mono, self-hosted under `fonts/`). No JavaScript. Check it on a phone.
+  Mono, self-hosted under `fonts/`). No JavaScript, except the unlisted
+  `/swing/` tool. Check it on a phone.
 - **`og.png`** is generated from a throwaway HTML render; if the copy on
   the page changes, re-render it so link previews match.
 - **Workflow:** open a PR to `main` and squash-merge it immediately.

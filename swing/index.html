@@ -71,6 +71,7 @@
     select, input[type=text] {
       width: 100%; font: inherit; color: var(--fg); background: var(--bg-1);
       border: 1px solid var(--line-hi); border-radius: 6px; padding: 9px 10px; min-height: 44px;
+      font-size: 16px; /* under 16px, iOS Safari zooms in on focus */
     }
     .pick { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: end; margin-bottom: 16px; }
     .arrowto { color: var(--accent); padding-bottom: 10px; }
@@ -145,6 +146,8 @@
     <h1>swing <span class="last">switch<span class="caret" aria-hidden="true"></span></span></h1>
     <p class="sub">left-handed with a racquet, right-handed with a club</p>
     <p class="lede">Eight sports, eight swings. Reset your stroke before you walk on court or onto the tee, and trace a miss back to the sport it leaked in from.</p>
+
+    <noscript><p class="card" style="padding-top:16px">This tool needs JavaScript to build its cues and charts.</p></noscript>
 
     <div role="tablist" aria-label="Sections">
       <button role="tab" id="tab-switch" aria-controls="switch" aria-selected="true">switch</button>
