@@ -96,7 +96,7 @@ const C = {
     front: "Always out in front of your body. Never let the ball get beside or behind you.",
     away: "Close: elbow bent, paddle face in front of you.",
     bounce: "Dinks after the bounce as the ball falls, or out of the air. Drives at the peak.",
-    shots: [["Volley", "Out in front at chest height; firm block, no swing."], ["Serve", "Rule: contact below your waist, with an upward arc."]]},
+    shots: [["Volley", "Out in front at chest height; firm block, no swing."], ["Serve", "Volley serve: contact below your waist, with an upward arc. A drop serve (let it bounce first) skips those limits."]]},
   padel: {lo: 3.6, hi: 6.2, sweet: 4.9, height: "Hip high. Let the ball come off the glass and drop to your hip before you hit it.",
     front: "Beside to slightly in front of the body. Compact.",
     away: "Closer than tennis; the racket is short.",
@@ -128,14 +128,14 @@ function contactChart(list, sel, interactive) {
       <rect x="${x(c.lo)}" y="${y + 7}" width="${w}" height="12" rx="4" fill="var(--accent)" fill-opacity="${on ? 0.85 : 0.4}"/>
       <circle cx="${Math.max(x(c.sweet), L + 5)}" cy="${y + 13}" r="5" fill="var(--ball)" stroke="var(--bg-1)" stroke-width="2"/></g>`;
   }).join("");
-  return `<svg class="cchart" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Contact height by sport">${grid}${rows}</svg>`;
+  return `<svg class="cchart" viewBox="0 0 ${W} ${H}" width="100%" role="${interactive ? "group" : "img"}" aria-label="Contact height by sport">${grid}${rows}</svg>`;
 }
 
 let csel = "squash";
 function renderContact() {
   $("#cmap").innerHTML = contactChart(keys, csel, true);
   $("#cmap").querySelectorAll(".crow").forEach(g => {
-    const pick = () => { csel = g.dataset.k; renderContact(); save(); };
+    const pick = () => { csel = g.dataset.k; renderContact(); save(); $(`#cmap .crow[data-k="${csel}"]`).focus(); };
     g.onclick = pick;
     g.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } };
   });
