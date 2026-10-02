@@ -17,7 +17,7 @@
   <link rel="apple-touch-icon" sizes="144x144" href="/favicon-144x144.png">
 
   <!-- Fonts -->
-  <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/Hack-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/DepartureMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
 
   <!-- Open Graph -->
@@ -45,22 +45,22 @@
 
   <style>
     @font-face {
-      font-family: 'JetBrains Mono';
-      src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+      font-family: 'Hack';
+      src: url('/fonts/Hack-Regular.woff2') format('woff2');
       font-weight: 400;
       font-style: normal;
       font-display: swap;
     }
     @font-face {
-      font-family: 'JetBrains Mono';
-      src: url('/fonts/JetBrainsMono-Italic.woff2') format('woff2');
+      font-family: 'Hack';
+      src: url('/fonts/Hack-Italic.woff2') format('woff2');
       font-weight: 400;
       font-style: italic;
       font-display: swap;
     }
     @font-face {
-      font-family: 'JetBrains Mono';
-      src: url('/fonts/JetBrainsMono-Bold.woff2') format('woff2');
+      font-family: 'Hack';
+      src: url('/fonts/Hack-Bold.woff2') format('woff2');
       font-weight: 700;
       font-style: normal;
       font-display: swap;
@@ -85,8 +85,8 @@
       --muted: #7f6f5f;
       --accent: #b48aff;
       --sky: #8fc3d6;
-      --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
-      --pixel: 'Departure Mono', 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+      --mono: 'Hack', ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+      --pixel: 'Departure Mono', 'Hack', ui-monospace, Menlo, Consolas, monospace;
       --gutter: clamp(16px, 4vw, 32px);
       --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
     }
@@ -110,7 +110,6 @@
       font-family: var(--mono);
       font-size: 15px;
       line-height: 1.6;
-      font-feature-settings: 'calt' 1, 'liga' 1;
       -webkit-font-smoothing: antialiased;
       padding-block: clamp(24px, 6vh, 64px) 0;
       padding-inline: var(--gutter);
