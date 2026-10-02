@@ -7,7 +7,7 @@ const S = {
   squash: {n: "Squash", hand: "Left", p: -0.7, path: "High to low", back: 3, backT: "Racquet up early, compact", h: "Shin to knee", hn: 1.5, spot: "Beside front foot", wrist: 3, wristT: "Cocked, forearm-driven", face: "Open", fa: -1, fin: 2, finT: "Short, checked", grip: "Continental", cue: "Racquet up early, swing down through, stop short."},
   tennis: {n: "Lawn tennis", hand: "Left", p: 0.8, path: "Low to high", back: 5, backT: "Full loop", h: "Waist", hn: 3, spot: "Well out in front", wrist: 3, wristT: "Laid back, natural release", face: "Closing, brushing up", fa: 1, fin: 5, finT: "Over the shoulder", grip: "Eastern or semi-western", cue: "Drop the head below the ball, brush up, finish high."},
   real: {n: "Real tennis", hand: "Left", p: -0.9, path: "High to low, heavy cut", back: 4, backT: "High and long", h: "Knee", hn: 1.5, spot: "Beside to slightly behind front foot", wrist: 1, wristT: "Firm, locked", face: "Very open", fa: -2, fin: 3, finT: "Low and forward", grip: "Continental", cue: "Chop down, open face, finish low."},
-  rackets: {n: "Rackets", hand: "Left", p: 0.1, path: "Flat drive, tennis-style", back: 3, backT: "Compact, tennis-style take-back", h: "Low, near the knee", hn: 1.5, spot: "Out in front", wrist: 2, wristT: "Firm: no flick, the ball is too fast and hard", face: "Flat", fa: 0, fin: 3, finT: "Through toward the front wall", grip: "Continental", cue: "Tennis-style drive, firm wrist, flat through the ball, keep it low over the board."},
+  rackets: {n: "Rackets", hand: "Left", p: -0.6, path: "High to low, like real tennis", back: 2, backT: "Short, compact", h: "Low, near the knee", hn: 1.5, spot: "Out in front", wrist: 2, wristT: "Firm: no flick, the ball is too fast and hard", face: "Slightly open", fa: -1, fin: 2, finT: "Short, stops after contact", grip: "Continental", cue: "High to low, short, firm wrist, and stop it."},
   pickle: {n: "Pickleball", hand: "Left", p: 0.3, path: "Gentle low to high", back: 1, backT: "Minimal", h: "Below waist (dinks) to waist", hn: 2.5, spot: "Out in front", wrist: 1, wristT: "Firm", face: "Flat to slightly open", fa: 0, fin: 2, finT: "Toward the target", grip: "Continental", cue: "Swing from the shoulder, no wrist."},
   padel: {n: "Padel", hand: "Left", p: -0.3, path: "Flat to slight high to low", back: 2, backT: "Compact, head up", h: "Hip", hn: 3, spot: "Beside to slightly in front", wrist: 2, wristT: "Firm", face: "Slightly open", fa: -1, fin: 2, finT: "Short, toward target", grip: "Continental", cue: "Head up, contact at the hip, slice it."},
   tt: {n: "Table tennis", hand: "Left", p: 0.8, path: "Low to high, brushing", back: 1, backT: "Tiny", h: "Table height", hn: 3, spot: "In front of the body", wrist: 4, wristT: "Active forearm and wrist", face: "Closed", fa: 2, fin: 1, finT: "Near the forehead", grip: "Shakehand", cue: "Elbow and forearm, brush up, keep it small."},
@@ -15,8 +15,8 @@ const S = {
     warm: "Before the first tee: 10 slow practice swings saying cue 1 out loud, 5 to waist height holding the wrist hinge and 5 full to a held finish. Then a few 7-irons before the driver."}
 };
 const GROUPS = [
-  ["Cut: high to low, open face", ["squash", "real", "padel"]],
-  ["Drive: flat or low to high, out in front", ["tennis", "rackets", "tt"]],
+  ["Cut: high to low, open face", ["squash", "real", "rackets", "padel"]],
+  ["Drive: low to high, out in front", ["tennis", "tt"]],
   ["Compact and firm", ["pickle"]],
   ["Club: right-handed", ["golf"]]
 ];
@@ -29,7 +29,7 @@ const TO_GOLF = {
   squash: "Squash is all cut. Square the face and swing from the inside, or the ball slices.",
   tennis: "No topspin roll-over. Turn your chest through and keep the hands quiet, or it hooks.",
   real: "A real tennis chop is a slice with a club. Square face, shallower path from the inside.",
-  rackets: "The flat rackets drive sweeps the ball. Golf hits down: ball first, then turf, and let the loft lift it.",
+  rackets: "Rackets is a short, firm chop. Make a full turn and square the face, or the ball slices.",
   pickle: "Pickleball is arms and no turn. Turn your shoulders fully; this swing is far bigger.",
   padel: "Padel slice opens the face. Square it and swing from the inside.",
   tt: "The table tennis brush tops it or hooks it here. Hit down and let the loft lift the ball."
@@ -44,14 +44,14 @@ const M = {
     ["Late on the volley, swing too big", "tennis, golf", "A full tennis loop or a golf turn takes too long at squash pace.", "Racquet up before the ball reaches the front wall; compact punch, short finish.", "Volley drives against the front wall from the short line, 20 without dropping the racquet head."]],
   tennis: [
     ["Lots of balls into the net", "squash, real", "The downward squash and real tennis path is driving the ball down.", "Start the racquet head below the ball and finish over your right shoulder on the forehand.", "20 drop-fed forehands, holding the finish for two seconds each time."],
-    ["Balls flying long", "rackets, padel", "A flat rackets drive or an open padel face is taking spin off.", "More brush, slightly closed face, aim higher over the net and let spin bring it down.", "Rally to the service line only, with obvious net clearance."],
+    ["Balls flying long", "rackets, padel", "The short, cutting rackets stroke or an open padel face is taking topspin off.", "More brush, slightly closed face, aim higher over the net and let spin bring it down.", "Rally to the service line only, with obvious net clearance."],
     ["Late, jammed contact", "squash, real", "You're letting the ball reach your body like in the court sports.", "Turn early and meet the ball well out in front.", "Ball machine or feed: call 'turn' at the bounce, 'hit' in front."]],
   real: [
     ["Ball kicks up, no cut", "tennis, tt", "Topspin habits from tennis and table tennis are closing the face.", "Open the face, swing down, finish low and forward.", "Feed 20 forehands and check each one skids rather than kicks."],
     ["Ball into the net or dropping short", "squash", "Squash's short checked finish is cutting the stroke off.", "Longer, flatter path through contact; let the follow-through travel.", "Rally to length, aiming for the ball to die near the back wall."]],
   rackets: [
-    ["Ball too high off the front wall", "padel, pickle", "The soft, open padel and pickleball face is lifting it.", "Flat face, lower contact, accelerate through.", "10 drives at a target just above the board."],
-    ["Mishits at pace", "tennis, squash, golf", "A big tennis, squash or golf backswing is too slow for rackets pace.", "Shorter preparation; keep the wrist firm and let the shoulder turn supply the pace.", "Volley to yourself against the wall at short range, racquet barely going back."]],
+    ["Ball too high off the front wall", "tennis, tt, pickle", "Low-to-high habits from tennis, table tennis or pickleball are lifting it.", "Start the racket above the ball and swing down through it, firm wrist, short stop.", "10 drives at a target just above the board, freezing the short finish each time."],
+    ["Mishits at pace", "tennis, squash, golf", "A big tennis, squash or golf backswing is too slow for rackets pace.", "Shorter preparation, like real tennis: racket up early, firm wrist, short stop.", "Volley to yourself against the wall at short range, racquet barely going back."]],
   pickle: [
     ["Dinks popping up", "squash, tt", "Wrist action from the wristy sports is flicking the paddle face open.", "Lock the wrist, lift from the shoulder, set the paddle face early.", "50 crosscourt dinks, freezing the paddle after each."],
     ["Drives flying long", "tennis", "A full tennis swing is too big for a pickleball court.", "Half the swing, finish at chest height.", "Drive to the kitchen line from the baseline, 20 balls."],
@@ -64,7 +64,7 @@ const M = {
     ["Into the net", "squash, real", "The downward path from the cut sports drives the ball into the net.", "Brush up and forward from below the ball.", "Multi-ball topspin against backspin, 30 balls."],
     ["Slow recovery between shots", "tennis, golf", "Big tennis finishes, and golf's held finish, take too long to recover from.", "Finish near the forehead and snap back to ready.", "Footwork drill: alternate forehand and backhand, focusing on the reset."]],
   golf: [
-    ["Slice: the ball curves away to the right", "squash, real, padel", "The cut sports have trained an open face and an out-to-in path across the ball. With a club, that's a slice.", "Square the face and swing from the inside: feel the club come from behind you and exit to the right of the target, forearms rotating through.", "Headcover a few inches outside and behind the ball; 20 half swings with a 7-iron without touching it."],
+    ["Slice: the ball curves away to the right", "squash, real, rackets, padel", "The cut sports have trained an open face and an out-to-in path across the ball. With a club, that's a slice.", "Square the face and swing from the inside: feel the club come from behind you and exit to the right of the target, forearms rotating through.", "Headcover a few inches outside and behind the ball; 20 half swings with a 7-iron without touching it."],
     ["Push or block: straight right", "pickle, padel", "Firm-wrist sports, plus a strong left arm that wants to pull, keep the face from closing.", "Let the right hand and forearm release through impact; the right palm faces the ground just after the ball.", "Split-hand half swings (hands a couple of inches apart on the grip), feeling the right hand pass the left. 20 balls."],
     ["Hook or pull-hook", "tennis, tt", "Topspin roll-over is shutting the face through impact.", "Keep turning your chest through and let the body square the face, not the hands.", "20 three-quarter swings, freezing at waist height in the follow-through with the toe of the club pointing up."],
     ["Thin or topped", "tennis, pickle, tt", "Low-to-high habits have you swinging up at a ball that's sitting on the ground.", "Weight on the left foot at impact; hit down on the back of the ball and let the loft get it airborne.", "Ball on a line (or in front of a towel) on the ground; 20 swings where the divot starts on the target side of it."],
