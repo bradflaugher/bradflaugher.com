@@ -161,6 +161,16 @@ function contactMove(f, t) {
   return `Contact ${b < a ? "drops" : "rises"}${from === to ? "" : ` from ${from} to ${to}`} height${b < a ? ": get down to it" : ": let it come up to you"}.`;
 }
 
+const pathDir = p => p >= 0.3 ? "up" : p <= -0.3 ? "down" : "flat";
+function pathCue(A, B) {
+  const face = `${/^[aeiou]/i.test(B.face) ? "an" : "a"} ${lc(B.face)}`, from = pathDir(A.p), to = pathDir(B.p);
+  if (to === "up") return from === "up" ? `More lift: start lower under the ball and finish higher than ${A.n}.`
+    : `Change the path: start the head below the ball and swing up. ${A.n} ${from === "down" ? "goes down" : "stays flat"}; ${B.n} swings up.`;
+  if (to === "down") return from === "down" ? (B.p < A.p ? `Steeper: chop down more than ${A.n}, with ${face} face.` : `Shallower: still high to low, but less chop than ${A.n}.`)
+    : `${from === "up" ? "Stop brushing up. " : ""}Start high and swing down through the ball, with ${face} face.`;
+  return `Flatten the path: swing level through the ball, no ${from === "up" ? "brushing up" : "chopping down"}.`;
+}
+
 function cuesFor(f, t) {
   const A = S[f], B = S[t];
   if (f === t) return [`Same sport: your cue is "${B.cue}"`, "Pick one detail from the table below to hold all session.", `Film a ${t === "golf" ? "swing" : "rally"} and check it against the path: ${lc(B.path)}.`];
@@ -168,13 +178,8 @@ function cuesFor(f, t) {
   if (t === "golf") return [...out, TO_GOLF_HAND, TO_GOLF[f]];
   if (f === "golf") out.push(FROM_GOLF_HAND);
   const dp = B.p - A.p;
-  // The direction comes from the target's own path, not just the difference.
-  if (dp >= 0.6) out.push(B.p >= 0.3 ? `Change the path: start the head below the ball and swing up. ${A.n} wants you to go down; ${B.n} doesn't.`
-    : B.p <= -0.3 ? `Shallower: still high to low, but less chop than ${A.n}.`
-    : "Flatten the path: swing level through the ball, no chopping down.");
-  else if (dp <= -0.6) out.push(B.p <= -0.3 ? `Stop brushing up. Start high and swing down through the ball, with a ${lc(B.face)} face.`
-    : B.p >= 0.3 ? `Flatter: still low to high, but less brush than ${A.n}.`
-    : "Flatten the path: swing level through the ball, no brushing up.");
+  // Wording depends on which way both swings actually go, not just the difference.
+  if (Math.abs(dp) >= 0.6) out.push(pathCue(A, B));
   const db = B.back - A.back;
   if (db <= -2) out.push("Cut the backswing roughly in half. Prepare early and short.");
   else if (db >= 2) out.push(`Let the backswing grow: ${lc(B.backT)}.`);
@@ -213,7 +218,7 @@ let miss = null;
 function renderDiag() {
   const s = $("#dsport").value;
   $("#misses").innerHTML = M[s].map((m, i) => `<button type="button" aria-pressed="${i === miss}" data-i="${i}">${m[0]}</button>`).join("");
-  $("#misses").querySelectorAll("button").forEach(b => b.onclick = () => { miss = +b.dataset.i; renderDiag(); });
+  $("#misses").querySelectorAll("button").forEach(b => b.onclick = () => { miss = +b.dataset.i; renderDiag(); $(`#misses button[data-i="${miss}"]`).focus(); });
   if (miss === null || !M[s][miss]) { $("#fix").innerHTML = `<p class="small">Pick the miss you see most often.</p>`; return; }
   const m = M[s][miss];
   $("#fix").innerHTML = `<div class="card"><h2>${m[0]}</h2><p>Likely leaking in from: ${m[1].split(", ").map(k => `<span class="tag">${S[k].n}</span>`).join("")}</p>
