@@ -7,14 +7,20 @@ const S = {
   squash: {n: "Squash", hand: "Left", p: -0.7, path: "High to low", back: 3, backT: "Racquet up early, compact", h: "Shin to knee", hn: 1.5, spot: "Beside front foot", wrist: 3, wristT: "Cocked, forearm-driven", face: "Open", fa: -1, fin: 2, finT: "Short, checked", grip: "Continental", cue: "Racquet up early, swing down through, stop short."},
   tennis: {n: "Lawn tennis", hand: "Left", p: 0.8, path: "Low to high", back: 5, backT: "Full loop", h: "Waist", hn: 3, spot: "Well out in front", wrist: 3, wristT: "Laid back, natural release", face: "Closing, brushing up", fa: 1, fin: 5, finT: "Over the shoulder", grip: "Eastern or semi-western", cue: "Drop the head below the ball, brush up, finish high."},
   real: {n: "Real tennis", hand: "Left", p: -0.9, path: "High to low, heavy cut", back: 4, backT: "High and long", h: "Knee", hn: 1.5, spot: "Beside to slightly behind front foot", wrist: 1, wristT: "Firm, locked", face: "Very open", fa: -2, fin: 3, finT: "Low and forward", grip: "Continental", cue: "Chop down, open face, finish low."},
-  rackets: {n: "Rackets", hand: "Left", p: 0, path: "Flat and low", back: 2, backT: "Short", h: "Low, near the knee", hn: 1.5, spot: "Out in front", wrist: 5, wristT: "Fast whip", face: "Flat", fa: 0, fin: 3, finT: "Through and across", grip: "Continental", cue: "Short, flat, low, fast."},
+  rackets: {n: "Rackets", hand: "Left", p: 0.1, path: "Flat drive, tennis-style", back: 3, backT: "Compact, tennis-style take-back", h: "Low, near the knee", hn: 1.5, spot: "Out in front", wrist: 2, wristT: "Firm: no flick, the ball is too fast and hard", face: "Flat", fa: 0, fin: 3, finT: "Through toward the front wall", grip: "Continental", cue: "Tennis-style drive, firm wrist, flat through the ball, keep it low over the board."},
   pickle: {n: "Pickleball", hand: "Left", p: 0.3, path: "Gentle low to high", back: 1, backT: "Minimal", h: "Below waist (dinks) to waist", hn: 2.5, spot: "Out in front", wrist: 1, wristT: "Firm", face: "Flat to slightly open", fa: 0, fin: 2, finT: "Toward the target", grip: "Continental", cue: "Swing from the shoulder, no wrist."},
   padel: {n: "Padel", hand: "Left", p: -0.3, path: "Flat to slight high to low", back: 2, backT: "Compact, head up", h: "Hip", hn: 3, spot: "Beside to slightly in front", wrist: 2, wristT: "Firm", face: "Slightly open", fa: -1, fin: 2, finT: "Short, toward target", grip: "Continental", cue: "Head up, contact at the hip, slice it."},
   tt: {n: "Table tennis", hand: "Left", p: 0.8, path: "Low to high, brushing", back: 1, backT: "Tiny", h: "Table height", hn: 3, spot: "In front of the body", wrist: 4, wristT: "Active forearm and wrist", face: "Closed", fa: 2, fin: 1, finT: "Near the forehead", grip: "Shakehand", cue: "Elbow and forearm, brush up, keep it small."},
   golf: {n: "Golf", hand: "Right", p: -0.3, path: "Down into the ball, then around", back: 5, backT: "Full shoulder turn, wrists hinged", h: "On the ground", hn: 0, spot: "Centre of stance (irons), inside left heel (driver)", wrist: 4, wristT: "Hinge back, hold it, release through", face: "Square", fa: 0, fin: 5, finT: "Full, chest to target, on the left foot", grip: "Overlap or interlock, left hand on top", cue: "Turn, hold the hinge, hit down on the back of the ball, finish facing the target.",
     warm: "Before the first tee: 10 slow practice swings saying cue 1 out loud, 5 to waist height holding the wrist hinge and 5 full to a held finish. Then a few 7-irons before the driver."}
 };
-const keys = Object.keys(S);
+const GROUPS = [
+  ["Cut: high to low, open face", ["squash", "real", "padel"]],
+  ["Drive: flat or low to high, out in front", ["tennis", "rackets", "tt"]],
+  ["Compact and firm", ["pickle"]],
+  ["Club: right-handed", ["golf"]]
+];
+const keys = GROUPS.flatMap(g => g[1]);
 
 // Golf is the other hand, so switching into or out of it gets its own cues.
 const TO_GOLF_HAND = "Switch sides: you golf right-handed, so your left arm leads. Borrow your backhand, not your forehand: left hand at the top of the grip, back of the left hand facing the target at impact.";
@@ -23,7 +29,7 @@ const TO_GOLF = {
   squash: "Squash is all cut. Square the face and swing from the inside, or the ball slices.",
   tennis: "No topspin roll-over. Turn your chest through and keep the hands quiet, or it hooks.",
   real: "A real tennis chop is a slice with a club. Square face, shallower path from the inside.",
-  rackets: "The rackets wrist whip flips the club. Hold the hinge and keep your hands ahead of the ball.",
+  rackets: "The flat rackets drive sweeps the ball. Golf hits down: ball first, then turf, and let the loft lift it.",
   pickle: "Pickleball is arms and no turn. Turn your shoulders fully; this swing is far bigger.",
   padel: "Padel slice opens the face. Square it and swing from the inside.",
   tt: "The table tennis brush tops it or hooks it here. Hit down and let the loft lift the ball."
@@ -38,16 +44,16 @@ const M = {
     ["Late on the volley, swing too big", "tennis, golf", "A full tennis loop or a golf turn takes too long at squash pace.", "Racquet up before the ball reaches the front wall; compact punch, short finish.", "Volley drives against the front wall from the short line, 20 without dropping the racquet head."]],
   tennis: [
     ["Lots of balls into the net", "squash, real", "The downward squash and real tennis path is driving the ball down.", "Start the racquet head below the ball and finish over your right shoulder on the forehand.", "20 drop-fed forehands, holding the finish for two seconds each time."],
-    ["Balls flying long", "rackets, padel", "Flat rackets whip or an open padel face is taking spin off.", "More brush, slightly closed face, aim higher over the net and let spin bring it down.", "Rally to the service line only, with obvious net clearance."],
+    ["Balls flying long", "rackets, padel", "A flat rackets drive or an open padel face is taking spin off.", "More brush, slightly closed face, aim higher over the net and let spin bring it down.", "Rally to the service line only, with obvious net clearance."],
     ["Late, jammed contact", "squash, real", "You're letting the ball reach your body like in the court sports.", "Turn early and meet the ball well out in front.", "Ball machine or feed: call 'turn' at the bounce, 'hit' in front."]],
   real: [
     ["Ball kicks up, no cut", "tennis, tt", "Topspin habits from tennis and table tennis are closing the face.", "Open the face, swing down, finish low and forward.", "Feed 20 forehands and check each one skids rather than kicks."],
     ["Ball into the net or dropping short", "squash", "Squash's short checked finish is cutting the stroke off.", "Longer, flatter path through contact; let the follow-through travel.", "Rally to length, aiming for the ball to die near the back wall."]],
   rackets: [
     ["Ball too high off the front wall", "padel, pickle", "The soft, open padel and pickleball face is lifting it.", "Flat face, lower contact, accelerate through.", "10 drives at a target just above the board."],
-    ["Mishits at pace", "tennis, squash, golf", "A big tennis, squash or golf backswing is too slow for rackets pace.", "Shorter preparation; let the wrist supply the speed.", "Volley to yourself against the wall at short range, racquet barely going back."]],
+    ["Mishits at pace", "tennis, squash, golf", "A big tennis, squash or golf backswing is too slow for rackets pace.", "Shorter preparation; keep the wrist firm and let the shoulder turn supply the pace.", "Volley to yourself against the wall at short range, racquet barely going back."]],
   pickle: [
-    ["Dinks popping up", "squash, rackets, tt", "Wrist action from the wristy sports is flicking the paddle face open.", "Lock the wrist, lift from the shoulder, set the paddle face early.", "50 crosscourt dinks, freezing the paddle after each."],
+    ["Dinks popping up", "squash, tt", "Wrist action from the wristy sports is flicking the paddle face open.", "Lock the wrist, lift from the shoulder, set the paddle face early.", "50 crosscourt dinks, freezing the paddle after each."],
     ["Drives flying long", "tennis", "A full tennis swing is too big for a pickleball court.", "Half the swing, finish at chest height.", "Drive to the kitchen line from the baseline, 20 balls."],
     ["Dinks into the net", "padel, real, golf", "A slicing, downward path (or golf's 'hit down') is carrying into the net.", "Swing gently low to high with a slightly open face.", "Dink rally aiming for a clear arc over the net."]],
   padel: [
@@ -62,7 +68,7 @@ const M = {
     ["Push or block: straight right", "pickle, padel", "Firm-wrist sports, plus a strong left arm that wants to pull, keep the face from closing.", "Let the right hand and forearm release through impact; the right palm faces the ground just after the ball.", "Split-hand half swings (hands a couple of inches apart on the grip), feeling the right hand pass the left. 20 balls."],
     ["Hook or pull-hook", "tennis, tt", "Topspin roll-over is shutting the face through impact.", "Keep turning your chest through and let the body square the face, not the hands.", "20 three-quarter swings, freezing at waist height in the follow-through with the toe of the club pointing up."],
     ["Thin or topped", "tennis, pickle, tt", "Low-to-high habits have you swinging up at a ball that's sitting on the ground.", "Weight on the left foot at impact; hit down on the back of the ball and let the loft get it airborne.", "Ball on a line (or in front of a towel) on the ground; 20 swings where the divot starts on the target side of it."],
-    ["Fat shots and flippy hands", "rackets, squash, tt", "The wristy sports release the hinge early, so the clubhead passes your hands before the ball.", "Hands ahead of the ball at impact, left wrist flat. Hold the angle longer than feels right.", "Hip-to-hip half swings, pausing at impact with the hands over your left thigh; 20 balls."],
+    ["Fat shots and flippy hands", "squash, tt", "The wristy sports release the hinge early, so the clubhead passes your hands before the ball.", "Hands ahead of the ball at impact, left wrist flat. Hold the angle longer than feels right.", "Hip-to-hip half swings, pausing at impact with the hands over your left thigh; 20 balls."],
     ["Head and chest come up early", "tennis, squash, padel", "Moving-ball sports train you to look at the target and get ready for the next shot.", "Nothing is coming back. Stay over the ball until it's gone.", "10 balls where you keep looking at the spot the ball sat on for a slow count of one."]]
 };
 
@@ -116,24 +122,32 @@ const C = {
 const heightName = v => LANDMARKS.reduce((a, b) => Math.abs(b[1] - v) < Math.abs(a[1] - v) ? b : a)[0];
 
 // Range chart: one row per sport, ground on the left, head on the right.
-function contactChart(list, sel, interactive) {
-  const W = 340, L = 96, R = 10, T = 22, RH = 26, H = T + list.length * RH + 4;
+// Pass grouped=true to split rows under the swing-family headings.
+function contactChart(list, sel, interactive, grouped) {
+  const W = 340, L = 96, R = 10, T = 22, RH = 26, GH = 22;
   const x = v => L + (W - L - R) * v / HMAX;
-  const grid = HEIGHTS.map(([n, v]) => `<line x1="${x(v)}" x2="${x(v)}" y1="${T - 4}" y2="${H - 4}" stroke="var(--line)" stroke-dasharray="2 3"/><text x="${x(v)}" y="12" text-anchor="${v === 0 ? "start" : v > 9 ? "end" : "middle"}" fill="var(--muted)" font-size="11">${n}</text>`).join("");
-  const rows = list.map((k, i) => {
-    const c = C[k], y = T + i * RH, on = k === sel, w = Math.max(x(c.hi) - x(c.lo), 8);
-    return `<g class="crow${on ? " on" : ""}" data-k="${k}"${interactive ? ` role="button" tabindex="0" aria-pressed="${on}"` : ""} aria-label="${S[k].n}: ${heightName(c.lo)} to ${heightName(c.hi)}"><title>${S[k].n}: ${heightName(c.lo)} to ${heightName(c.hi)}, ideal near the ${heightName(c.sweet)}</title>
+  const sections = grouped ? GROUPS.map(([label, ks]) => [label, ks.filter(k => list.includes(k))]).filter(g => g[1].length) : [["", list]];
+  let y = T, rows = "";
+  for (const [label, ks] of sections) {
+    if (label) { rows += `<text x="0" y="${y + 15}" fill="var(--sky)" font-size="11"># ${label.split(":")[0].toLowerCase()}</text>`; y += GH; }
+    for (const k of ks) {
+      const c = C[k], on = k === sel, w = Math.max(x(c.hi) - x(c.lo), 8);
+      rows += `<g class="crow${on ? " on" : ""}" data-k="${k}"${interactive ? ` role="button" tabindex="0" aria-pressed="${on}"` : ""} aria-label="${S[k].n}: ${heightName(c.lo)} to ${heightName(c.hi)}"><title>${S[k].n}: ${heightName(c.lo)} to ${heightName(c.hi)}, ideal near the ${heightName(c.sweet)}</title>
       <rect x="0" y="${y}" width="${W}" height="${RH}" fill="transparent"/>
-      <text x="0" y="${y + 17}" fill="${on ? "var(--fg)" : "var(--fg-dim)"}" font-size="12"${on ? ' font-weight="700"' : ""}>${S[k].n}</text>
+      <text x="8" y="${y + 17}" fill="${on ? "var(--fg)" : "var(--fg-dim)"}" font-size="12"${on ? ' font-weight="700"' : ""}>${S[k].n}</text>
       <rect x="${x(c.lo)}" y="${y + 7}" width="${w}" height="12" rx="4" fill="var(--accent)" fill-opacity="${on ? 0.85 : 0.4}"/>
       <circle cx="${Math.max(x(c.sweet), L + 5)}" cy="${y + 13}" r="5" fill="var(--ball)" stroke="var(--bg-1)" stroke-width="2"/></g>`;
-  }).join("");
+      y += RH;
+    }
+  }
+  const H = y + 4;
+  const grid = HEIGHTS.map(([n, v]) => `<line x1="${x(v)}" x2="${x(v)}" y1="${T - 4}" y2="${H - 4}" stroke="var(--line)" stroke-dasharray="2 3"/><text x="${x(v)}" y="12" text-anchor="${v === 0 ? "start" : v > 9 ? "end" : "middle"}" fill="var(--muted)" font-size="11">${n}</text>`).join("");
   return `<svg class="cchart" viewBox="0 0 ${W} ${H}" width="100%" role="${interactive ? "group" : "img"}" aria-label="Contact height by sport">${grid}${rows}</svg>`;
 }
 
 let csel = "squash";
 function renderContact() {
-  $("#cmap").innerHTML = contactChart(keys, csel, true);
+  $("#cmap").innerHTML = contactChart(keys, csel, true, true);
   $("#cmap").querySelectorAll(".crow").forEach(g => {
     const pick = () => { csel = g.dataset.k; renderContact(); save(); $(`#cmap .crow[data-k="${csel}"]`).focus(); };
     g.onclick = pick;
@@ -147,7 +161,7 @@ function renderContact() {
 }
 
 const $ = s => document.querySelector(s);
-const sportOptions = v => keys.map(k => `<option value="${k}"${k === v ? " selected" : ""}>${S[k].n}</option>`).join("");
+const sportOptions = v => GROUPS.map(([label, ks]) => `<optgroup label="${label}">${ks.map(k => `<option value="${k}"${k === v ? " selected" : ""}>${S[k].n}</option>`).join("")}</optgroup>`).join("");
 const glyph = p => {
   const a = 20 + 11 * p, b = 20 - 11 * p;
   return `<svg class="glyph" width="44" height="40" viewBox="0 0 44 40" aria-hidden="true"><path d="M4 ${a} Q22 ${a > b ? a + 4 : a + 10} 40 ${b}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/><circle cx="22" cy="${(a + b) / 2 + (a > b ? 2 : 5)}" r="3.5" fill="var(--ball)" stroke="var(--bg)" stroke-width="1"/></svg>`;
@@ -227,7 +241,7 @@ function renderDiag() {
 
 function renderAll() {
   $("#tbl").innerHTML = `<tr><th>Sport</th><th>Hand</th><th>Path</th><th>Backswing</th><th>Contact</th><th>Wrist</th><th>Face</th><th>Finish</th></tr>` +
-    keys.map(k => { const s = S[k]; return `<tr><td>${s.n}</td><td class="hand">${s.hand}</td><td>${glyph(s.p)}${s.path}</td><td>${bar(s.back)}</td><td>${s.h}; ${lc(s.spot)}</td><td>${bar(s.wrist)}</td><td>${s.face}</td><td>${bar(s.fin)}</td></tr>`; }).join("");
+    GROUPS.map(([label, ks]) => `<tr class="grp"><th colspan="8"># ${label}</th></tr>` + ks.map(k => { const s = S[k]; return `<tr><td>${s.n}</td><td class="hand">${s.hand}</td><td>${glyph(s.p)}${s.path}</td><td>${bar(s.back)}</td><td>${s.h}; ${lc(s.spot)}</td><td>${bar(s.wrist)}</td><td>${s.face}</td><td>${bar(s.fin)}</td></tr>`; }).join("")).join("");
 }
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
