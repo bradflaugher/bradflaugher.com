@@ -66,6 +66,86 @@ const M = {
     ["Head and chest come up early", "tennis, squash, padel", "Moving-ball sports train you to look at the target and get ready for the next shot.", "Nothing is coming back. Stay over the ball until it's gone.", "10 balls where you keep looking at the spot the ball sat on for a slow count of one."]]
 };
 
+// Where to hit it. lo/hi/sweet on the HEIGHTS scale below (0 = ground).
+// You're left-handed with a racquet: forehand front foot = right, backhand front foot = left.
+const HEIGHTS = [["ground", 0], ["knee", 2.7], ["hip", 4.8], ["chest", 7], ["head", 9.3]];
+const HMAX = 9.6;
+const LANDMARKS = [["ground", 0], ["ankle", 0.6], ["shin", 1.5], ["knee", 2.7], ["thigh", 3.8], ["hip", 4.8], ["waist", 5.6], ["chest", 7], ["shoulder", 8.1], ["head", 9.3]];
+const C = {
+  squash: {lo: 1.3, hi: 3.1, sweet: 2.3, height: "Low: shin to knee. Let the ball drop past the top of its bounce; drives taken below the knee stay tight and low.",
+    front: "Forehand level with or just ahead of your front (right) foot; backhand a little further in front of your front (left) foot.",
+    away: "Arm plus racquet away, further than it feels. Crowding the ball is the classic squash fault.",
+    bounce: "Falling, after the peak.",
+    shots: [["Volley", "Out in front, around shoulder height. Punch it, short finish."], ["Boast", "Let it get a bit deeper, beside the back foot, to angle it into the side wall."]]},
+  tennis: {lo: 3.6, hi: 8.1, sweet: 5.6, height: "Waist high. The strike zone runs from just below the hip to the shoulder; use your feet (back up or step in) so the ball arrives at your waist instead of reaching for it.",
+    front: "Well out in front: forehand ahead of your left hip in an open stance (ahead of the right foot in a neutral one); one-handed backhand furthest in front, ahead of your left foot; two-hander a little closer.",
+    away: "About an arm and a half, elbow comfortably bent on the forehand.",
+    bounce: "At or just after the peak. Take it on the rise only when you're attacking.",
+    shots: [["Volley", "In front of the body, at about eye level, short punch."], ["Serve", "Full reach up, slightly inside the baseline and out toward your left (hitting) side."]]},
+  real: {lo: 0.9, hi: 3.1, sweet: 2.1, height: "Low: knee height or below. Let it drop; the low contact is what lets the cut make the ball skid and die.",
+    front: "Beside to slightly behind your front foot: later than lawn tennis, so the downward swing can cut under it.",
+    away: "Comfortably away, side-on to the net.",
+    bounce: "Falling, well after the peak.",
+    shots: [["Off the wall", "Wait for it to come off the side or back wall and drop before you hit."]]},
+  rackets: {lo: 1.4, hi: 3.2, sweet: 2.5, height: "Low, around the knee. Get your body down to the ball; it won't sit up for you.",
+    front: "Out in front of the front foot. Meet it early; it's coming at you very fast.",
+    away: "Arm plus racket away, side-on.",
+    bounce: "Falling, low, and early in the fall: there's no time to wait.",
+    shots: [["Volley", "Take it out of the air whenever you can, short and in front."]]},
+  pickle: {lo: 2.3, hi: 7, sweet: 4.2, height: "Dinks below the knee to mid-thigh; drives and volleys waist to chest.",
+    front: "Always out in front of your body. Never let the ball get beside or behind you.",
+    away: "Close: elbow bent, paddle face in front of you.",
+    bounce: "Dinks after the bounce as the ball falls, or out of the air. Drives at the peak.",
+    shots: [["Volley", "Out in front at chest height; firm block, no swing."], ["Serve", "Rule: contact below your waist, with an upward arc."]]},
+  padel: {lo: 3.6, hi: 6.2, sweet: 4.9, height: "Hip high. Let the ball come off the glass and drop to your hip before you hit it.",
+    front: "Beside to slightly in front of the body. Compact.",
+    away: "Closer than tennis; the racket is short.",
+    bounce: "Falling, after it comes out of the glass.",
+    shots: [["Volley", "In front, chest height, punched with slice."], ["Bandeja", "Above and slightly in front of the head, sliced, not smashed."], ["Serve", "Rule: underhand, after a bounce, contact at or below the waist."]]},
+  tt: {lo: 3.9, hi: 6.6, sweet: 5.1, height: "Just above table height: the top of the bounce for topspin, a little lower and later when looping backspin.",
+    front: "In front of the body, about a forearm's length. Forehand slightly toward your left (hitting) side, backhand in front of your middle.",
+    away: "Close, elbow near your side.",
+    bounce: "At the peak, or just before it for counters and blocks.",
+    shots: [["Serve", "Rule: toss at least 16 cm from an open palm; strike it behind the end line and above table height."]]},
+  golf: {lo: 0, hi: 0.4, sweet: 0, height: "On the ground, or on a tee. Right-handed: your lead foot is your left.",
+    front: "Short irons in the centre of your stance, long irons a ball or two forward, driver just inside your left heel.",
+    away: "Let your arms hang from the shoulders: about a hand's width between the butt of the grip and your thighs.",
+    bounce: "It doesn't move. Irons: on the way down, ball first, then turf (the low point is just in front of the ball). Driver: on the way up off the tee.",
+    shots: [["Chip", "Ball back of centre, hands ahead, weight left."], ["Bunker", "Ball forward; hit the sand a couple of inches behind it, not the ball."]]}
+};
+const heightName = v => LANDMARKS.reduce((a, b) => Math.abs(b[1] - v) < Math.abs(a[1] - v) ? b : a)[0];
+
+// Range chart: one row per sport, ground on the left, head on the right.
+function contactChart(list, sel, interactive) {
+  const W = 340, L = 96, R = 10, T = 22, RH = 26, H = T + list.length * RH + 4;
+  const x = v => L + (W - L - R) * v / HMAX;
+  const grid = HEIGHTS.map(([n, v]) => `<line x1="${x(v)}" x2="${x(v)}" y1="${T - 4}" y2="${H - 4}" stroke="var(--line)" stroke-dasharray="2 3"/><text x="${x(v)}" y="12" text-anchor="${v === 0 ? "start" : v > 9 ? "end" : "middle"}" fill="var(--muted)" font-size="11">${n}</text>`).join("");
+  const rows = list.map((k, i) => {
+    const c = C[k], y = T + i * RH, on = k === sel, w = Math.max(x(c.hi) - x(c.lo), 8);
+    return `<g class="crow${on ? " on" : ""}" data-k="${k}"${interactive ? ` role="button" tabindex="0" aria-pressed="${on}"` : ""} aria-label="${S[k].n}: ${heightName(c.lo)} to ${heightName(c.hi)}"><title>${S[k].n}: ${heightName(c.lo)} to ${heightName(c.hi)}, ideal near the ${heightName(c.sweet)}</title>
+      <rect x="0" y="${y}" width="${W}" height="${RH}" fill="transparent"/>
+      <text x="0" y="${y + 17}" fill="${on ? "var(--fg)" : "var(--fg-dim)"}" font-size="12"${on ? ' font-weight="700"' : ""}>${S[k].n}</text>
+      <rect x="${x(c.lo)}" y="${y + 7}" width="${w}" height="12" rx="4" fill="var(--accent)" fill-opacity="${on ? 0.85 : 0.4}"/>
+      <circle cx="${Math.max(x(c.sweet), L + 5)}" cy="${y + 13}" r="5" fill="var(--ball)" stroke="var(--bg-1)" stroke-width="2"/></g>`;
+  }).join("");
+  return `<svg class="cchart" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Contact height by sport">${grid}${rows}</svg>`;
+}
+
+let csel = "squash";
+function renderContact() {
+  $("#cmap").innerHTML = contactChart(keys, csel, true);
+  $("#cmap").querySelectorAll(".crow").forEach(g => {
+    const pick = () => { csel = g.dataset.k; renderContact(); save(); };
+    g.onclick = pick;
+    g.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } };
+  });
+  const c = C[csel];
+  $("#csport").value = csel;
+  $("#cdetail").innerHTML = `<h2>${S[csel].n}: where to hit it</h2>
+    <dl class="facts"><dt>Height</dt><dd>${c.height}</dd><dt>In front</dt><dd>${c.front}</dd><dt>From body</dt><dd>${c.away}</dd><dt>Bounce</dt><dd>${c.bounce}</dd>
+    ${c.shots.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join("")}</dl>`;
+}
+
 const $ = s => document.querySelector(s);
 const sportOptions = v => keys.map(k => `<option value="${k}"${k === v ? " selected" : ""}>${S[k].n}</option>`).join("");
 const glyph = p => {
@@ -74,6 +154,12 @@ const glyph = p => {
 };
 const bar = v => `<span class="bar" style="width:${v * 10}px"></span>${v}`;
 const lc = s => s.charAt(0).toLowerCase() + s.slice(1);
+
+function contactMove(f, t) {
+  const a = C[f].sweet, b = C[t].sweet, from = heightName(a), to = heightName(b);
+  if (Math.abs(b - a) < 1) return `Contact stays around ${to} height.`;
+  return `Contact ${b < a ? "drops" : "rises"}${from === to ? "" : ` from ${from} to ${to}`} height${b < a ? ": get down to it" : ": let it come up to you"}.`;
+}
 
 function cuesFor(f, t) {
   const A = S[f], B = S[t];
@@ -91,7 +177,7 @@ function cuesFor(f, t) {
   if (dw <= -2) out.push("Lock the wrist. Swing from the shoulder and keep the face steady.");
   else if (dw >= 2) out.push(`Free the wrist. Let the head whip through: ${lc(B.wristT)}.`);
   if (Math.abs(B.fa - A.fa) >= 2 && Math.abs(dp) < 0.6) out.push(B.fa < A.fa ? `Open the face: ${lc(B.face)}.` : `Close the face down: ${lc(B.face)}.`);
-  if (A.spot !== B.spot || Math.abs(B.hn - A.hn) >= 1.5) out.push(`Move contact: ${lc(B.spot)}, ${lc(B.h)}.`);
+  if (A.spot !== B.spot || Math.abs(B.hn - A.hn) >= 1.5) out.push(`${contactMove(f, t)} ${B.spot}.`);
   const df = B.fin - A.fin;
   if (Math.abs(df) >= 2) out.push(df < 0 ? `Shorter finish: ${lc(B.finT)}.` : `Longer finish: ${lc(B.finT)}.`);
   return out.slice(0, 4);
@@ -101,6 +187,7 @@ function renderSwitch() {
   const f = $("#from").value, t = $("#to").value, A = S[f], B = S[t];
   $("#cues").innerHTML = cuesFor(f, t).map(c => `<li>${c}</li>`).join("");
   $("#warm").textContent = B.warm || RACQUET_WARM;
+  $("#cswitch").innerHTML = (f === t ? contactChart([t], t) : contactChart([f, t], t)) + `<p class="small">${f === t ? C[t].height : `${contactMove(f, t)} ${C[t].height}`}</p>`;
   const rows = [
     ["Hand", A.hand, B.hand, A.hand !== B.hand],
     ["Path", A.path, B.path, Math.abs(B.p - A.p) >= 0.6],
@@ -172,7 +259,7 @@ const currentTab = () => (tabs.find(x => x.getAttribute("aria-selected") === "tr
 let ready = false;
 function save() {
   if (!ready) return;
-  try { localStorage.setItem("swingswitch", JSON.stringify({week, from: $("#from").value, to: $("#to").value, tab: currentTab()})); } catch (e) {}
+  try { localStorage.setItem("swingswitch", JSON.stringify({week, from: $("#from").value, to: $("#to").value, contact: csel, tab: currentTab()})); } catch (e) {}
 }
 
 let st = {};
@@ -185,10 +272,12 @@ if (st.week && Array.isArray(st.week.days)) {
 $("#from").innerHTML = sportOptions(valid(st.from) ? st.from : "tennis");
 $("#to").innerHTML = sportOptions(valid(st.to) ? st.to : "squash");
 $("#dsport").innerHTML = sportOptions("squash");
+$("#csport").innerHTML = sportOptions(csel = valid(st.contact) ? st.contact : "squash");
+$("#csport").onchange = () => { csel = $("#csport").value; renderContact(); save(); };
 $("#from").onchange = $("#to").onchange = renderSwitch;
 $("#dsport").onchange = () => { miss = null; renderDiag(); };
 $("#focus").oninput = e => { week.focus = e.target.value; save(); };
-renderSwitch(); renderDiag(); renderAll(); renderWeek();
+renderSwitch(); renderDiag(); renderAll(); renderWeek(); renderContact();
 const startTab = tabs.find(x => x.getAttribute("aria-controls") === st.tab);
 if (startTab) selectTab(startTab);
 ready = true;
