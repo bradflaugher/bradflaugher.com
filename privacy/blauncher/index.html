@@ -50,7 +50,7 @@
     <p>Blauncher (package <strong>com.bradflaugher.blauncher</strong>) is an Android home-screen launcher. It has <strong>no INTERNET permission</strong> and never touches the network. There are no accounts, no sync, no analytics, no ads, and no accessibility service.</p>
 
     <h2>Installed apps</h2>
-    <p>Blauncher does <strong>not</strong> request QUERY_ALL_PACKAGES. It can see only the apps Android makes visible to a launcher: apps with a launcher icon (to show and launch them in the app drawer), the current home app (to check whether Blauncher is the default launcher), and the default browser and web-search app (to hand off searches). That list never leaves your device.</p>
+    <p>Blauncher does <strong>not</strong> request QUERY_ALL_PACKAGES. Instead it declares the kinds of apps a launcher needs, and Android makes installed apps of those kinds visible to it: apps with a launcher icon (to show and launch them in the app drawer), home-screen apps (to check whether Blauncher is the default launcher), and browsers and web-search apps (to hand off searches). Android may also make some system apps visible to every app. This information never leaves your device.</p>
 
     <h2>Smart ordering</h2>
     <p>The "smart ordering" feature learns only from launches you make inside the launcher. This data is stored in local app preferences, and app data is excluded from backups.</p>
