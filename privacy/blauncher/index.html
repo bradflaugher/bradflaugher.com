@@ -45,12 +45,12 @@
   <main>
     <p class="prompt" aria-hidden="true"><span class="path">~/brad</span> <span class="sym">❯</span> cat privacy/blauncher</p>
     <h1>Privacy policy — Blauncher</h1>
-    <p class="updated">Last updated 2026-09-28</p>
+    <p class="updated">Last updated 2026-10-04</p>
 
     <p>Blauncher (package <strong>com.bradflaugher.blauncher</strong>) is an Android home-screen launcher. It has <strong>no INTERNET permission</strong> and never touches the network. There are no accounts, no sync, no analytics, no ads, and no accessibility service.</p>
 
     <h2>Installed apps</h2>
-    <p>Blauncher reads the list of installed apps (<strong>QUERY_ALL_PACKAGES</strong>) solely to show and launch them in the app drawer. That list never leaves your device.</p>
+    <p>Blauncher does <strong>not</strong> request QUERY_ALL_PACKAGES. Instead it declares the kinds of apps a launcher needs, and Android makes installed apps of those kinds visible to it: apps with a launcher icon (to show and launch them in the app drawer), home-screen apps (to check whether Blauncher is the default launcher), and browsers and web-search apps (to hand off searches). Android may also make some system apps visible to every app. This information never leaves your device.</p>
 
     <h2>Smart ordering</h2>
     <p>The "smart ordering" feature learns only from launches you make inside the launcher. This data is stored in local app preferences, and app data is excluded from backups.</p>
@@ -62,7 +62,6 @@
     <ul>
       <li><strong>Expand status bar</strong> — swipe down for notifications.</li>
       <li><strong>Request delete packages</strong> — uninstall shortcut; the system confirms every uninstall.</li>
-      <li><strong>Set alarm</strong> — used only to open the clock app.</li>
       <li><strong>Access hidden profiles</strong> — Private Space support.</li>
     </ul>
 
