@@ -10,50 +10,15 @@
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="apple-touch-icon" sizes="144x144" href="/favicon-144x144.png">
+  <link rel="stylesheet" href="/site.css?v=4">
   <style>
-    @font-face { font-family: 'Hack'; src: url('/fonts/Hack-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
-    @font-face { font-family: 'Hack'; src: url('/fonts/Hack-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
-    @font-face { font-family: 'Departure Mono'; src: url('/fonts/DepartureMono-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
-    :root {
-      --bg: #0f0c0a; --bg-1: #16120f; --bg-2: #1f1915;
-      --line: #2f2721; --line-hi: #4a3d33;
-      --fg: #efe4d2; --fg-dim: #bfae98; --muted: #8f7f6e;
-      --accent: #b48aff; --sky: #8fc3d6; --green: #a3cf8b; --ball: #d8e36a;
-      --mono: 'Hack', ui-monospace, Menlo, Consolas, monospace;
-      --pixel: 'Departure Mono', 'Hack', ui-monospace, Menlo, Consolas, monospace;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html {
-      -webkit-text-size-adjust: 100%; min-height: 100%; background: var(--bg);
-      background-image:
-        radial-gradient(1100px 600px at 12% -10%, rgba(180, 138, 255, 0.11), transparent 60%),
-        radial-gradient(800px 500px at 100% 100%, rgba(163, 207, 139, 0.06), transparent 60%);
-      background-repeat: no-repeat;
-    }
-    ::selection { background: var(--accent); color: var(--bg); }
-    body {
-      min-height: 100vh; min-height: 100dvh;
-      color: var(--fg-dim);
-      font: 400 15px/1.6 var(--mono);
-      -webkit-font-smoothing: antialiased;
-      padding: calc(28px + env(safe-area-inset-top)) 16px 0;
-    }
-    main { max-width: 720px; margin-inline: auto; padding-bottom: 40px; }
-    .prompt { color: var(--muted); font-size: 0.9em; }
-    .prompt .path { color: var(--sky); }
-    .prompt .sym { color: var(--accent); }
-    h1 { font: 400 clamp(38px, 10.5vw, 64px)/0.98 var(--pixel); letter-spacing: -0.01em; color: var(--fg); margin: 12px 0 10px; }
-    h1 .last { color: var(--accent); }
-    .caret { display: inline-block; width: 0.5em; height: 0.82em; background: var(--accent); margin-left: 0.08em; transform: translateY(0.05em); animation: blink 1.1s steps(1, end) infinite; }
-    @keyframes blink { 50% { opacity: 0; } }
     .sub { color: var(--sky); font-size: 0.9em; }
     .sub::before { content: '# '; color: var(--muted); }
     .lede { margin: 12px 0 20px; max-width: 60ch; }
-    h2 { font: 400 0.9em/1.3 var(--pixel); color: var(--fg); text-transform: lowercase; }
+    h2 { text-transform: lowercase; }
     h2::before { content: '┌─ '; color: var(--accent); }
     h3 { font-size: 0.85em; font-weight: 700; color: var(--sky); text-transform: lowercase; margin: 12px 0 2px; }
     h3::before { content: '## '; color: var(--muted); }
-    strong { color: var(--fg); font-weight: 700; }
 
     [role=tablist] { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
     [role=tab] {
@@ -64,7 +29,6 @@
     [role=tab]::before { content: '○ '; color: var(--muted); }
     [role=tab][aria-selected=true] { color: var(--bg); background: var(--accent); border-color: var(--accent); }
     [role=tab][aria-selected=true]::before { content: '● '; color: var(--bg); }
-    button:focus-visible, select:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
     [role=tabpanel][hidden] { display: none; }
 
     label.f { display: block; font-size: 0.8em; color: var(--muted); margin-bottom: 4px; }
@@ -78,7 +42,7 @@
 
     .card { background: var(--bg-1); border: 1px solid var(--line-hi); border-radius: 6px; padding: 0 16px 16px; margin-bottom: 14px; overflow: hidden; }
     .card > h2:first-child { margin: 0 -16px 12px; padding: 8px 16px; background: var(--bg-2); border-bottom: 1px solid var(--line); }
-    .small { font-size: 0.85em; color: var(--muted); margin-top: 10px; }
+    .small { margin-top: 10px; }
 
     .cues { list-style: none; counter-reset: c; }
     .cues li { counter-increment: c; padding: 8px 0 8px 34px; position: relative; border-top: 1px dashed var(--line); color: var(--fg); }
@@ -155,11 +119,6 @@
     .plist li.now { background: var(--bg-2); margin-inline: -16px; padding-inline: 13px 16px; border-left: 3px solid var(--ball); }
     .plist li.now .pm { color: var(--ball); }
     .plist li.done strong, .plist li.done .how { text-decoration: line-through; text-decoration-color: var(--muted); opacity: 0.6; }
-    .status { margin-inline: -16px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--bg-1); border-top: 1px solid var(--line); font-size: 0.8em; color: var(--muted); }
-    .status__inner { max-width: 720px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; }
-    .status .ok { color: var(--green); }
-    @media (min-width: 640px) { body { font-size: 16px; } }
-    @media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
     @media (max-width: 420px) {
       .row { grid-template-columns: 5.5em 1fr 1fr; gap: 8px; }
       .pick, .pick2 { grid-template-columns: 1fr; }
@@ -171,7 +130,7 @@
 </head>
 <body>
   <main>
-    <p class="prompt" aria-hidden="true"><span class="path">~/brad</span> <span class="sym">❯</span> swing --switch</p>
+    <p class="prompt"><a class="path" href="/" title="home">~/brad</a> <span aria-hidden="true"><span class="sym">❯</span> swing --switch</span></p>
     <h1>swing <span class="last">switch<span class="caret" aria-hidden="true"></span></span></h1>
     <p class="sub">left-handed with a racquet, right-handed with a club</p>
     <p class="lede">Eight sports, eight swings. Reset your stroke before you walk on court or onto the tee, run a timed solo session, and trace a miss back to the sport it leaked in from.</p>
@@ -265,10 +224,10 @@
   </main>
   <footer class="status">
     <div class="status__inner">
-      <span>-- NORMAL -- swing/</span>
-      <span><span class="ok">●</span> 8 sports · 24 sessions</span>
+      <span class="seg crumb"><a href="/"><span class="host">bradflaugher.com</span><span class="tilde" aria-hidden="true">~</span></a><span>/swing</span></span>
+      <nav class="seg" aria-label="Site"><a href="/">home</a><span aria-hidden="true">·</span><a href="/tree/">tree</a><span aria-hidden="true">·</span><a href="https://github.com/bradflaugher/bradflaugher.com" rel="noopener">src</a></nav>
     </div>
   </footer>
-  <script src="/swing/swing.js?v=4"></script>
+  <script src="/swing/swing.js?v=8"></script>
 </body>
 </html>

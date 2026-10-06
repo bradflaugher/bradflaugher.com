@@ -377,7 +377,7 @@ const P = {
 const mmss = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
 // One session at a time; the timer survives sport and length changes only until you change them.
-let psport = "squash", plen = "long", pi = 0, pleft = 0, pend = 0, ptick = null, lock = null;
+let psport = "squash", plen = "long", pi = 0, pleft = 0, pend = 0, ptick = null, lock = null, pchosen = false;
 const blocks = () => P[psport][plen];
 function beep() {
   try {
@@ -389,21 +389,29 @@ function beep() {
 }
 async function wake(on) {
   try {
-    if (on && !lock && navigator.wakeLock) lock = await navigator.wakeLock.request("screen");
-    if (!on && lock) { lock.release(); lock = null; }
+    if (!on) { if (lock) { lock.release(); lock = null; } return; }
+    if (lock || !navigator.wakeLock) return;
+    const l = await navigator.wakeLock.request("screen");
+    // The timer may have stopped while the request was pending.
+    if (ptick && !lock) lock = l; else l.release();
   } catch (e) {}
 }
 function resetTimer(i = 0) {
   clearInterval(ptick); ptick = null; wake(false);
   pi = i; pleft = (blocks()[i] || [0])[0] * 60;
 }
+// Deadlines chain from the last one, so a tick that arrives late (phone asleep,
+// tab in the background) catches up on every block that ended meanwhile.
 function step() {
-  pleft = Math.max(0, Math.round((pend - Date.now()) / 1000));
-  if (!pleft) {
+  const now = Date.now();
+  if (pend - now < 500) {
     beep();
-    if (pi + 1 < blocks().length) { pi++; pleft = blocks()[pi][0] * 60; pend = Date.now() + pleft * 1000; }
-    else { clearInterval(ptick); ptick = null; wake(false); pi = blocks().length; }
+    while (ptick && pend - now < 500) {
+      if (pi + 1 < blocks().length) { pi++; pend += blocks()[pi][0] * 60000; }
+      else { clearInterval(ptick); ptick = null; wake(false); pi = blocks().length; }
+    }
   }
+  pleft = Math.max(0, Math.round((pend - now) / 1000));
   renderClock();
 }
 function skip() {
@@ -412,8 +420,14 @@ function skip() {
   if (pi + 1 < blocks().length) resetTimer(pi + 1); else pi = blocks().length;
   renderClock();
 }
+// A followed sport that changed mid-session is picked up at the next fresh start.
+function follow() {
+  const fresh = !ptick && pi === 0 && pleft === blocks()[0][0] * 60; // not running, paused or finished
+  if (pchosen || !fresh || psport === $("#to").value) return false;
+  psport = $("#to").value; resetTimer(); renderPractice(); return true;
+}
 function toggleTimer() {
-  if (pi >= blocks().length) resetTimer();
+  if (pi >= blocks().length) { resetTimer(); follow(); }
   if (ptick) { clearInterval(ptick); ptick = null; wake(false); }
   else { pend = Date.now() + pleft * 1000; ptick = setInterval(step, 250); wake(true); }
   renderClock();
@@ -435,7 +449,7 @@ function renderPractice() {
   $("#ptitle").textContent = `${S[psport].n} · ${plen} · ${bs.reduce((a, b) => a + b[0], 0)} min`;
   $("#pkit").textContent = `Bring: ${lc(p.kit)}`;
   $("#pcue").textContent = `Hold one cue all session: ${S[psport].cue}`;
-  $("#plist").innerHTML = bs.map(([m, n, how, goal], i) => `<li><button type="button" data-i="${i}" aria-label="Jump to ${n}"><span class="pm">${m}′</span><span><strong>${n}</strong><span class="how">${how}</span><span class="goal">${goal}</span></span></button></li>`).join("");
+  $("#plist").innerHTML = bs.map(([m, n, how, goal], i) => `<li><button type="button" data-i="${i}"><span class="pm">${m}′</span><span><strong>${n}</strong><span class="how">${how}</span><span class="goal">${goal}</span></span></button></li>`).join("");
   $("#plist").querySelectorAll("button").forEach(b => b.onclick = () => { const run = !!ptick; resetTimer(+b.dataset.i); if (run) toggleTimer(); else renderClock(); });
   renderClock();
 }
@@ -481,7 +495,7 @@ const currentTab = () => (tabs.find(x => x.getAttribute("aria-selected") === "tr
 let ready = false;
 function save() {
   if (!ready) return;
-  try { localStorage.setItem("swingswitch", JSON.stringify({week, from: $("#from").value, to: $("#to").value, contact: csel, practice: psport, len: plen, tab: currentTab()})); } catch (e) {}
+  try { localStorage.setItem("swingswitch", JSON.stringify({week, from: $("#from").value, to: $("#to").value, contact: csel, pick: pchosen ? psport : "", len: plen, tab: currentTab()})); } catch (e) {}
 }
 
 let st = {};
@@ -495,17 +509,21 @@ $("#to").innerHTML = sportOptions(valid(st.to) ? st.to : "squash");
 $("#dsport").innerHTML = sportOptions("squash");
 $("#csport").innerHTML = sportOptions(csel = valid(st.contact) ? st.contact : "squash");
 $("#csport").onchange = () => { csel = $("#csport").value; renderContact(); save(); };
-$("#from").onchange = $("#to").onchange = renderSwitch;
+$("#from").onchange = renderSwitch;
+// Until you pick a practice sport yourself, it follows "Playing today".
+$("#to").onchange = () => { renderSwitch(); follow(); };
 $("#dsport").onchange = () => { miss = null; renderDiag(); };
-psport = valid(st.practice) ? st.practice : $("#to").value;
+// "pick" is only ever an explicit choice; the older "practice" field saved the default too, so it's ignored.
+pchosen = valid(st.pick);
+psport = pchosen ? st.pick : $("#to").value;
 plen = st.len in LENS ? st.len : "long";
 $("#psport").innerHTML = sportOptions(psport);
-$("#psport").onchange = () => { psport = $("#psport").value; resetTimer(); renderPractice(); save(); };
+$("#psport").onchange = () => { psport = $("#psport").value; pchosen = true; resetTimer(); renderPractice(); save(); };
 $("#plen").innerHTML = Object.entries(LENS).map(([k, m]) => `<button type="button" data-l="${k}">${k} <span>${m}′</span></button>`).join("");
 $("#plen").querySelectorAll("button").forEach(b => b.onclick = () => { plen = b.dataset.l; resetTimer(); renderPractice(); save(); });
 $("#pgo").onclick = toggleTimer;
 $("#pnext").onclick = skip;
-$("#preset").onclick = () => { resetTimer(); renderClock(); };
+$("#preset").onclick = () => { resetTimer(); if (!follow()) renderClock(); };
 document.addEventListener("visibilitychange", () => { if (ptick && document.visibilityState === "visible") { lock = null; wake(true); } });
 resetTimer();
 renderSwitch(); renderDiag(); renderAll(); renderWeek(); renderContact(); renderPractice();
