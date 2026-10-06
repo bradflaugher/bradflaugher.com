@@ -420,8 +420,13 @@ function skip() {
   if (pi + 1 < blocks().length) resetTimer(pi + 1); else pi = blocks().length;
   renderClock();
 }
+// A followed sport that changed mid-session is picked up at the next fresh start.
+function follow() {
+  if (pchosen || ptick || psport === $("#to").value) return false;
+  psport = $("#to").value; resetTimer(); renderPractice(); return true;
+}
 function toggleTimer() {
-  if (pi >= blocks().length) resetTimer();
+  if (pi >= blocks().length) { resetTimer(); follow(); }
   if (ptick) { clearInterval(ptick); ptick = null; wake(false); }
   else { pend = Date.now() + pleft * 1000; ptick = setInterval(step, 250); wake(true); }
   renderClock();
@@ -505,7 +510,7 @@ $("#csport").innerHTML = sportOptions(csel = valid(st.contact) ? st.contact : "s
 $("#csport").onchange = () => { csel = $("#csport").value; renderContact(); save(); };
 $("#from").onchange = renderSwitch;
 // Until you pick a practice sport yourself, it follows "Playing today".
-$("#to").onchange = () => { renderSwitch(); if (!pchosen && !ptick) { psport = $("#to").value; resetTimer(); renderPractice(); } };
+$("#to").onchange = () => { renderSwitch(); follow(); };
 $("#dsport").onchange = () => { miss = null; renderDiag(); };
 // "pick" is only ever an explicit choice; the older "practice" field saved the default too, so it's ignored.
 pchosen = valid(st.pick);
@@ -517,7 +522,7 @@ $("#plen").innerHTML = Object.entries(LENS).map(([k, m]) => `<button type="butto
 $("#plen").querySelectorAll("button").forEach(b => b.onclick = () => { plen = b.dataset.l; resetTimer(); renderPractice(); save(); });
 $("#pgo").onclick = toggleTimer;
 $("#pnext").onclick = skip;
-$("#preset").onclick = () => { resetTimer(); renderClock(); };
+$("#preset").onclick = () => { resetTimer(); if (!follow()) renderClock(); };
 document.addEventListener("visibilitychange", () => { if (ptick && document.visibilityState === "visible") { lock = null; wake(true); } });
 resetTimer();
 renderSwitch(); renderDiag(); renderAll(); renderWeek(); renderContact(); renderPractice();
