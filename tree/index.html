@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>tree — Brad Flaugher</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0f0c0a">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Every page on bradflaugher.com.">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/favicon-144x144.png">
+  <link rel="stylesheet" href="/site.css?v=1">
+  <style>
+    /* Lines are borders, not box-drawing glyphs, so they join at any line height. */
+    .tree { margin-top: 22px; }
+    .tree ul { list-style: none; }
+    .tree ul ul { margin-left: 1ch; }
+    .tree li { position: relative; padding-left: 3.2ch; }
+    .tree li::before { content: ''; position: absolute; left: 0; top: 0; width: 2.4ch; height: calc(0.8em + 7px); border-left: 1px solid var(--line-hi); border-bottom: 1px solid var(--line-hi); }
+    .tree li:not(:last-child)::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; border-left: 1px solid var(--line-hi); }
+    .tree .row { display: block; padding: 6px 0; }
+    .tree .root { padding: 0 0 4px; }
+    .tree a, .tree .dir { color: var(--fg); }
+    .tree .dir, .tree a.dir { color: var(--sky); }
+    .tree a:hover { color: var(--accent); }
+    .tree .note { display: block; font-size: 0.85em; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="prompt" aria-hidden="true"><span class="path">~/brad</span> <span class="sym">❯</span> tree</p>
+    <h1>tree</h1>
+    <p class="small">Everything on bradflaugher.com. None of it is indexed by search engines; this page is how you find it.</p>
+
+    <nav class="tree" aria-label="Every page">
+      <a class="row root dir" href="/">bradflaugher.com/</a>
+      <ul>
+        <li><span class="row"><a class="dir" href="/swing/">swing/</a><span class="note">swing cues, timed solo practice, and what's causing your miss</span></span></li>
+        <li><span class="row"><span class="dir">privacy/</span><span class="note">privacy policies for the Android apps</span></span>
+          <ul>
+            <li><span class="row"><a href="/privacy/bf-12c/">bf-12c</a><span class="note">RPN calculator</span></span></li>
+            <li><span class="row"><a href="/privacy/blauncher/">blauncher</a><span class="note">home-screen launcher</span></span></li>
+            <li><span class="row"><a href="/privacy/bout-that-action/">bout-that-action</a><span class="note">game</span></span></li>
+            <li><span class="row"><a href="/privacy/cozygrams/">cozygrams</a><span class="note">nonogram puzzles</span></span></li>
+          </ul>
+        </li>
+        <li><span class="row"><a class="dir" href="/tree/">tree/</a><span class="note">this page</span></span></li>
+      </ul>
+    </nav>
+  </main>
+
+  <footer class="status">
+    <div class="status__inner">
+      <span class="seg crumb"><a href="/">bradflaugher.com</a><span>/tree</span></span>
+      <span class="seg"><a href="https://github.com/bradflaugher/bradflaugher.com" rel="noopener">src</a></span>
+    </div>
+  </footer>
+</body>
+</html>

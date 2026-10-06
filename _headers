@@ -24,6 +24,12 @@
 /privacy/*
   X-Robots-Tag: noindex
 
+/tree
+  X-Robots-Tag: noindex
+
+/tree/*
+  X-Robots-Tag: noindex
+
 /swing
   X-Robots-Tag: noindex, nofollow
 
