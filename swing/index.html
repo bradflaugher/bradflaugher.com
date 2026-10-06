@@ -64,11 +64,11 @@
     [role=tab]::before { content: '○ '; color: var(--muted); }
     [role=tab][aria-selected=true] { color: var(--bg); background: var(--accent); border-color: var(--accent); }
     [role=tab][aria-selected=true]::before { content: '● '; color: var(--bg); }
-    button:focus-visible, select:focus-visible, input:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
+    button:focus-visible, select:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
     [role=tabpanel][hidden] { display: none; }
 
     label.f { display: block; font-size: 0.8em; color: var(--muted); margin-bottom: 4px; }
-    select, input[type=text] {
+    select {
       width: 100%; font: inherit; color: var(--fg); background: var(--bg-1);
       border: 1px solid var(--line-hi); border-radius: 6px; padding: 9px 10px; min-height: 44px;
       font-size: 16px; /* under 16px, iOS Safari zooms in on focus */
@@ -251,14 +251,10 @@
     </section>
 
     <section id="week" role="tabpanel" aria-labelledby="tab-week" hidden>
-      <div class="card"><h2>This week's one thing</h2>
-        <input type="text" id="focus" aria-label="This week's focus" placeholder="Contact out in front on every tennis forehand">
-        <p class="small">One focus for the whole week beats a new tip every session.</p>
-      </div>
       <div class="card"><h2>Schedule</h2><div id="days"></div></div>
       <div class="card"><h2>Make the days count</h2>
         <ul class="plain">
-          <li>Spend 10–15 minutes of each session on deliberate practice of your one thing before you play points or a round.</li>
+          <li>Spend 10–15 minutes of each session on a solo practice drill before you play points or a round.</li>
           <li>Put similar swings on back-to-back days where you can (squash then real tennis, pickleball then padel), and keep tennis and table tennis away from the cut sports.</li>
           <li>Golf the day after squash, real tennis, rackets or padel is slice weather; after tennis or table tennis, watch for a hook. Ten half swings on the range before you go to the tee sorts out either.</li>
           <li>Film one rally or swing a week, from behind. Compare it with that sport's cue, not with how it felt.</li>
@@ -273,6 +269,6 @@
       <span><span class="ok">●</span> 8 sports · 24 sessions</span>
     </div>
   </footer>
-  <script src="/swing/swing.js?v=3"></script>
+  <script src="/swing/swing.js?v=4"></script>
 </body>
 </html>

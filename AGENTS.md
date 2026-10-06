@@ -6,9 +6,9 @@ to `main` deploys.
 
 Things worth knowing before changing anything:
 
-- **`index.html`** is a name, links, and a `tree` of the other pages; nothing else. Projects live on
-  GitHub (pinned repos). No bio, no job titles, no company, no phone, no
-  address, no "get in touch".
+- **`index.html`** is a name, links, and a `tree` of the other pages
+  (each also `noindex` in `_headers`). Projects live on GitHub. No bio,
+  no job titles, no company, no phone, no address, no "get in touch".
 - **Look:** dark, monospace, TUI-flavored (Hack + Departure
   Mono, self-hosted under `fonts/`). No JavaScript, except the
   `/swing/` tool. Check it on a phone.
