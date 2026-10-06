@@ -441,9 +441,8 @@ function renderPractice() {
 }
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-let week = {days: ["squash", "tennis", "", "padel", "pickle", "real", "golf"], focus: ""};
+let week = {days: ["squash", "tennis", "", "padel", "pickle", "real", "golf"]};
 function renderWeek() {
-  $("#focus").value = week.focus || "";
   $("#days").innerHTML = DAYS.map((d, i) => {
     const v = week.days[i] || "";
     let prev = "";
@@ -490,7 +489,6 @@ try { st = JSON.parse(localStorage.getItem("swingswitch") || "{}") || {}; } catc
 const valid = k => keys.includes(k);
 if (st.week && Array.isArray(st.week.days)) {
   week.days = DAYS.map((_, i) => valid(st.week.days[i]) ? st.week.days[i] : "");
-  week.focus = typeof st.week.focus === "string" ? st.week.focus : "";
 }
 $("#from").innerHTML = sportOptions(valid(st.from) ? st.from : "tennis");
 $("#to").innerHTML = sportOptions(valid(st.to) ? st.to : "squash");
@@ -510,7 +508,6 @@ $("#pnext").onclick = skip;
 $("#preset").onclick = () => { resetTimer(); renderClock(); };
 document.addEventListener("visibilitychange", () => { if (ptick && document.visibilityState === "visible") { lock = null; wake(true); } });
 resetTimer();
-$("#focus").oninput = e => { week.focus = e.target.value; save(); };
 renderSwitch(); renderDiag(); renderAll(); renderWeek(); renderContact(); renderPractice();
 const startTab = tabs.find(x => x.getAttribute("aria-controls") === st.tab);
 if (startTab) selectTab(startTab);
