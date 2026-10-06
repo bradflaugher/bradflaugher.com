@@ -422,7 +422,8 @@ function skip() {
 }
 // A followed sport that changed mid-session is picked up at the next fresh start.
 function follow() {
-  if (pchosen || ptick || psport === $("#to").value) return false;
+  const fresh = !ptick && pi === 0 && pleft === blocks()[0][0] * 60; // not running, paused or finished
+  if (pchosen || !fresh || psport === $("#to").value) return false;
   psport = $("#to").value; resetTimer(); renderPractice(); return true;
 }
 function toggleTimer() {
