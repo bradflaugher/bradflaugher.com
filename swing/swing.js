@@ -489,7 +489,7 @@ const currentTab = () => (tabs.find(x => x.getAttribute("aria-selected") === "tr
 let ready = false;
 function save() {
   if (!ready) return;
-  try { localStorage.setItem("swingswitch", JSON.stringify({week, from: $("#from").value, to: $("#to").value, contact: csel, practice: pchosen ? psport : "", len: plen, tab: currentTab()})); } catch (e) {}
+  try { localStorage.setItem("swingswitch", JSON.stringify({week, from: $("#from").value, to: $("#to").value, contact: csel, pick: pchosen ? psport : "", len: plen, tab: currentTab()})); } catch (e) {}
 }
 
 let st = {};
@@ -507,8 +507,9 @@ $("#from").onchange = renderSwitch;
 // Until you pick a practice sport yourself, it follows "Playing today".
 $("#to").onchange = () => { renderSwitch(); if (!pchosen && !ptick) { psport = $("#to").value; resetTimer(); renderPractice(); } };
 $("#dsport").onchange = () => { miss = null; renderDiag(); };
-pchosen = valid(st.practice);
-psport = pchosen ? st.practice : $("#to").value;
+// "pick" is only ever an explicit choice; the older "practice" field saved the default too, so it's ignored.
+pchosen = valid(st.pick);
+psport = pchosen ? st.pick : $("#to").value;
 plen = st.len in LENS ? st.len : "long";
 $("#psport").innerHTML = sportOptions(psport);
 $("#psport").onchange = () => { psport = $("#psport").value; pchosen = true; resetTimer(); renderPractice(); save(); };
