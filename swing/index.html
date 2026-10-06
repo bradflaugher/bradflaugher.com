@@ -127,6 +127,34 @@
     .day b { color: var(--fg); padding-top: 11px; }
     .day .note { font-size: 0.85em; margin-top: 6px; }
 
+    .pick2 { grid-template-columns: 1fr 1fr; }
+    .seg3 { display: flex; gap: 6px; }
+    .seg3 button, .pctl button {
+      flex: 1; font: inherit; font-size: 0.9em; color: var(--fg-dim); background: var(--bg-1);
+      border: 1px solid var(--line-hi); border-radius: 6px; padding: 8px 6px; min-height: 44px; cursor: pointer;
+    }
+    .seg3 button span { color: var(--muted); }
+    .seg3 button[aria-pressed=true] { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+    .seg3 button[aria-pressed=true] span { color: var(--bg); }
+    .clock { text-align: center; padding: 6px 0 14px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+    .pnow { color: var(--sky); font-size: 0.9em; min-height: 1.6em; }
+    .pnow::before { content: '> '; color: var(--muted); }
+    .ptime { font: 400 clamp(56px, 18vw, 88px)/1 var(--pixel); color: var(--fg); margin: 6px 0; font-variant-numeric: tabular-nums; }
+    .pbar { color: var(--accent); font-size: 0.8em; white-space: nowrap; overflow: hidden; }
+    .pctl { display: flex; gap: 6px; margin-top: 12px; }
+    .pctl .go { color: var(--bg); background: var(--ball); border-color: var(--ball); font-weight: 700; flex: 1.4; }
+    .seg3 button:hover, .pctl button:hover { border-color: var(--accent); }
+    .plist { list-style: none; }
+    .plist li { border-top: 1px dashed var(--line); }
+    .plist li:first-child { border-top: 0; }
+    .plist button { display: grid; grid-template-columns: 2.6em 1fr; gap: 8px; width: 100%; text-align: left; font: inherit; color: var(--fg-dim); background: none; border: 0; padding: 10px 0; cursor: pointer; }
+    .plist .pm { color: var(--muted); font-family: var(--pixel); }
+    .plist .how { display: block; font-size: 0.85em; margin-top: 2px; }
+    .plist .goal { display: inline-block; font-size: 0.8em; color: var(--ball); margin-top: 4px; }
+    .plist .goal::before { content: '◎ '; }
+    .plist li.now { background: var(--bg-2); margin-inline: -16px; padding-inline: 13px 16px; border-left: 3px solid var(--ball); }
+    .plist li.now .pm { color: var(--ball); }
+    .plist li.done strong, .plist li.done .how { text-decoration: line-through; text-decoration-color: var(--muted); opacity: 0.6; }
     .status { margin-inline: -16px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--bg-1); border-top: 1px solid var(--line); font-size: 0.8em; color: var(--muted); }
     .status__inner { max-width: 720px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; }
     .status .ok { color: var(--green); }
@@ -134,7 +162,7 @@
     @media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
     @media (max-width: 420px) {
       .row { grid-template-columns: 5.5em 1fr 1fr; gap: 8px; }
-      .pick { grid-template-columns: 1fr; }
+      .pick, .pick2 { grid-template-columns: 1fr; }
       .arrowto { display: none; }
       .facts { grid-template-columns: 1fr; gap: 2px; }
       .facts dd { margin-bottom: 8px; }
@@ -146,12 +174,13 @@
     <p class="prompt" aria-hidden="true"><span class="path">~/brad</span> <span class="sym">❯</span> swing --switch</p>
     <h1>swing <span class="last">switch<span class="caret" aria-hidden="true"></span></span></h1>
     <p class="sub">left-handed with a racquet, right-handed with a club</p>
-    <p class="lede">Eight sports, eight swings. Reset your stroke before you walk on court or onto the tee, and trace a miss back to the sport it leaked in from.</p>
+    <p class="lede">Eight sports, eight swings. Reset your stroke before you walk on court or onto the tee, run a timed solo session, and trace a miss back to the sport it leaked in from.</p>
 
     <noscript><p class="card" style="padding-top:16px">This tool needs JavaScript to build its cues and charts.</p></noscript>
 
     <div role="tablist" aria-label="Sections">
       <button role="tab" id="tab-switch" aria-controls="switch" aria-selected="true">switch</button>
+      <button role="tab" id="tab-practice" aria-controls="practice" aria-selected="false" tabindex="-1">solo practice</button>
       <button role="tab" id="tab-contact" aria-controls="contact" aria-selected="false" tabindex="-1">where to hit it</button>
       <button role="tab" id="tab-diag" aria-controls="diag" aria-selected="false" tabindex="-1">diagnose a miss</button>
       <button role="tab" id="tab-all" aria-controls="all" aria-selected="false" tabindex="-1">all sports</button>
@@ -167,6 +196,25 @@
       <div class="card"><h2>Your switch cues</h2><ol class="cues" id="cues"></ol><p class="small" id="warm"></p></div>
       <div class="card"><h2>Contact height</h2><div id="cswitch"></div></div>
       <div class="card"><h2>What changes</h2><div id="diff"></div><p class="small">Highlighted rows are the biggest differences, and the likeliest places your old swing sneaks in.</p></div>
+    </section>
+
+    <section id="practice" role="tabpanel" aria-labelledby="tab-practice" hidden>
+      <div class="pick pick2">
+        <div><label class="f" for="psport">Sport</label><select id="psport"></select></div>
+        <div><span class="f" id="plen-l">Session</span><div class="seg3" id="plen" role="group" aria-labelledby="plen-l"></div></div>
+      </div>
+      <div class="card"><h2 id="ptitle">Session</h2>
+        <div class="clock">
+          <p class="pnow" id="pnow" aria-live="polite"></p>
+          <p class="ptime" id="ptime" role="timer" aria-live="off"></p>
+          <p class="pbar" id="pbar" aria-hidden="true"></p>
+          <div class="pctl"><button type="button" id="pgo" class="go"></button><button type="button" id="pnext">⏭ next</button><button type="button" id="preset">↺ reset</button></div>
+        </div>
+        <ol class="plist" id="plist"></ol>
+        <p class="small" id="pkit"></p>
+        <p class="small" id="pcue"></p>
+      </div>
+      <p class="small">It beeps and buzzes between blocks and keeps the screen awake while it runs. Tap any block to jump to it. Quality over quantity: if the target's gone, slow down rather than speed up.</p>
     </section>
 
     <section id="contact" role="tabpanel" aria-labelledby="tab-contact" hidden>
@@ -222,9 +270,9 @@
   <footer class="status">
     <div class="status__inner">
       <span>-- NORMAL -- swing/</span>
-      <span><span class="ok">●</span> 8 sports · unlisted</span>
+      <span><span class="ok">●</span> 8 sports · 24 sessions</span>
     </div>
   </footer>
-  <script src="/swing/swing.js?v=2"></script>
+  <script src="/swing/swing.js?v=3"></script>
 </body>
 </html>

@@ -6,11 +6,11 @@ to `main` deploys.
 
 Things worth knowing before changing anything:
 
-- **`index.html`** is a name and links, nothing else. Projects live on
+- **`index.html`** is a name, links, and a `tree` of the other pages; nothing else. Projects live on
   GitHub (pinned repos). No bio, no job titles, no company, no phone, no
   address, no "get in touch".
 - **Look:** dark, monospace, TUI-flavored (Hack + Departure
-  Mono, self-hosted under `fonts/`). No JavaScript, except the unlisted
+  Mono, self-hosted under `fonts/`). No JavaScript, except the
   `/swing/` tool. Check it on a phone.
 - **`og.png`** is generated from a throwaway HTML render; if the copy on
   the page changes, re-render it so link previews match.
