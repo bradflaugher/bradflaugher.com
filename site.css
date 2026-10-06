@@ -43,6 +43,8 @@ main { flex: 1; width: 100%; max-width: var(--measure); margin-inline: auto; pad
 .prompt { color: var(--muted); font-size: 0.85em; }
 .prompt .path { color: var(--sky); }
 .prompt .sym { color: var(--accent); }
+.prompt a.path { border-bottom: 1px dotted var(--line-hi); }
+.prompt a.path:hover { color: var(--accent); border-color: var(--accent); }
 h1 { font: 400 clamp(34px, 9vw, 56px)/1 var(--pixel); letter-spacing: -0.01em; color: var(--fg); margin: 12px 0 10px; text-wrap: balance; }
 h1 .last { color: var(--accent); }
 h2 { font: 400 1em/1.3 var(--pixel); color: var(--fg); }
@@ -59,14 +61,21 @@ a:focus-visible, button:focus-visible, select:focus-visible, [tabindex]:focus-vi
 /* ---------- status bar footer, same on every page ---------- */
 .status {
   margin-inline: calc(-1 * var(--gutter));
-  padding: 10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
+  padding: 4px var(--gutter) calc(4px + env(safe-area-inset-bottom));
   background: var(--bg-1); border-top: 1px solid var(--line);
-  font-size: 0.8em; color: var(--muted);
+  font-size: 0.85em; color: var(--muted);
 }
-.status__inner { max-width: var(--measure); margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; }
-.status .seg { display: inline-flex; align-items: center; gap: 1ch; white-space: nowrap; }
-.status .crumb { gap: 0; }
-.status a { color: var(--fg-dim); }
+.status__inner { max-width: var(--measure); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; column-gap: 16px; }
+.status .seg { display: inline-flex; align-items: center; gap: 1.2ch; white-space: nowrap; min-height: 44px; }
+.status .crumb { display: block; flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; line-height: 44px; }
+.status nav.seg { flex: none; }
+.status .tilde { display: none; }
+@media (max-width: 479px) {
+  .status a .host { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); } /* kept for screen readers */
+  .status a .tilde { display: inline; }
+}
+.status a { color: var(--fg-dim); padding-block: 10px; }
 .status a:hover { color: var(--accent); }
+.status a[aria-current=page] { color: var(--fg); box-shadow: inset 0 -2px var(--accent); padding-block: 2px; }
 
 @media (prefers-reduced-motion: reduce) { .caret { animation: none; } }

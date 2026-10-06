@@ -10,7 +10,7 @@
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="apple-touch-icon" sizes="144x144" href="/favicon-144x144.png">
-  <link rel="stylesheet" href="/site.css?v=1">
+  <link rel="stylesheet" href="/site.css?v=2">
   <style>
     .sub { color: var(--sky); font-size: 0.9em; }
     .sub::before { content: '# '; color: var(--muted); }
@@ -130,7 +130,7 @@
 </head>
 <body>
   <main>
-    <p class="prompt" aria-hidden="true"><span class="path">~/brad</span> <span class="sym">❯</span> swing --switch</p>
+    <p class="prompt"><a class="path" href="/" title="home">~/brad</a> <span aria-hidden="true"><span class="sym">❯</span> swing --switch</span></p>
     <h1>swing <span class="last">switch<span class="caret" aria-hidden="true"></span></span></h1>
     <p class="sub">left-handed with a racquet, right-handed with a club</p>
     <p class="lede">Eight sports, eight swings. Reset your stroke before you walk on court or onto the tee, run a timed solo session, and trace a miss back to the sport it leaked in from.</p>
@@ -224,8 +224,8 @@
   </main>
   <footer class="status">
     <div class="status__inner">
-      <span class="seg crumb"><a href="/">bradflaugher.com</a><span>/swing</span></span>
-      <span class="seg"><a href="/tree/">tree</a><span aria-hidden="true">·</span><a href="https://github.com/bradflaugher/bradflaugher.com" rel="noopener">src</a></span>
+      <span class="seg crumb"><a href="/"><span class="host">bradflaugher.com</span><span class="tilde" aria-hidden="true">~</span></a><span>/swing</span></span>
+      <nav class="seg" aria-label="Site"><a href="/">home</a><span aria-hidden="true">·</span><a href="/tree/">tree</a><span aria-hidden="true">·</span><a href="https://github.com/bradflaugher/bradflaugher.com" rel="noopener">src</a></nav>
     </div>
   </footer>
   <script src="/swing/swing.js?v=4"></script>
