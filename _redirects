@@ -1,0 +1,12 @@
+# The Android apps' privacy policies moved to each app's own GitHub Pages
+# site. Installed builds and Play still link to the old addresses.
+/privacy/bf-12c             https://bradflaugher.github.io/bf-12c/privacy/            301
+/privacy/bf-12c/*           https://bradflaugher.github.io/bf-12c/privacy/            301
+/privacy/blauncher          https://bradflaugher.github.io/Blauncher/privacy/         301
+/privacy/blauncher/*        https://bradflaugher.github.io/Blauncher/privacy/         301
+/privacy/bout-that-action   https://bradflaugher.github.io/bout-that-action/privacy/  301
+/privacy/bout-that-action/* https://bradflaugher.github.io/bout-that-action/privacy/  301
+/privacy/cozygrams          https://bradflaugher.github.io/CozyGrams/privacy/         301
+/privacy/cozygrams/*        https://bradflaugher.github.io/CozyGrams/privacy/         301
+/privacy/pokersi            https://bradflaugher.github.io/PokerSI/privacy/           301
+/privacy/pokersi/*          https://bradflaugher.github.io/PokerSI/privacy/           301
