@@ -1,14 +1,22 @@
 version: 2
+
+# Policy: patch vulnerabilities fast, refresh everything else rarely.
+#
+# - Security fixes come from Dependabot security updates (a repo setting, not
+#   this file). They open a PR as soon as an advisory affects us. The schedule
+#   and cooldown below only govern version updates, so they never delay a
+#   security fix.
+# - Version updates: one PR per quarter, majors included (read their release
+#   notes before merging).
+# - A release must be 30 days old before a version update picks it up, so a
+#   broken or hijacked release has usually been pulled by then.
+
 updates:
   # The site has no runtime or dev dependencies; the only thing to keep
   # current is the Actions the deploy workflow uses.
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-    # Let new releases age a week before proposing them (supply-chain buffer).
+      interval: quarterly
     cooldown:
-      default-days: 7
-    groups:
-      actions:
-        patterns: ['*']
+      default-days: 30
