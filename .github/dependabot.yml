@@ -23,3 +23,7 @@ updates:
       interval: quarterly
     cooldown:
       default-days: 30
+    # Without this, each action would get its own PR every quarter.
+    groups:
+      actions:
+        patterns: ['*']
